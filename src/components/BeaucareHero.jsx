@@ -153,7 +153,9 @@ const BeaucareHeroExact = () => {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Navigation */}
+
+      {/* // this should be a different component */}
+        {/* Navigation */} 
         <nav ref={navRef} className="px-4 py-6">
           <div className="max-w-7xl mx-auto">
             <div className="bg-white/20 backdrop-blur-lg rounded-full px-8 py-4 flex items-center justify-between border-2 border-white/45">
@@ -241,6 +243,8 @@ const BeaucareHeroExact = () => {
           </div>
         </nav>
 
+
+        {/*this should be a different component */}
         {/* Main Content */}
         <div className="flex-1 flex items-center px-4">
           <div className="max-w-7xl mx-auto w-full">
@@ -273,6 +277,9 @@ const BeaucareHeroExact = () => {
           </div>
         </div>
 
+
+
+        {/* this should be a different component */}
         {/* Reviews Card */}
         <div ref={reviewsRef} className="absolute bottom-8 right-8 hidden lg:block">
           <div className="rounded-2xl flex items-center space-x-4">
