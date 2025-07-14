@@ -13,7 +13,7 @@ const Navigation = ({ navRef, handleNavItemHover }) => {
           <div className="hidden md:flex items-center space-x-16">
             <a 
               href="#" 
-              className="text-white/90 hover:text-white font-light text-lg transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >
@@ -21,7 +21,7 @@ const Navigation = ({ navRef, handleNavItemHover }) => {
             </a>
             <a 
               href="#" 
-              className="text-white/90 hover:text-white font-light text-lg transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >
@@ -29,7 +29,7 @@ const Navigation = ({ navRef, handleNavItemHover }) => {
             </a>
             <a 
               href="#" 
-              className="text-white/90 hover:text-white font-light text-lg transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >
@@ -38,28 +38,28 @@ const Navigation = ({ navRef, handleNavItemHover }) => {
           </div>
 
           {/* Logo */}
-          <div className="text-3xl font-normal text-white tracking-wide playfair-display">
+          <div className=" text-2xl sm:text-4xl font-bold font-serif text-white tracking-wide">
             Saundrya
           </div>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-16">
             <span 
-              className="text-white/90 hover:text-white font-light text-lg cursor-pointer transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl cursor-pointer transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >
               Cart(8)
             </span>
             <span 
-              className="text-white/90 hover:text-white font-light text-lg cursor-pointer transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl cursor-pointer transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >
               Delivery(3)
             </span>
             <span 
-              className="text-white/90 hover:text-white font-light text-lg cursor-pointer transition-colors duration-300"
+              className="text-white/90 hover:text-white font-light text-xl cursor-pointer transition-colors duration-300"
               onMouseEnter={(e) => handleNavItemHover(e.target, true)}
               onMouseLeave={(e) => handleNavItemHover(e.target, false)}
             >

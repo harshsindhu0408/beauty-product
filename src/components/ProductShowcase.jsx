@@ -165,7 +165,7 @@ const ProductShowcase = () => {
   return (
     <section
       ref={sectionRef}
-      className={`sm:py-20 px-4 transition-all duration-1000 ${currentProduct.background} relative overflow-hidden`}
+      className={`sm:py-20  px-4 md:px-20 transition-all duration-1000 ${currentProduct.background} relative overflow-hidden`}
       onMouseEnter={pauseAutoPlay}
       onMouseLeave={resumeAutoPlay}
     >
@@ -173,7 +173,7 @@ const ProductShowcase = () => {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h1 
           key={`bgtext-${currentSlide}`}
-          className={`font-serif bg-gradient-to-t from-gray-400 to-gray-700 bg-clip-text text-transparent font-bold text-[12.5rem] text-nowrap transition-all duration-500 ease-out ${
+          className={`font-serif bg-gradient-to-t from-gray-400 to-gray-700 bg-clip-text text-transparent font-bold text-[12vw] mx-auto opacity-30 text-nowrap transition-all duration-500 ease-out ${
             showExitAnimation
               ? slideDirection === "next" 
                 ? "opacity-0 -translate-x-24 scale-95 animate-bg-slide-out-left"
@@ -187,7 +187,7 @@ const ProductShowcase = () => {
         </h1>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className=" mx-auto relative z-10">
         <div className="min-h-[600px]">
           {/* Left Content */}
           <div className=" w-full">

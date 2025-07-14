@@ -133,10 +133,10 @@ const ProductSlider = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 px-4 bg-gradient-to-b from-pink-50 to-white">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-16 md:py-20 lg:py-24 px-4 md:px-20 bg-gray-100">
+      <div className=" mx-auto">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
           <div className="mb-8 lg:mb-0">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 leading-tight font-serif">
               Various Products
@@ -186,12 +186,7 @@ const ProductSlider = () => {
                       </span>
                     </div>
                     
-                    {/* Category Tag */}
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-purple-200/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-purple-700">
-                        {product.category}
-                      </span>
-                    </div>
+                  
                   </div>
 
                   {/* Product Info */}

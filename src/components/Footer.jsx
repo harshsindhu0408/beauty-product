@@ -60,7 +60,7 @@ const Footer = () => {
   return (
     <footer 
       ref={sectionRef}
-      className="py-16 md:py-20 lg:py-24 px-4 relative overflow-hidden bg-gradient-to-b from-white to-pink-100"
+      className="py-16 md:py-20 lg:py-24 px-4 md:px-20 relative overflow-hidden bg-gradient-to-b from-white to-pink-100"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -69,8 +69,8 @@ const Footer = () => {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full bg-gray-200"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex justify-between gap-12 lg:gap-16">
+      <div className=" mx-auto relative z-10">
+        <div className="flex justify-between flex-wrap gap-12 lg:gap-16">
           {/* Left Section - Title and Social */}
           <div className="">
             <div className="mb-8">
@@ -114,7 +114,7 @@ const Footer = () => {
 
           {/* Right Section - Navigation Links */}
           <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
+            <div className="grid grid-cols-2 gap-8 sm:gap-12">
               {/* Explore Column */}
               <div 
                 ref={exploreRef}
@@ -171,7 +171,7 @@ const Footer = () => {
         
    
       </div>
-      <p className="text-white text-[26vw] mt-30 -mb-10 -translate-x-20 playfair-display leading-[50%] ">
+      <p className="text-white text-[26vw] mt-30 -mb-10  -translate-x-7 sm:-translate-x-20 playfair-display leading-[50%] ">
          Beaucare 
           </p>
     </footer>

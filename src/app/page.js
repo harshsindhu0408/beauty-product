@@ -14,7 +14,7 @@ export default function Home() {
     <WhyChooseUs/>
     <ProductSlider/>
     <ProductShowcase/>
-    {/* <TestimonialsSection/> */}
+    <TestimonialsSection/>
     <Footer/>
   </React.Fragment>
   );
