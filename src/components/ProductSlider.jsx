@@ -133,7 +133,7 @@ const ProductSlider = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 px-4 md:px-20 bg-gray-100">
+    <section className="py-16 md:py-20 lg:py-24 px-4 mx-4 rounded-xl md:px-20 bg-gray-100">
       <div className=" mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">

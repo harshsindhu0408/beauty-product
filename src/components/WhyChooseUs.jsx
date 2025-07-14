@@ -130,6 +130,8 @@ const WhyChooseUs = () => {
         <div className="absolute top-10 sm:top-16 md:top-20 left-10 sm:left-16 md:left-20 w-16 sm:w-24 md:w-32 h-16 sm:h-24 md:h-32 rounded-full bg-purple-300"></div>
         <div className="absolute bottom-10 sm:bottom-16 md:bottom-20 right-10 sm:right-16 md:right-20 w-20 sm:w-32 md:w-40 h-20 sm:h-32 md:h-40 rounded-full bg-gray-300"></div>
       </div>
+      <div class="absolute w-[600px] h-[400px] bg-pink-100 rounded-full mix-blend-multiply filter -translate-1/2 blur-3xl top-1/2 left-1/2"></div>
+
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Desktop Layout - Cards around centered text */}

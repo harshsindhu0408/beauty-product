@@ -43,7 +43,7 @@ const TestimonialSection = () => {
     cardsRef.current.forEach((card, index) => {
       if (card) {
         card.style.position = 'sticky';
-        card.style.top = '50px';
+        card.style.top = '10px';
         card.style.transform = `translateY(100px) scale(0.9)`;
         card.style.opacity = '0';
         card.style.zIndex = index + 1;
@@ -72,7 +72,7 @@ const TestimonialSection = () => {
         if (card) {
           const cardRect = card.getBoundingClientRect();
           const cardTop = cardRect.top + scrollY;
-          const triggerPoint = cardTop - windowHeight + 200;
+          const triggerPoint = cardTop - windowHeight + 100;
           
           if (scrollY > triggerPoint) {
             setTimeout(() => {
@@ -80,7 +80,7 @@ const TestimonialSection = () => {
               const stackOffset = window.innerWidth < 768 ? 50 : 100;
               card.style.transform = `translateY(${index * stackOffset}px) scale(1)`;
               card.style.opacity = '1';
-            }, index * 200);
+            }, index * 100);
           }
         }
       });
