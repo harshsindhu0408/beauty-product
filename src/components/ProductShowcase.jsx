@@ -165,7 +165,7 @@ const ProductShowcase = () => {
   return (
     <section
       ref={sectionRef}
-      className={`sm:py-20  px-4 md:px-20 transition-all duration-1000 ${currentProduct.background} relative overflow-hidden`}
+      className={`sm:py-20  px-4 md:px-20 transition-all duration-1000 ${currentProduct.background} relative z-0 overflow-hidden`}
       onMouseEnter={pauseAutoPlay}
       onMouseLeave={resumeAutoPlay}
     >

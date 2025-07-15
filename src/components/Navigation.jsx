@@ -44,7 +44,7 @@ const Navigation = ({ navRef, handleNavItemHover }) => {
       }`}
     >
       <div className="max-w-7xl mx-auto">
-        <div className={`backdrop-blur-lg rounded-full px-8 py-4 flex items-center justify-between border-2 transition-all duration-300 ${
+        <div className={`backdrop-blur-lg rounded-full px-4 py-2 sm:px-8 sm:py-4 flex items-center justify-between border-2 transition-all duration-300 ${
           isInHero 
             ? 'bg-white/20 border-white/45' 
             : 'bg-gray-900/95 border-gray-700/50'

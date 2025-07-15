@@ -16,10 +16,10 @@ const MainContent = ({ titleRef, subtitleRef, buttonRef, handleButtonHover }) =>
           
           <p 
             ref={subtitleRef}
-            className="text-white text-lg md:text-2xl leading-relaxed mb-6 max-w-[450px] font-light"
+            className="text-white text-lg md:text-2xl leading-relaxed mb-6 max-w-[450px] font-semibold"
           >
             Beauty is important for self-confidence in your daily life, but sometimes you don't care enough about it{' '}
-            <span className="text-white font-normal">to maximize it</span>. So, let's enhance your beauty
+            <span className="text-white font-semibold">to maximize it</span>. So, let's enhance your beauty
           </p>
 
           <button  
