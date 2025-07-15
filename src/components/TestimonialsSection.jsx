@@ -7,6 +7,7 @@ const TestimonialSection = () => {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
   const viewMoreRef = useRef(null);
+  const [isClient, setIsClient] = useState(false);
 
   // Sample testimonial data with audio URLs
   const testimonials = [
@@ -39,6 +40,12 @@ const TestimonialSection = () => {
   ];
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     // Set initial state for all cards - stacked and hidden
     cardsRef.current.forEach((card, index) => {
       if (card) {
@@ -65,6 +72,8 @@ const TestimonialSection = () => {
 
     // Create scroll-triggered animations for each card
     const handleScroll = () => {
+      if (typeof window === 'undefined') return;
+      
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
@@ -111,7 +120,9 @@ const TestimonialSection = () => {
     );
 
     // Add scroll listener
-    window.addEventListener('scroll', handleScroll);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+    }
     
     // Observe header and view more button
     if (headerRef.current) observer.observe(headerRef.current);
@@ -121,14 +132,16 @@ const TestimonialSection = () => {
     handleScroll();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', handleScroll);
+      }
       observer.disconnect();
     };
-  }, []);
+  }, [isClient]);
 
   return (
     <section ref={sectionRef} className="py-20 px-4 relative">
-          <div class="absolute w-full h-[500px] bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 -top-40 left-0 animate-pulse"></div>
+      <div className="absolute w-full h-[1000px] bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 -top-80 left-0 animate-pulse"></div>
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -149,6 +162,7 @@ const TestimonialSection = () => {
               key={testimonial.id}
               testimonial={testimonial}
               ref={(el) => (cardsRef.current[index] = el)}
+              isClient={isClient}
             />
           ))}
         </div>
@@ -173,10 +187,32 @@ const AudioPlayer = ({ audioUrl }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [waveformBars, setWaveformBars] = useState(40);
   const audioRef = useRef(null);
   const progressRef = useRef(null);
 
   useEffect(() => {
+    setIsClient(true);
+    
+    // Set waveform bars based on screen size
+    const updateWaveformBars = () => {
+      if (typeof window !== 'undefined') {
+        setWaveformBars(window.innerWidth < 768 ? 40 : 60);
+      }
+    };
+
+    updateWaveformBars();
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', updateWaveformBars);
+      return () => window.removeEventListener('resize', updateWaveformBars);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -203,9 +239,11 @@ const AudioPlayer = ({ audioUrl }) => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [audioUrl]);
+  }, [audioUrl, isClient]);
 
   const togglePlayPause = () => {
+    if (!isClient) return;
+    
     const audio = audioRef.current;
     if (!audio || !isLoaded) return;
 
@@ -218,6 +256,8 @@ const AudioPlayer = ({ audioUrl }) => {
   };
 
   const handleProgressClick = (e) => {
+    if (!isClient) return;
+    
     const audio = audioRef.current;
     if (!audio || !isLoaded) return;
 
@@ -240,6 +280,18 @@ const AudioPlayer = ({ audioUrl }) => {
   };
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  if (!isClient) {
+    return (
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-3 md:p-4 flex items-center gap-2 md:gap-4">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-300 flex-shrink-0"></div>
+        <div className="flex-1 h-5 md:h-6 bg-gray-200 rounded"></div>
+        <div className="text-xs md:text-sm text-gray-600 font-medium min-w-[70px] md:min-w-[80px] text-right">
+          0:00 / 0:00
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-3 md:p-4 flex items-center gap-2 md:gap-4">
@@ -278,9 +330,9 @@ const AudioPlayer = ({ audioUrl }) => {
           {/* Waveform background */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-full h-full flex items-center justify-center gap-0.5">
-              {[...Array(window.innerWidth < 768 ? 40 : 60)].map((_, i) => {
-                const height = Math.random() * (window.innerWidth < 768 ? 16 : 20) + 4;
-                const isActive = i < (progressPercentage / 100) * (window.innerWidth < 768 ? 40 : 60);
+              {[...Array(waveformBars)].map((_, i) => {
+                const height = Math.random() * (waveformBars === 40 ? 16 : 20) + 4;
+                const isActive = i < (progressPercentage / 100) * waveformBars;
                 return (
                   <div
                     key={i}
@@ -307,7 +359,7 @@ const AudioPlayer = ({ audioUrl }) => {
 };
 
 // Individual Testimonial Card Component
-const TestimonialCard = React.forwardRef(({ testimonial }, ref) => {
+const TestimonialCard = React.forwardRef(({ testimonial, isClient }, ref) => {
   return (
     <div
       ref={ref}

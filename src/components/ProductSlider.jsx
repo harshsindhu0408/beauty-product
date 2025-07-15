@@ -1,9 +1,10 @@
 'use client'
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProductSlider = () => {
   const swiperRef = useRef(null);
+  const [isClient, setIsClient] = useState(false);
 
   const products = [
     {
@@ -56,8 +57,14 @@ const ProductSlider = () => {
     }
   ];
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Initialize Swiper
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!isClient) return;
+
     const initSwiper = () => {
       if (typeof window !== 'undefined' && window.Swiper) {
         const swiper = new window.Swiper('.product-swiper', {
@@ -90,6 +97,8 @@ const ProductSlider = () => {
 
     // Load Swiper CSS and JS
     const loadSwiper = () => {
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
       // Load CSS
       if (!document.querySelector('#swiper-css')) {
         const link = document.createElement('link');
@@ -118,7 +127,7 @@ const ProductSlider = () => {
         swiperRef.current.destroy(true, true);
       }
     };
-  }, []);
+  }, [isClient]);
 
   const nextSlide = () => {
     if (swiperRef.current) {
@@ -133,7 +142,7 @@ const ProductSlider = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 px-4 mx-4 rounded-xl md:px-20 bg-gray-100">
+    <section className="py-16 md:py-20 lg:py-24 px-4 mx-2 sm:mx-8 rounded-xl md:px-20 bg-gray-50">
       <div className=" mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -170,7 +179,7 @@ const ProductSlider = () => {
           <div className="swiper-wrapper">
             {products.map((product) => (
               <div key={product.id} className="swiper-slide">
-                <div className="rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 group">
+                <div className="rounded-2xl overflow-hidden transition-all duration-300 group">
                   {/* Product Image */}
                   <div className="relative h-80 bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden">
                     <img
@@ -204,8 +213,7 @@ const ProductSlider = () => {
           </div>
         </div>
 
-        {/* Pagination Dots */}
-        <div className="swiper-pagination mt-8 flex justify-center"></div>
+     
 
         {/* View More Button */}
         <div className="flex justify-center mt-12">

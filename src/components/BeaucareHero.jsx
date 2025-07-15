@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Navigation from './Navigation';
 import MainContent from './MainContent';
 import ReviewsCard from './ReviewsCard';
@@ -13,8 +13,15 @@ const BeaucareHero = () => {
   const navRef = useRef(null);
   const reviewsRef = useRef(null);
   const imageRef = useRef(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => { 
+    if (!isClient) return;
+
     const initAnimations = () => { 
       if (typeof window !== 'undefined' && window.gsap) {
         const { gsap } = window;
@@ -85,38 +92,46 @@ const BeaucareHero = () => {
         }, "-=0.4");
  
         const handleScroll = () => {
-          const scrolled = window.pageYOffset;
-          const parallaxSpeed = 0.5;
-          
-          if (imageRef.current) {
-            gsap.to(imageRef.current, {
-              y: scrolled * parallaxSpeed,
-              duration: 0.8,
-              ease: "power2.out"
-            });
+          if (typeof window !== 'undefined') {
+            const scrolled = window.pageYOffset;
+            const parallaxSpeed = 0.5;
+            
+            if (imageRef.current) {
+              gsap.to(imageRef.current, {
+                y: scrolled * parallaxSpeed,
+                duration: 0.8,
+                ease: "power2.out"
+              });
+            }
           }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        if (typeof window !== 'undefined') {
+          window.addEventListener('scroll', handleScroll);
+        }
         
         return () => {
-          window.removeEventListener('scroll', handleScroll);
+          if (typeof window !== 'undefined') {
+            window.removeEventListener('scroll', handleScroll);
+          }
         };
       }
     };
 
-    if (!window.gsap) {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
-      script.onload = initAnimations;
-      document.head.appendChild(script);
-    } else {
-      initAnimations();
+    if (typeof window !== 'undefined') {
+      if (!window.gsap) {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+        script.onload = initAnimations;
+        document.head.appendChild(script);
+      } else {
+        initAnimations();
+      }
     }
-  }, []);
+  }, [isClient]);
 
   const handleButtonHover = (isHovering) => {
-    if (window.gsap && buttonRef.current) {
+    if (typeof window !== 'undefined' && window.gsap && buttonRef.current) {
       window.gsap.to(buttonRef.current, {
         scale: isHovering ? 1.05 : 1,
         duration: 0.3,
@@ -126,7 +141,7 @@ const BeaucareHero = () => {
   };
 
   const handleNavItemHover = (element, isHovering) => {
-    if (window.gsap) {
+    if (typeof window !== 'undefined' && window.gsap) {
       window.gsap.to(element, {
         scale: isHovering ? 0.95 : 1,
         duration: 0.3,

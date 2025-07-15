@@ -171,8 +171,8 @@ const Footer = () => {
         
    
       </div>
-      <p className="text-white text-[26vw] mt-30 -mb-10  -translate-x-7 sm:-translate-x-20 playfair-display leading-[50%] ">
-         Beaucare 
+      <p className="text-white text-[24vw] mt-30 -mb-0  -translate-x-7 sm:-translate-x-20 playfair-display leading-[50%] ">
+         Saundrya 
           </p>
     </footer>
   );
