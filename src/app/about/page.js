@@ -23,13 +23,15 @@ export default function AboutPage() {
       id: 1,
       name: "Dr. Anya Sharma",
       role: "Chief Formulating Chemist",
-      imageSrc: "https://res.cloudinary.com/dnvjct2if/image/upload/v1752658912/Gemini_Generated_Image_tt0c78tt0c78tt0c_uun3pn.png",
+      imageSrc:
+        "https://res.cloudinary.com/dnvjct2if/image/upload/v1752658912/Gemini_Generated_Image_tt0c78tt0c78tt0c_uun3pn.png",
     },
     {
       id: 2,
       name: "Rajesh Kumar",
       role: "Head Herbalist & Botanist",
-      imageSrc: "https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/Gemini_Generated_Image_mrz04nmrz04nmrz0_wyivyp.png",
+      imageSrc:
+        "https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/Gemini_Generated_Image_mrz04nmrz04nmrz0_wyivyp.png",
     },
     {
       id: 3,
@@ -286,11 +288,11 @@ export default function AboutPage() {
                         variants={fadeIn}
                         className="text-lg md:text-xl text-gray-600 leading-relaxed"
                       >
-                        We don't just create skincare — we craft transformative
-                        experiences that reconnect you with your most authentic
-                        self. At Saundrya Earth, we reject the conventional
-                        beauty paradigm that prioritizes concealment over
-                        celebration.
+                        We don&apos;t just create skincare — we craft
+                        transformative experiences that reconnect you with your
+                        most authentic self. At Saundrya Earth, we reject the
+                        conventional beauty paradigm that prioritizes
+                        concealment over celebration.
                       </motion.p>
                       <motion.p
                         variants={fadeIn}
@@ -300,18 +302,18 @@ export default function AboutPage() {
                         principles: radical transparency, intentional
                         formulation, and holistic wellbeing. Each product is
                         meticulously designed to work in harmony with your
-                        skin's natural biology rather than against it.
+                        skin&apos;s natural biology rather than against it.
                       </motion.p>
                       <motion.div
                         variants={fadeIn}
                         className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mt-8"
                       >
                         <div className="flex items-start">
-                          <div className="text-pink-500 mr-4 text-2xl">"</div>
+                          <div className="text-pink-500 mr-4 text-2xl"></div>
                           <p className="text-gray-700 italic text-lg">
                             Beauty should celebrate your uniqueness, not mask
                             it. Our formulations enhance rather than alter,
-                            working with your skin's natural intelligence.
+                            working with your skin&apos;s natural intelligence.
                           </p>
                         </div>
                         <div className="mt-6 flex items-center">
@@ -371,11 +373,11 @@ export default function AboutPage() {
                         variants={fadeIn}
                         className="text-lg md:text-xl text-gray-600 leading-relaxed"
                       >
-                        Skincare with purpose — that's our solemn promise. From
-                        our inception, we've woven social responsibility into
-                        the fabric of our business model. We operate on a
-                        triple-bottom-line framework that equally prioritizes
-                        people, planet, and profit.
+                        We don&apos;t just create skincare — we craft
+                        transformative experiences that reconnect you with your
+                        most authentic self. At Saundrya Earth, we reject the
+                        conventional beauty paradigm that prioritizes
+                        concealment over celebration.
                       </motion.p>
 
                       <motion.div
@@ -405,7 +407,7 @@ export default function AboutPage() {
                         className="text-lg md:text-xl text-gray-600 leading-relaxed mt-8"
                       >
                         Our commitment to inclusivity extends beyond sourcing.
-                        We've developed the beauty industry's most comprehensive
+                        We&apos;ve developed the beauty industry&apos;s most comprehensive
                         shade matching system, offering 48 foundation shades
                         with undertone variations for all skin types.
                       </motion.p>
@@ -457,8 +459,8 @@ export default function AboutPage() {
                         variants={fadeIn}
                         className="text-lg md:text-xl text-gray-600 leading-relaxed"
                       >
-                        At our core, sustainability isn't a marketing
-                        tactic—it's the bedrock of our existence. We've built
+                        At our core, sustainability isn&apos;t a marketing
+                        tactic—it&apos;s the bedrock of our existence. We&apos;ve built
                         our operations around principles that actively
                         regenerate rather than simply reduce harm.
                       </motion.p>
@@ -566,7 +568,7 @@ export default function AboutPage() {
                         We believe skincare is sacred self-care — a daily ritual
                         that nourishes both complexion and spirit. Our products
                         are designed with circadian rhythm science to sync with
-                        your body's natural cycles.
+                        your body&apos;s natural cycles.
                       </motion.p>
 
                       <motion.div
@@ -703,7 +705,7 @@ export default function AboutPage() {
                       >
                         As we look to the future, our North Star remains
                         unchanged: to prove that business can be a force for
-                        healing — of skin, of community, of planet. We're driven
+                        healing — of skin, of community, of planet. We&apos;re driven
                         by the belief that conscious choices lead to profound
                         impact.
                       </motion.p>
