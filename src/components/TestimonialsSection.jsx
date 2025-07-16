@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 
 const TestimonialSection = () => {
@@ -8,6 +9,7 @@ const TestimonialSection = () => {
   const cardsRef = useRef([]);
   const viewMoreRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   // Sample testimonial data with audio URLs
   const testimonials = [
@@ -170,8 +172,9 @@ const TestimonialSection = () => {
         {/* View More Button */}
         <div className="text-center mt-12 md:mt-20">
           <button
+          onClick={() => router.push('/testimonials')}
             ref={viewMoreRef}
-            className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-full font-semibold hover:from-slate-700 hover:to-slate-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm md:text-base"
+            className="px-6 cursor-pointer md:px-8 py-3 md:py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-full font-semibold hover:from-slate-700 hover:to-slate-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm md:text-base"
           >
             View More
           </button>

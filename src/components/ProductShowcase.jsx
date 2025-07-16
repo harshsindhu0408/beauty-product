@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Plus, ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ProductShowcase = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -53,12 +54,12 @@ const ProductShowcase = () => {
         setShowExitAnimation(true);
         setShowEnterAnimation(false);
         setSlideDirection("next");
-        
+
         // First show exit animation
         setTimeout(() => {
           setCurrentSlide((prev) => (prev + 1) % products.length);
           setShowExitAnimation(false);
-          
+
           // Trigger enter animation after slide change
           setTimeout(() => {
             setShowEnterAnimation(true);
@@ -105,18 +106,18 @@ const ProductShowcase = () => {
     setShowExitAnimation(true);
     setShowEnterAnimation(false);
     setSlideDirection("next");
-    
+
     // First show exit animation
     setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % products.length);
       setShowExitAnimation(false);
-      
+
       // Trigger enter animation after slide change
       setTimeout(() => {
         setShowEnterAnimation(true);
       }, 50); // Small delay to ensure DOM update
     }, 400); // Exit animation duration
-    
+
     setTimeout(resumeAutoPlay, 8000);
   };
 
@@ -125,18 +126,18 @@ const ProductShowcase = () => {
     setShowExitAnimation(true);
     setShowEnterAnimation(false);
     setSlideDirection("prev");
-    
+
     // First show exit animation
     setTimeout(() => {
       setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
       setShowExitAnimation(false);
-      
+
       // Trigger enter animation after slide change
       setTimeout(() => {
         setShowEnterAnimation(true);
       }, 50); // Small delay to ensure DOM update
     }, 400); // Exit animation duration
-    
+
     setTimeout(resumeAutoPlay, 8000);
   };
 
@@ -145,22 +146,27 @@ const ProductShowcase = () => {
     setShowExitAnimation(true);
     setShowEnterAnimation(false);
     setSlideDirection(index > currentSlide ? "next" : "prev");
-    
+
     // First show exit animation
     setTimeout(() => {
       setCurrentSlide(index);
       setShowExitAnimation(false);
-      
+
       // Trigger enter animation after slide change
       setTimeout(() => {
         setShowEnterAnimation(true);
       }, 50); // Small delay to ensure DOM update
     }, 400); // Exit animation duration
-    
+
     setTimeout(resumeAutoPlay, 8000);
   };
 
   const currentProduct = products[currentSlide];
+
+  const addToCartHandler = () => {
+    toast.success("Launching sooonnnnn!!!!!!!");
+    console.log("hi there")
+  };
 
   return (
     <section
@@ -171,16 +177,16 @@ const ProductShowcase = () => {
     >
       {/* Background Text with Sliding Effect */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h1 
+        <h1
           key={`bgtext-${currentSlide}`}
           className={`font-serif bg-gradient-to-t from-gray-400 to-gray-700 bg-clip-text text-transparent font-bold text-[12vw] mx-auto opacity-30 text-nowrap transition-all duration-500 ease-out ${
             showExitAnimation
-              ? slideDirection === "next" 
+              ? slideDirection === "next"
                 ? "opacity-0 -translate-x-24 scale-95 animate-bg-slide-out-left"
                 : "opacity-0 translate-x-24 scale-95 animate-bg-slide-out-right"
               : slideDirection === "next"
-                ? "opacity-60 translate-x-0 scale-100 animate-bg-slide-in-right"
-                : "opacity-60 translate-x-0 scale-100 animate-bg-slide-in-left"
+              ? "opacity-60 translate-x-0 scale-100 animate-bg-slide-in-right"
+              : "opacity-60 translate-x-0 scale-100 animate-bg-slide-in-left"
           }`}
         >
           {currentProduct.backgroundText}
@@ -204,8 +210,8 @@ const ProductShowcase = () => {
                       ? "opacity-0 -translate-x-16 animate-slide-out-left"
                       : "opacity-0 translate-x-16 animate-slide-out-right"
                     : slideDirection === "next"
-                      ? "opacity-100 translate-x-0 animate-slide-in-right"
-                      : "opacity-100 translate-x-0 animate-slide-in-left"
+                    ? "opacity-100 translate-x-0 animate-slide-in-right"
+                    : "opacity-100 translate-x-0 animate-slide-in-left"
                 }`}
               >
                 {currentProduct.title}
@@ -243,8 +249,8 @@ const ProductShowcase = () => {
                       ? "opacity-0 translate-y-8 scale-90 animate-slide-out-down"
                       : "opacity-0 -translate-y-8 scale-90 animate-slide-out-up"
                     : slideDirection === "next"
-                      ? "opacity-100 translate-y-0 scale-100 animate-slide-in-up"
-                      : "opacity-100 translate-y-0 scale-100 animate-slide-in-down"
+                    ? "opacity-100 translate-y-0 scale-100 animate-slide-in-up"
+                    : "opacity-100 translate-y-0 scale-100 animate-slide-in-down"
                 }`}
               >
                 <div className="relative z-10">
@@ -270,8 +276,8 @@ const ProductShowcase = () => {
                       ? "opacity-0 -translate-x-12 animate-slide-out-left"
                       : "opacity-0 translate-x-12 animate-slide-out-right"
                     : slideDirection === "next"
-                      ? "opacity-100 translate-x-0 animate-slide-in-right"
-                      : "opacity-100 translate-x-0 animate-slide-in-left"
+                    ? "opacity-100 translate-x-0 animate-slide-in-right"
+                    : "opacity-100 translate-x-0 animate-slide-in-left"
                 }`}
               >
                 {currentProduct.description}
@@ -288,16 +294,22 @@ const ProductShowcase = () => {
                       ? "opacity-0 -translate-x-12 animate-slide-out-left"
                       : "opacity-0 translate-x-12 animate-slide-out-right"
                     : slideDirection === "next"
-                      ? "opacity-100 translate-x-0 animate-slide-in-right"
-                      : "opacity-100 translate-x-0 animate-slide-in-left"
+                    ? "opacity-100 translate-x-0 animate-slide-in-right"
+                    : "opacity-100 translate-x-0 animate-slide-in-left"
                 }`}
               >
-                <button className="flex items-center justify-center gap-2 bg-white/80 hover:bg-white text-gray-800 sm:px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200">
+                <button
+                  onClick={() => addToCartHandler()}
+                  className="flex cursor-pointer items-center justify-center gap-2 bg-white/80 hover:bg-white text-gray-800 sm:px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200"
+                >
                   <Plus className="w-5 h-5" />
                   Add to Cart
                 </button>
 
-                <button className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <button
+                  onClick={() => addToCartHandler()}
+                  className="flex cursor-pointer items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                >
                   <ShoppingCart className="w-5 h-5" />
                   Buy | ${currentProduct.price}
                 </button>

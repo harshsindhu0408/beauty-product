@@ -1,15 +1,15 @@
-'use client'
-import React, { useEffect, useRef, useState } from 'react';
-import MainContent from './MainContent';
-import ReviewsCard from './ReviewsCard';
-import Navigation from './Navigation';
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import MainContent from "./MainContent";
+import ReviewsCard from "./ReviewsCard";
+import Navigation from "./Navigation";
 
 // Sample images - replace these URLs with your actual images
 const backgroundImages = [
-  'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
-  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
-  'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
-  'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2126&q=80'
+  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655743/Gemini_Generated_Image_l8lsp9l8lsp9l8ls_axggpv.png",
+  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655910/Gemini_Generated_Image_hkpeithkpeithkpe_icjttw.png",
+  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655936/Gemini_Generated_Image_y9lwypy9lwypy9lw_l31spv.png",
+  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752657490/Gemini_Generated_Image_mcyi8vmcyi8vmcyi_dnycr9.png",
 ];
 
 const BackgroundSlider = ({ imageRef }) => {
@@ -28,7 +28,7 @@ const BackgroundSlider = ({ imageRef }) => {
     // Auto-play functionality
     const startAutoPlay = () => {
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => 
+        setCurrentIndex((prevIndex) =>
           prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
         );
       }, 5000); // Change image every 5 seconds
@@ -45,29 +45,29 @@ const BackgroundSlider = ({ imageRef }) => {
   }, [isClient]);
 
   useEffect(() => {
-    if (!isClient || typeof window === 'undefined' || !window.gsap) return;
+    if (!isClient || typeof window === "undefined" || !window.gsap) return;
 
     const { gsap } = window;
-    const images = sliderRef.current?.querySelectorAll('.bg-image');
-    
+    const images = sliderRef.current?.querySelectorAll(".bg-image");
+
     if (images) {
       // Hide all images first
       gsap.set(images, { opacity: 0 });
-      
+
       // Show current image with fade effect
       gsap.to(images[currentIndex], {
         opacity: 1,
         duration: 1,
-        ease: "power2.out"
+        ease: "power2.out",
       });
-      
+
       // Hide previous images
       images.forEach((img, index) => {
         if (index !== currentIndex) {
           gsap.to(img, {
             opacity: 0,
             duration: 0.5,
-            ease: "power2.out"
+            ease: "power2.out",
           });
         }
       });
@@ -80,7 +80,7 @@ const BackgroundSlider = ({ imageRef }) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => 
+        setCurrentIndex((prevIndex) =>
           prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
         );
       }, 5000);
@@ -98,21 +98,14 @@ const BackgroundSlider = ({ imageRef }) => {
             className="bg-image absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url(${image})`,
-              opacity: index === currentIndex ? 1 : 0
+              opacity: index === currentIndex ? 1 : 0,
             }}
           />
         ))}
       </div>
-      
-      
-  
     </div>
   );
 };
- 
-
- 
- 
 
 // Main Hero Component with Background Slider
 const BeaucareHero = () => {
@@ -129,109 +122,130 @@ const BeaucareHero = () => {
     setIsClient(true);
   }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (!isClient) return;
 
-    const initAnimations = () => { 
-      if (typeof window !== 'undefined' && window.gsap) {
+    const initAnimations = () => {
+      if (typeof window !== "undefined" && window.gsap) {
         const { gsap } = window;
-        
+
         // Set initial states
         gsap.set([titleRef.current, subtitleRef.current, buttonRef.current], {
           opacity: 0,
-          y: 100
+          y: 100,
         });
-        
+
         gsap.set(navRef.current, {
           opacity: 0,
-          y: -30
+          y: -30,
         });
-        
+
         gsap.set(reviewsRef.current, {
           opacity: 0,
-          scale: 0.8
+          scale: 0.8,
         });
-        
+
         gsap.set(imageRef.current, {
           opacity: 0,
-          scale: 1.1
+          scale: 1.1,
         });
- 
+
         const tl = gsap.timeline({ delay: 0.2 });
-         
+
         tl.to(imageRef.current, {
           opacity: 1,
           scale: 1,
           duration: 1.5,
-          ease: "power2.out"
+          ease: "power2.out",
         })
-         
-        .to(navRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out"
-        }, "-=1.2")
-         
-        .to(titleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power2.out"
-        }, "-=0.5")
-         
-        .to(subtitleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out"
-        }, "-=0.3")
-         
-        .to(buttonRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out"
-        }, "-=0.2")
-         
-        .to(reviewsRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "back.out(1.7)"
-        }, "-=0.4");
- 
+
+          .to(
+            navRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out",
+            },
+            "-=1.2"
+          )
+
+          .to(
+            titleRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: "power2.out",
+            },
+            "-=0.5"
+          )
+
+          .to(
+            subtitleRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out",
+            },
+            "-=0.3"
+          )
+
+          .to(
+            buttonRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: "power2.out",
+            },
+            "-=0.2"
+          )
+
+          .to(
+            reviewsRef.current,
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.8,
+              ease: "back.out(1.7)",
+            },
+            "-=0.4"
+          );
+
         const handleScroll = () => {
-          if (typeof window !== 'undefined') {
+          if (typeof window !== "undefined") {
             const scrolled = window.pageYOffset;
             const parallaxSpeed = 0.5;
-            
+
             if (imageRef.current) {
               gsap.to(imageRef.current, {
                 y: scrolled * parallaxSpeed,
                 duration: 0.8,
-                ease: "power2.out"
+                ease: "power2.out",
               });
             }
           }
         };
 
-        if (typeof window !== 'undefined') {
-          window.addEventListener('scroll', handleScroll);
+        if (typeof window !== "undefined") {
+          window.addEventListener("scroll", handleScroll);
         }
-        
+
         return () => {
-          if (typeof window !== 'undefined') {
-            window.removeEventListener('scroll', handleScroll);
+          if (typeof window !== "undefined") {
+            window.removeEventListener("scroll", handleScroll);
           }
         };
       }
     };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (!window.gsap) {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+        const script = document.createElement("script");
+        script.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js";
         script.onload = initAnimations;
         document.head.appendChild(script);
       } else {
@@ -241,21 +255,21 @@ const BeaucareHero = () => {
   }, [isClient]);
 
   const handleButtonHover = (isHovering) => {
-    if (typeof window !== 'undefined' && window.gsap && buttonRef.current) {
+    if (typeof window !== "undefined" && window.gsap && buttonRef.current) {
       window.gsap.to(buttonRef.current, {
         scale: isHovering ? 1.05 : 1,
         duration: 0.3,
-        ease: "power2.out"
+        ease: "power2.out",
       });
     }
   };
 
   const handleNavItemHover = (element, isHovering) => {
-    if (typeof window !== 'undefined' && window.gsap) {
+    if (typeof window !== "undefined" && window.gsap) {
       window.gsap.to(element, {
         scale: isHovering ? 0.95 : 1,
         duration: 0.3,
-        ease: "power2.out"
+        ease: "power2.out",
       });
     }
   };
@@ -271,20 +285,15 @@ const BeaucareHero = () => {
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation Component */}
-        <Navigation 
-          navRef={navRef} 
-          handleNavItemHover={handleNavItemHover} 
-        />
+        <Navigation navRef={navRef} handleNavItemHover={handleNavItemHover} />
 
         {/* Main Content Component */}
-        <MainContent 
+        <MainContent
           titleRef={titleRef}
           subtitleRef={subtitleRef}
           buttonRef={buttonRef}
           handleButtonHover={handleButtonHover}
         />
-
-
 
         {/* Reviews Card Component */}
         <ReviewsCard reviewsRef={reviewsRef} />
