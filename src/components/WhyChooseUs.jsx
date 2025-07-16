@@ -120,6 +120,7 @@ const WhyChooseUs = () => {
 
   return (
     <section 
+    id='about'
       ref={sectionRef} 
       className="py-12 sm:py-16 md:py-20 px-4 bg-gradient-to-br from-gray-50 to-white relative z-0 overflow-hidden"
       onMouseMove={handleMouseMove}

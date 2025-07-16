@@ -68,7 +68,7 @@ const ProductSlider = () => {
     const initSwiper = () => {
       if (typeof window !== 'undefined' && window.Swiper) {
         const swiper = new window.Swiper('.product-swiper', {
-          slidesPerView: 1,
+          slidesPerView: 1.5,
           spaceBetween: 20,
           loop: true,
           autoplay: {
@@ -142,7 +142,7 @@ const ProductSlider = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 lg:py-24 px-4 mx-2 sm:mx-8 rounded-xl md:px-20 bg-gray-50">
+    <section className="py-6 md:py-20 lg:py-24 px-4 mx-2 sm:mx-8 rounded-xl md:px-20 bg-gray-50">
       <div className=" mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -181,16 +181,16 @@ const ProductSlider = () => {
               <div key={product.id} className="swiper-slide">
                 <div className="rounded-2xl overflow-hidden transition-all duration-300 group">
                   {/* Product Image */}
-                  <div className="relative h-80 bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden">
+                  <div className="relative sm:h-80 bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="sm:w-full sm:h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     
                     {/* Product Tag */}
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-gray-700">
+                    <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                      <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[8px] sm:text-sm font-medium text-gray-700">
                         {product.tag}
                       </span>
                     </div>
@@ -200,10 +200,10 @@ const ProductSlider = () => {
 
                   {/* Product Info */}
                   <div className="py-6">
-                    <h4 className="text-xl font-medium text-gray-800 mb-2 group-hover:text-purple-600 transition-colors duration-300">
+                    <h4 className="sm:text-xl font-medium text-gray-800 mb-2 group-hover:text-purple-600 transition-colors duration-300">
                       {product.name}
                     </h4>
-                    <p className="text-lg font-semibold text-gray-600">
+                    <p className="sm:text-lg font-semibold text-gray-600">
                       {product.price}
                     </p>
                   </div>
@@ -216,7 +216,7 @@ const ProductSlider = () => {
      
 
         {/* View More Button */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-4 sm:mt-12">
           <button className="bg-gray-800 text-white px-8 py-3 rounded-full font-medium hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
             View More
           </button>

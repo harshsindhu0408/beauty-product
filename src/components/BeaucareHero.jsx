@@ -6,10 +6,11 @@ import Navigation from "./Navigation";
 
 // Sample images - replace these URLs with your actual images
 const backgroundImages = [
-  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655743/Gemini_Generated_Image_l8lsp9l8lsp9l8ls_axggpv.png",
-  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655910/Gemini_Generated_Image_hkpeithkpeithkpe_icjttw.png",
-  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752655936/Gemini_Generated_Image_y9lwypy9lwypy9lw_l31spv.png",
-  "https://res.cloudinary.com/dnvjct2if/image/upload/v1752657490/Gemini_Generated_Image_mcyi8vmcyi8vmcyi_dnycr9.png",
+  "/hero1.webp", 
+  "/hero2.webp", 
+  "/hero3.webp", 
+  "/hero4.webp", 
+  "/hero5.webp", 
 ];
 
 const BackgroundSlider = ({ imageRef }) => {

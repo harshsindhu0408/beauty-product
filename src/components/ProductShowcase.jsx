@@ -170,6 +170,7 @@ const ProductShowcase = () => {
 
   return (
     <section
+    id="product"
       ref={sectionRef}
       className={`sm:py-20  px-4 md:px-20 transition-all duration-1000 ${currentProduct.background} relative z-0 overflow-hidden`}
       onMouseEnter={pauseAutoPlay}
@@ -284,7 +285,7 @@ const ProductShowcase = () => {
               </p>
               <div
                 key={`buttons-${currentSlide}`}
-                className={`flex sm:flex-row gap-4 items-center transition-all duration-400 ease-out ${
+                className={`flex sm:flex-row gap-4 max-sm:mt-4 items-center transition-all duration-400 ease-out ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-10"
@@ -300,7 +301,7 @@ const ProductShowcase = () => {
               >
                 <button
                   onClick={() => addToCartHandler()}
-                  className="flex cursor-pointer items-center justify-center gap-2 bg-white/80 hover:bg-white text-gray-800 sm:px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200"
+                  className="flex cursor-pointer items-center justify-center gap-2 bg-white/80 hover:bg-white text-gray-800 px-4 sm:px-8 py-2 sm:py-4 rounded-full sm:text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200"
                 >
                   <Plus className="w-5 h-5" />
                   Add to Cart
@@ -308,7 +309,7 @@ const ProductShowcase = () => {
 
                 <button
                   onClick={() => addToCartHandler()}
-                  className="flex cursor-pointer items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  className="flex cursor-pointer items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-full sm:text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   Buy | ${currentProduct.price}
