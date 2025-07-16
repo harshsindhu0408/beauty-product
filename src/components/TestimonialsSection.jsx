@@ -140,8 +140,8 @@ const TestimonialSection = () => {
   }, [isClient]);
 
   return (
-    <section ref={sectionRef} className="py-20 px-4 relative">
-      <div className="absolute w-full h-[1000px] bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 -top-80 left-0 animate-pulse"></div>
+    <section ref={sectionRef} className="py-20 pb px-4 relative">
+      <div className="absolute w-full h-[1000px] bg-pink-100 rounded-full mix-blend-multiply z-[-1] filter blur-3xl opacity-60 -top-80 left-0 animate-pulse"></div>
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -156,7 +156,7 @@ const TestimonialSection = () => {
         </div>
 
         {/* Cards Container with Stacking Space */}
-        <div ref={containerRef} className="space-y-4 md:space-y-8">
+        <div ref={containerRef} className="space-y-4 mb-[300px] md:space-y-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.id}

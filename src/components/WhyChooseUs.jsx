@@ -197,23 +197,23 @@ const WhyChooseUs = () => {
           {/* Feature Cards Positioned Around Center */}
           {features.map((feature, index) => {
             const positions = [
-              { top: '0%', left: '15%', width: '280px', height: '200px' },
-              { top: '0%', right: '13%', width: '250px', height: '180px' },
-              { bottom: '6%', right: '13%', width: '280px', height: '200px' },
-              { bottom: '10%', left: '8%', width: '260px', height: '180px' },
-              { bottom: '40%', left: '0%', width: '260px', height: '180px' },
-              { bottom: '40%', right: '0%', width: '260px', height: '180px' }
+              { top: '-5%', left: '15%', width: '280px', height: '200px' },
+              { top: '-5%', right: '13%', width: '250px', height: '180px' },
+              { bottom: '-9%', right: '13%', width: '280px', height: '200px' },
+              { bottom: '-8%', left: '8%', width: '260px', height: '180px' },
+              { bottom: '30%', left: '0%', width: '260px', height: '180px' },
+              { bottom: '35%', right: '0%', width: '260px', height: '180px' }
             ];
 
             return (
               <div
                 key={feature.id}
-                className={`absolute rounded-3xl p-6 ${feature.cardColor} shadow-lg cursor-pointer text-center overflow-hidden transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-2 ${
+                className={`absolute rounded-3xl p-6 ${feature.cardColor} shadow-lg cursor-pointer text-center overflow-hidden w-[250px] transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-2 ${
                   isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
                 }`}
                 style={{
                   ...positions[index],
-                  minHeight: feature.image ? '200px' : '180px',
+                  minHeight: feature.image ? '250px' : '250px',
                   transform: isVisible ? getCardTransform(index) : 'translate(0, 32px) scale(0.95)',
                   transitionDelay: `${200 + (index * 200)}ms`,
                   transition: 'all 0.3s ease-out, opacity 1s ease-out, transform 1s ease-out'
@@ -234,7 +234,7 @@ const WhyChooseUs = () => {
                 {/* Content */}
                 <div className={`relative text-center flex items-center flex-col z-10 ${feature.image ? 'text-white' : feature.textColor || 'text-gray-800'}`}>
                   {/* Icon */}
-                  <div className={`w-12 h-12 rounded-full ${feature.bgColor} flex items-center justify-center mb-4 transition-transform duration-300 hover:scale-110`}>
+                  <div className={`w-20 h-20 rounded-full ${feature.bgColor} flex items-center justify-center mb-4 transition-transform duration-300 hover:scale-110`}>
                     <feature.icon className={`w-6 h-6 ${feature.iconColor}`} />
                   </div>
 

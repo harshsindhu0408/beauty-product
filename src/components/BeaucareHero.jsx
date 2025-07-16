@@ -1,10 +1,120 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import Navigation from './Navigation';
 import MainContent from './MainContent';
 import ReviewsCard from './ReviewsCard';
-import BackgroundImage from './BackgroundImage';
+import Navigation from './Navigation';
 
+// Sample images - replace these URLs with your actual images
+const backgroundImages = [
+  'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+  'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+  'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2126&q=80'
+];
+
+const BackgroundSlider = ({ imageRef }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+  const sliderRef = useRef(null);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    // Auto-play functionality
+    const startAutoPlay = () => {
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000); // Change image every 5 seconds
+    };
+
+    startAutoPlay();
+
+    // Cleanup interval on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isClient]);
+
+  useEffect(() => {
+    if (!isClient || typeof window === 'undefined' || !window.gsap) return;
+
+    const { gsap } = window;
+    const images = sliderRef.current?.querySelectorAll('.bg-image');
+    
+    if (images) {
+      // Hide all images first
+      gsap.set(images, { opacity: 0 });
+      
+      // Show current image with fade effect
+      gsap.to(images[currentIndex], {
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out"
+      });
+      
+      // Hide previous images
+      images.forEach((img, index) => {
+        if (index !== currentIndex) {
+          gsap.to(img, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+        }
+      });
+    }
+  }, [currentIndex, isClient]);
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+    // Reset the interval when user manually changes slide
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+  };
+
+  if (!isClient) return null;
+
+  return (
+    <div ref={imageRef} className="absolute inset-0 w-full h-full">
+      <div ref={sliderRef} className="relative w-full h-full">
+        {backgroundImages.map((image, index) => (
+          <div
+            key={index}
+            className="bg-image absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${image})`,
+              opacity: index === currentIndex ? 1 : 0
+            }}
+          />
+        ))}
+      </div>
+      
+      
+  
+    </div>
+  );
+};
+ 
+
+ 
+ 
+
+// Main Hero Component with Background Slider
 const BeaucareHero = () => {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
@@ -152,8 +262,8 @@ const BeaucareHero = () => {
 
   return (
     <div ref={heroRef} className="relative min-h-screen overflow-hidden">
-      {/* Background Image */}
-      <BackgroundImage imageRef={imageRef} />
+      {/* Background Slider */}
+      <BackgroundSlider imageRef={imageRef} />
 
       {/* Dark Overlay for Better Text Readability */}
       <div className="absolute inset-0 bg-black/20" />
@@ -173,6 +283,8 @@ const BeaucareHero = () => {
           buttonRef={buttonRef}
           handleButtonHover={handleButtonHover}
         />
+
+
 
         {/* Reviews Card Component */}
         <ReviewsCard reviewsRef={reviewsRef} />
