@@ -65,8 +65,8 @@ const Footer = () => {
   const othersLinks = [
     { name: "FAQ", href: "#" },
     { name: "Support", href: "#" },
-    { name: "Terms Of Use", href: "#" },
-    { name: "Privacy Policy", href: "#" },
+    { name: "Terms Of Use", href: "/terms-and-conditions" },
+    { name: "Privacy Policy", href: "/privacy-policy" },
   ];
 
   return (
