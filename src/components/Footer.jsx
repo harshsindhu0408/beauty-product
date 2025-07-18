@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Instagram, Youtube, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const Footer = () => {
   const sectionRef = useRef(null);
@@ -28,16 +29,37 @@ const Footer = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}newsletter/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          preferences: ["weekly"],
+          name: "",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Subscription failed");
+      }
+
       setIsSubscribed(true);
       setEmail("");
-    }, 1500);
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast.error(error.message || "Failed to subscribe. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const socialLinks = [
