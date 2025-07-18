@@ -212,7 +212,7 @@ const WhyChooseUs = () => {
                 onClick={() => {
                   router.push("/about");
                 }}
-                className={`bg-gray-800 cursot-pointer hover:bg-gray-700 text-white px-10 py-4 rounded-full text-lg font-medium transition-all duration-1000 ease-out delay-500 hover:scale-105 hover:shadow-xl ${
+                className={`bg-gray-800 cursor-pointer cursot-pointer hover:bg-gray-700 text-white px-10 py-4 rounded-full text-lg font-medium transition-all duration-1000 ease-out delay-500 hover:scale-105 hover:shadow-xl ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-10"

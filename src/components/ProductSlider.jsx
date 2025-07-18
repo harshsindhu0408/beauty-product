@@ -1,60 +1,68 @@
-'use client'
-import React, { useRef, useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+"use client";
+import React, { useRef, useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const ProductSlider = () => {
   const swiperRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   const products = [
     {
       id: 1,
       name: "Luminé Glow Serum",
       price: "$24,78 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Check Detail",
-      category: "Beauty Serum"
+      category: "Beauty Serum",
     },
     {
       id: 2,
       name: "Hydriva Deep Serum",
       price: "$21,45 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Beauty Serum",
-      category: "Beauty Serum"
+      category: "Beauty Serum",
     },
     {
       id: 3,
       name: "Veloria Age Repair Serum",
       price: "$28,31 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Beauty Serum",
-      category: "Beauty Serum"
+      category: "Beauty Serum",
     },
     {
       id: 4,
       name: "Aeris Lift Serum",
       price: "$32,79 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Beauty Serum",
-      category: "Beauty Serum"
+      category: "Beauty Serum",
     },
     {
       id: 5,
       name: "Radiant Glow Serum",
       price: "$29,99 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Beauty Serum",
-      category: "Beauty Serum"
+      category: "Beauty Serum",
     },
     {
       id: 6,
       name: "Pure Essence Serum",
       price: "$26,50 USD",
-      image: "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
+      image:
+        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
       tag: "Beauty Serum",
-      category: "Beauty Serum"
-    }
+      category: "Beauty Serum",
+    },
   ];
 
   useEffect(() => {
@@ -66,8 +74,8 @@ const ProductSlider = () => {
     if (!isClient) return;
 
     const initSwiper = () => {
-      if (typeof window !== 'undefined' && window.Swiper) {
-        const swiper = new window.Swiper('.product-swiper', {
+      if (typeof window !== "undefined" && window.Swiper) {
+        const swiper = new window.Swiper(".product-swiper", {
           slidesPerView: 1.5,
           spaceBetween: 20,
           loop: true,
@@ -76,7 +84,7 @@ const ProductSlider = () => {
             disableOnInteraction: false,
           },
           pagination: {
-            el: '.swiper-pagination',
+            el: ".swiper-pagination",
             clickable: true,
           },
           breakpoints: {
@@ -90,29 +98,32 @@ const ProductSlider = () => {
             },
           },
         });
-        
+
         swiperRef.current = swiper;
       }
     };
 
     // Load Swiper CSS and JS
     const loadSwiper = () => {
-      if (typeof window === 'undefined' || typeof document === 'undefined') return;
+      if (typeof window === "undefined" || typeof document === "undefined")
+        return;
 
       // Load CSS
-      if (!document.querySelector('#swiper-css')) {
-        const link = document.createElement('link');
-        link.id = 'swiper-css';
-        link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.css';
+      if (!document.querySelector("#swiper-css")) {
+        const link = document.createElement("link");
+        link.id = "swiper-css";
+        link.rel = "stylesheet";
+        link.href =
+          "https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.css";
         document.head.appendChild(link);
       }
 
       // Load JS
-      if (!document.querySelector('#swiper-js')) {
-        const script = document.createElement('script');
-        script.id = 'swiper-js';
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js';
+      if (!document.querySelector("#swiper-js")) {
+        const script = document.createElement("script");
+        script.id = "swiper-js";
+        script.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js";
         script.onload = initSwiper;
         document.head.appendChild(script);
       } else if (window.Swiper) {
@@ -154,7 +165,7 @@ const ProductSlider = () => {
               With The Best Quality
             </h3>
           </div>
-          
+
           {/* Navigation Arrows */}
           <div className="flex items-center space-x-4">
             <button
@@ -187,15 +198,13 @@ const ProductSlider = () => {
                       alt={product.name}
                       className="sm:w-full sm:h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    
+
                     {/* Product Tag */}
                     <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
                       <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[8px] sm:text-sm font-medium text-gray-700">
                         {product.tag}
                       </span>
                     </div>
-                    
-                  
                   </div>
 
                   {/* Product Info */}
@@ -213,11 +222,14 @@ const ProductSlider = () => {
           </div>
         </div>
 
-     
-
         {/* View More Button */}
         <div className="flex justify-center mt-4 sm:mt-12">
-          <button className="bg-gray-800 text-white px-8 py-3 rounded-full font-medium hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+          <button
+            onClick={() => {
+              router.push("/products");
+            }}
+            className="bg-gray-800 cursor-pointer text-white px-8 py-3 rounded-full font-medium hover:bg-gray-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          >
             View More
           </button>
         </div>
@@ -231,13 +243,13 @@ const ProductSlider = () => {
           opacity: 1;
           transition: all 0.3s ease;
         }
-        
+
         .swiper-pagination-bullet-active {
           background: #374151;
           width: 24px;
           border-radius: 12px;
         }
-        
+
         .swiper-slide {
           height: auto;
         }
