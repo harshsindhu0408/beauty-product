@@ -56,15 +56,15 @@ const Footer = () => {
   ];
 
   const exploreLinks = [
-    { name: "About", href: "#" },
-    { name: "Product", href: "#" },
-    { name: "Delivery", href: "#" },
-    { name: "Cart", href: "#" },
+    { name: "About", href: "/about" },
+    { name: "Products", href: "/products" },
+    { name: "Delivery", href: "/delivery" },
+    { name: "Cart", href: "/cart" },
   ];
 
   const othersLinks = [
-    { name: "FAQ", href: "#" },
-    { name: "Support", href: "#" },
+    { name: "FAQ", href: "faq" },
+    { name: "Support", href: "/support" },
     { name: "Terms Of Use", href: "/terms-and-conditions" },
     { name: "Privacy Policy", href: "/privacy-policy" },
   ];
