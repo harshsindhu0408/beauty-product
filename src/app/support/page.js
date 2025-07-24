@@ -143,7 +143,7 @@ const SupportPage = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="relative mt-20 pb-20 px-6">
+        <section className="relative pt-20 pb-20 px-6">
           <motion.div
             style={{ y: y1, rotateX }}
             className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
