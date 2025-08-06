@@ -33,18 +33,53 @@ const Footer = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    const extractNameFromEmail = (email) => {
+      const emailPrefix = email.split("@")[0];
+
+      const cleanPrefix = emailPrefix
+        .replace(/[0-9]/g, "")
+        .replace(/[^\w]/g, " ");
+
+      const parts = cleanPrefix.split(/\s+/).filter(Boolean);
+      let firstName = "";
+      let lastName = "";
+
+      if (parts.length > 0) {
+        firstName = parts[0];
+        firstName =
+          firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+      }
+
+      if (parts.length > 1) {
+        lastName = parts.slice(1).join(" ");
+        lastName = lastName
+          .split(" ")
+          .map(
+            (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+          )
+          .join(" ");
+      }
+
+      return { firstName, lastName };
+    };
+
+    const { firstName, lastName } = extractNameFromEmail(email);
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}newsletter/subscribe`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          preferences: ["weekly"],
-          name: "",
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}newsletter`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            firstName: firstName || "",
+            lastName: lastName || "",
+          }),
+        }
+      );
 
       const data = await response.json();
 
