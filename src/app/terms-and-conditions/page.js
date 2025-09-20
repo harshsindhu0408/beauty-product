@@ -1,6 +1,5 @@
 "use client";
 import { ReactLenis } from "@studio-freight/react-lenis";
-import Footer from "@/components/Footer";
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
@@ -194,7 +193,7 @@ export default function TermsOfService() {
           </div>
 
           {/* Hero Section */}
-          <section className="relative mt-10 pb-10 flex items-center justify-center overflow-hidden">
+          <section className="relative pt-26 flex items-center justify-center overflow-hidden">
             <motion.div
               style={{ y: y1, opacity }}
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
@@ -270,7 +269,7 @@ export default function TermsOfService() {
           </section>
 
           {/* Content Sections */}
-          <div className="relative z-20">
+          <div className="relative pb-10 z-20">
             <div className="container mx-auto px-6 max-w-5xl">
               {/* Introduction Card */}
               <motion.section
@@ -588,7 +587,6 @@ export default function TermsOfService() {
         </main>
       </ReactLenis>
 
-      <Footer />
     </>
   );
 }

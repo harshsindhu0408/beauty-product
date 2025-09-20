@@ -1,8 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next";
-
 import "./globals.css";
+import NavigationWrapper from "@/components/NavigationWrapper";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +41,6 @@ export const metadata = {
     "ethical beauty",
     "ayurvedic cosmetics",
   ],
-
 
   authors: [{ name: "Saundrya Earth", url: siteUrl }],
   creator: "Saundrya Earth",
@@ -118,7 +118,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <NavigationWrapper />
         {children}
+        <Footer />
         <Analytics />
         <Toaster
           position="top-right"

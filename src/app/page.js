@@ -4,7 +4,6 @@ import BeaucareHero from '@/components/BeaucareHero';
 import WhyChooseUs from '@/components/WhyChooseUs';
 import ProductShowcase from '@/components/ProductShowcase';
 import TestimonialsSection from '@/components/TestimonialsSection';
-import Footer from '@/components/Footer';
 import ProductSlider from '@/components/ProductSlider';
 
 export default function Home() {
@@ -15,7 +14,6 @@ export default function Home() {
     <ProductSlider/>
     <ProductShowcase/>
     <TestimonialsSection/>
-    <Footer/>
   </React.Fragment>
   );
 }
