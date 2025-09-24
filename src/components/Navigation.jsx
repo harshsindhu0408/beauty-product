@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { clientFetch } from "../services/clientfetch.js";
 
 // Helper functions
 const getPrimaryImageUrl = (product) => {

@@ -3,24 +3,25 @@ import { FetchData } from "@/services/useServerFetch";
 import ProductsPage from "@/pages/ProductsPage";
 
 export default async function Product({ searchParams }) {
-  const page = parseInt(searchParams.page) || 1;
-  const limit = parseInt(searchParams.limit) || 12;
-  const category = searchParams.category || '';
-  const minPrice = searchParams.minPrice || '';
-  const maxPrice = searchParams.maxPrice || '';
-  const minRating = searchParams.minRating || '';
-  const brand = searchParams.brand || '';
-  const isActive = searchParams.isActive || '';
-  const isFeatured = searchParams.isFeatured || '';
-  const isDigital = searchParams.isDigital || '';
-  const tags = searchParams.tags || '';
-  const topSelling = searchParams.topSelling || '';
-  const search = searchParams.search || '';
+  const params = await searchParams;
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 12;
+  const category = params.category || "";
+  const minPrice = params.minPrice || "";
+  const maxPrice = params.maxPrice || "";
+  const minRating = params.minRating || "";
+  const brand = params.brand || "";
+  const isActive = params.isActive || "";
+  const isFeatured = params.isFeatured || "";
+  const isDigital = params.isDigital || "";
+  const tags = params.tags || "";
+  const topSelling = params.topSelling || "";
+  const search = params.search || "";
 
   try {
     // Build the API URL with all query parameters
     let apiUrl = `product?page=${page}&limit=${limit}`;
-    
+
     // Add all filter parameters
     if (category) apiUrl += `&category=${encodeURIComponent(category)}`;
     if (minPrice) apiUrl += `&minPrice=${encodeURIComponent(minPrice)}`;
@@ -37,11 +38,11 @@ export default async function Product({ searchParams }) {
     // Run both API calls in parallel
     const [productsRes, categoriesRes] = await Promise.all([
       FetchData(apiUrl),
-      FetchData(`category/fetch/all`)
+      FetchData(`category/fetch/all`),
     ]);
 
-    const productsData = productsRes.data;
-    const categoriesData = categoriesRes.data;
+    const productsData = productsRes?.data || null;
+    const categoriesData = categoriesRes?.data || null;
 
     return (
       <div className="min-h-screen bg-gray-50">
@@ -61,7 +62,7 @@ export default async function Product({ searchParams }) {
             isDigital,
             tags,
             topSelling,
-            search
+            search,
           }}
         />
       </div>

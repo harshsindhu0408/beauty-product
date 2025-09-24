@@ -2,11 +2,12 @@ import { FetchData } from "@/services/useServerFetch";
 import CategoriesPage from "@/pages/CategoriesPage";
 
 export default async function Categories({ searchParams }) {
-  const page = parseInt(searchParams.page) || 1;
-  const limit = parseInt(searchParams.limit) || 12;
-  const search = searchParams.search || '';
-  const sort = searchParams.sort || '-createdAt';
-  const isActive = searchParams.isActive || '';
+  const params = await searchParams;
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 12;
+  const search = params.search || '';
+  const sort = params.sort || '-createdAt';
+  const isActive = params.isActive || '';
 
   try {
     // Build the API URL with query parameters

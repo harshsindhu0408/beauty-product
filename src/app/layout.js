@@ -28,11 +28,6 @@ export const metadata = {
   description:
     "Discover your natural radiance with Saundrya Earth. We offer a curated collection of premium, organic, and ethically sourced beauty products. Enhance your beauty, naturally.",
 
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
-
   keywords: [
     "natural beauty",
     "organic skincare",
@@ -85,6 +80,11 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {

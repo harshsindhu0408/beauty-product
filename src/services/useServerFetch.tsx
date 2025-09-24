@@ -2,12 +2,12 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 
 // Server-side version (for use in Server Components, Server Actions, etc.)
-export const FetchData = async (url, options = {}) => {
+export const FetchData = async (url: string, options: { method?: string; headers?: Record<string, string>; [key: string]: any } = {}) => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
   try {
     // Get access token from cookies on server
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
     const headers = {

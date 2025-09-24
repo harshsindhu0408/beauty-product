@@ -7,7 +7,8 @@ export default async function CheckoutProducts({ searchParams }) {
   try {
     await userAuthCheckOnServer();
 
-    const { sessionId } = searchParams;
+    const params = await searchParams;
+    const { sessionId } = params;
 
     if (!sessionId) {
       throw new Error("Missing session ID");
