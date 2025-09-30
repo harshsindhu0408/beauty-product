@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default function userAuthCheckOnServer() {
-  const cookieStore = cookies();
+export default async function userAuthCheckOnServer() {
+  const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken");
 
   if (accessToken) {

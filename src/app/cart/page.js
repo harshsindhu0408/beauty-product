@@ -4,7 +4,7 @@ import { FetchData } from "@/services/useServerFetch";
 import userAuthCheckOnServer from "@/middleware/authMiddleware";
 
 export default async function Cart() {
-  userAuthCheckOnServer();
+  await userAuthCheckOnServer();
 
   const [cart] = await Promise.allSettled([FetchData("cart")]);
   const cartData = cart.status === "fulfilled" ? cart.value : null;

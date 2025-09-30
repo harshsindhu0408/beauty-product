@@ -8,6 +8,11 @@ const nextConfig = {
         port: "8080", // 👈 allow your backend dev server
         pathname: "/uploads/products/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.saundryaearth.com",
+        pathname: "/uploads/products/**",
+      },
     ],
   },
 };

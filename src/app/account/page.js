@@ -4,7 +4,7 @@ import { FetchData } from "@/services/useServerFetch";
 import userAuthCheckOnServer from "@/middleware/authMiddleware";
 
 export default async function AccountPage() {
-  userAuthCheckOnServer();
+  await userAuthCheckOnServer();
 
   // Fetch data in parallel to improve performance
   const [userData, orders, addresses] = await Promise.allSettled([
