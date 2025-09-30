@@ -42,6 +42,10 @@ const ProductPage = ({ productData, similarProducts }) => {
   const product = productData?.product;
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [status, setStatus] = useState("idle"); // 'idle', 'adding', 'added'
+  const [quantity, setQuantity] = useState(1);
+
+  // Calculate final price
+  const finalPrice = product ? product.price + (selectedVariant?.priceAdjustment || 0) : 0;
 
   // Use useEffect to set initial variant
   useEffect(() => {
@@ -112,8 +116,41 @@ const ProductPage = ({ productData, similarProducts }) => {
 
   // Handle buy now
   const buyNowHandler = async () => {
-    await addToCartHandler(selectedVariant, quantity);
-    router.push("/cart");
+    try {
+      const payload = {
+        items: [{
+          product: {
+            _id: product._id,
+            name: product.name,
+            images: product.images,
+          },
+          quantity: quantity,
+          price: finalPrice,
+          selectedVariant: selectedVariant ? {
+            variantName: product.variants?.[0]?.name,
+            optionName: selectedVariant.name,
+            priceAdjustment: selectedVariant.priceAdjustment || 0,
+          } : null,
+          itemTotal: finalPrice * quantity,
+        }],
+        source: "buy_now",
+      };
+
+      const response = await clientFetch("checkout", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (response && response.success) {
+        const { sessionId, redirectUrl } = response.data;
+        router.push(redirectUrl || `/checkout?sessionId=${sessionId}`);
+      } else {
+        toast.error(response?.message || "Failed to initiate checkout");
+      }
+    } catch (error) {
+      console.error("Error in buy now:", error);
+      toast.error("Failed to process buy now request");
+    }
   };
 
   return (

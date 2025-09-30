@@ -9,6 +9,7 @@ import {
   CreditCard,
   Truck,
   CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Loader2,
 } from "lucide-react";
@@ -31,6 +32,7 @@ const OrderCheckoutForm = ({
   prevStep,
   isSubmitting,
   addresses,
+  cartItems,
 }) => {
   const handleAddressSelect = (selectedAddress) => {
     setFormData((prev) => ({
@@ -105,14 +107,49 @@ const OrderCheckoutForm = ({
                     required
                   />
                 </div>
+                <div>
+                  <label
+                    htmlFor="shippingEmail"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="shippingEmail"
+                    name="email"
+                    value={formData.shippingAddress.email}
+                    onChange={(e) => handleInputChange(e, "shippingAddress")}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="shippingPhone"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    id="shippingPhone"
+                    name="phone"
+                    value={formData.shippingAddress.phone}
+                    onChange={(e) => handleInputChange(e, "shippingAddress")}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+                  />
+                </div>
               </div>
 
-              {/* --- New Address Component Usage --- */}
-              <AddressTabForShipping
-                addressesData={addresses}
-                onAddressSelect={handleAddressSelect}
-                selectedAddressId={formData.shippingAddress._id}
-              />
+              {/* Address Selection - Required */}
+              <div className="space-y-4">
+                <AddressTabForShipping
+                  addressesData={addresses}
+                  onAddressSelect={handleAddressSelect}
+                  selectedAddressId={formData.shippingAddress._id}
+                />
+              </div>
 
               <div className="flex justify-end pt-4">
                 <button
@@ -352,7 +389,7 @@ const OrderCheckoutForm = ({
                     type="radio"
                     value="online"
                     checked={formData.paymentMethod === "online"}
-                    onChange={(e) => handleInputChange(e, "paymentMethod")}
+                    onChange={handleInputChange}
                     className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
                   />
                   <label
@@ -378,7 +415,7 @@ const OrderCheckoutForm = ({
                     type="radio"
                     value="cod"
                     checked={formData.paymentMethod === "cod"}
-                    onChange={(e) => handleInputChange(e, "paymentMethod")}
+                    onChange={handleInputChange}
                     className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
                   />
                   <label
@@ -406,7 +443,7 @@ const OrderCheckoutForm = ({
                   name="notes"
                   rows={3}
                   value={formData.notes}
-                  onChange={(e) => handleInputChange(e, "notes")}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
                   placeholder="Any special instructions for your order..."
                 />

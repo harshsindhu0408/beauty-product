@@ -407,9 +407,7 @@ const ProductSection = ({
             </button>
 
             <button
-                onClick={() => {
-                addToCartHandler(selectedVariant, quantity);
-              }}
+                onClick={buyNowHandler}
               disabled={!product.isInStock}
               className="flex-1 cursor-pointer bg-gray-900 text-white py-4 px-8 rounded-full font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >

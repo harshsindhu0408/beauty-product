@@ -6,8 +6,7 @@ import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
 
-
-const CheckoutPage = ({ addresses,sessionData, sessionId }) => {
+const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,12 +15,12 @@ const CheckoutPage = ({ addresses,sessionData, sessionId }) => {
 
   const handleOrderSuccess = async (orderData) => {
     try {
-      // For online payment, redirect to payment gateway
-      if (formData.paymentMethod === "online" && orderData.paymentLink) {
-        window.location.href = orderData.paymentLink;
+      // For online payment, redirect to payment gateway in same window
+      if (formData.paymentMethod === "online" && orderData.data.paymentLink) {
+        window.location.href = orderData.data.paymentLink;
       } else {
-        // For COD, redirect to confirmation page
-        router.push(`/order-confirmation/${orderData.orderNumber}`);
+        // For COD, redirect to order details page
+        router.push(`/order/${orderData.data.order.id}`);
       }
     } catch (error) {
       console.error("Order success handling error:", error);
@@ -37,30 +36,71 @@ const CheckoutPage = ({ addresses,sessionData, sessionId }) => {
     try {
       // Prepare order data according to your API
       const orderData = {
-        sessionId: sessionId, // Include the session ID
         items: cartItems.map((item) => ({
-          product: item.product,
+          product: item.productId || item.product || item._id,
           quantity: item.quantity,
           price: item.price,
-          selectedVariant: item.selectedVariant || null,
+          ...(item.selectedVariant && {
+            variant: {
+              name: item.selectedVariant.variantName,
+              option: item.selectedVariant.optionName,
+            },
+          }),
         })),
-        shippingAddress: formData.shippingAddress,
+        shippingAddress: {
+          firstName: formData.shippingAddress.firstName,
+          lastName: formData.shippingAddress.lastName,
+          email: formData.shippingAddress.email,
+          phone: formData.shippingAddress.phone,
+          address1: formData.shippingAddress.address,
+          address2: "",
+          city: formData.shippingAddress.city,
+          state: formData.shippingAddress.state,
+          postalCode: formData.shippingAddress.postalCode,
+          country: formData.shippingAddress.country,
+        },
         billingAddress: formData.billingAddress.sameAsShipping
-          ? formData.shippingAddress
-          : formData.billingAddress,
+          ? {
+              firstName: formData.shippingAddress.firstName,
+              lastName: formData.shippingAddress.lastName,
+              email: formData.shippingAddress.email,
+              phone: formData.shippingAddress.phone,
+              address1: formData.shippingAddress.address,
+              address2: "",
+              city: formData.shippingAddress.city,
+              state: formData.shippingAddress.state,
+              postalCode: formData.shippingAddress.postalCode,
+              country: formData.shippingAddress.country,
+            }
+          : {
+              firstName: formData.billingAddress.firstName,
+              lastName: formData.billingAddress.lastName,
+              email: formData.billingAddress.email,
+              phone: formData.billingAddress.phone,
+              address1: formData.billingAddress.address,
+              address2: "",
+              city: formData.billingAddress.city,
+              state: formData.billingAddress.state,
+              postalCode: formData.billingAddress.postalCode,
+              country: formData.billingAddress.country,
+            },
         shippingMethod: formData.shippingMethod,
         paymentMethod: formData.paymentMethod,
         notes: formData.notes,
       };
 
       // Call your API to create the order
-      const response = await fetch("/api/orders/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}order/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       const data = await response.json();
 
@@ -84,7 +124,7 @@ const CheckoutPage = ({ addresses,sessionData, sessionId }) => {
       _id: null,
       firstName: "",
       lastName: "",
-      email: "",
+      email: sessionData?.userEmail || "", // Auto-fill email from session
       phone: "",
       address: "",
       city: "",
@@ -132,68 +172,77 @@ const CheckoutPage = ({ addresses,sessionData, sessionId }) => {
   const orderSummary = calculateOrderSummary();
 
   // Handle form input changes
-// Handle form input changes
-const handleInputChange = (e, section) => {
-  const { name, value, type, checked } = e.target;
+  const handleInputChange = (e, section) => {
+    const { name, value, type, checked } = e.target;
 
-  // Check if the name contains a dot (indicating nested property like "shippingAddress.firstName")
-  if (name.includes('.')) {
-    const [parent, child] = name.split('.');
-    
-    setFormData({
-      ...formData,
-      [parent]: {
-        ...formData[parent],
-        [child]: type === "checkbox" ? checked : value,
-      },
-    });
-  } 
-  else if (type === "checkbox") {
-    setFormData({
-      ...formData,
-      [section]: {
-        ...formData[section],
-        [name]: checked,
-      },
-    });
+    // Check if the name contains a dot (indicating nested property like "shippingAddress.firstName")
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
 
-    // If billing address is same as shipping, copy shipping data
-    if (name === "sameAsShipping" && checked) {
       setFormData({
         ...formData,
-        billingAddress: {
-          ...formData.shippingAddress,
-          sameAsShipping: true,
+        [parent]: {
+          ...formData[parent],
+          [child]: type === "checkbox" ? checked : value,
         },
       });
+    } else if (type === "checkbox") {
+      setFormData({
+        ...formData,
+        [section]: {
+          ...formData[section],
+          [name]: checked,
+        },
+      });
+
+      // If billing address is same as shipping, copy shipping data
+      if (name === "sameAsShipping" && checked) {
+        setFormData({
+          ...formData,
+          billingAddress: {
+            ...formData.shippingAddress,
+            sameAsShipping: true,
+          },
+        });
+      }
+    } else {
+      // Check if section is an object in formData (nested) or direct property
+      if (typeof formData[section] === "object" && formData[section] !== null) {
+        setFormData({
+          ...formData,
+          [section]: {
+            ...formData[section],
+            [name]: value,
+          },
+        });
+      } else {
+        // Direct property like paymentMethod
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
     }
-  } else {
-    setFormData({
-      ...formData,
-      [section]: {
-        ...formData[section],
-        [name]: value,
-      },
-    });
-  }
-};
+  };
 
   // Validate current step
   const validateStep = (step) => {
     if (step === 1) {
-      const { firstName, lastName, email, address, city, state, postalCode } =
-        formData.shippingAddress;
+      const { firstName, lastName, email, _id } = formData.shippingAddress;
 
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !address ||
-        !city ||
-        !state ||
-        !postalCode
-      ) {
-        setError("Please fill all required shipping information");
+      const missingFields = [];
+      if (!firstName) missingFields.push("First Name");
+      if (!lastName) missingFields.push("Last Name");
+      if (!email) missingFields.push("Email");
+      if (!_id)
+        missingFields.push("Shipping Address (please select an address)");
+
+      if (missingFields.length > 0) {
+        setError(
+          `Please fill the following required fields: ${missingFields.join(
+            ", "
+          )}`
+        );
         return false;
       }
 
@@ -226,6 +275,13 @@ const handleInputChange = (e, section) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         setError("Please enter a valid email address");
+        return false;
+      }
+    }
+
+    if (step === 3) {
+      if (!formData.paymentMethod) {
+        setError("Please select a payment method");
         return false;
       }
     }
@@ -275,6 +331,7 @@ const handleInputChange = (e, section) => {
             prevStep={prevStep}
             isSubmitting={isSubmitting}
             addresses={addresses}
+            cartItems={cartItems}
           />
 
           {/* Order Summary */}
