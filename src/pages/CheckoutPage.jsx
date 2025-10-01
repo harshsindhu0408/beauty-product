@@ -108,6 +108,10 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
         throw new Error(data.message || "Failed to create order");
       }
 
+      console.log("this is the data we have here right now --->", data);
+      
+      localStorage.setItem("currentOrderId", data.data.order.id);
+
       // Handle successful order creation
       handleOrderSuccess(data);
     } catch (err) {
