@@ -150,7 +150,7 @@ const TestimonialSection = () => {
         <div ref={headerRef} className="text-center mb-12 md:mb-20">
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-semibold text-slate-800 mb-4 md:mb-6 leading-tight px-4 font-serif">
             What They Say<br />
-            <span className="text-slate-600">About Beaucare Product</span>
+            <span className="text-slate-600">About Saundrya Earth</span>
           </h2>
           <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed px-4">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore

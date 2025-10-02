@@ -6,17 +6,20 @@ import {
   UserIcon,
   MapPinIcon,
   CalendarDaysIcon,
-  HashtagIcon,
   CheckCircleIcon,
   CubeIcon,
   XCircleIcon,
   ArrowUturnLeftIcon,
   ArrowLeftIcon,
+  StarIcon as StarIconOutline,
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
+import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ReactLenis } from "@studio-freight/react-lenis";
+import { clientFetch } from "@/services/clientfetch";
+import toast from "react-hot-toast";
 
 // --- HELPERS (Modified for INR) ---
 
@@ -267,11 +270,192 @@ const fadeIn = {
   },
 };
 
+// --- MODAL COMPONENT (WITH API CALL) ---
+const ReviewModal = ({
+  reviewModal,
+  setReviewModal,
+  reviewData,
+  setReviewData,
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmitReview = async () => {
+    if (isSubmitting || reviewData.rating === 0) return;
+
+    setIsSubmitting(true);
+    console.log("reviewModal", reviewModal);
+
+    const payload = {
+      productId: reviewModal.product?.product?._id || reviewModal.product?._id,
+      rating: reviewData.rating,
+      comment: reviewData.comment,
+    };
+
+    try {
+      console.log("Submitting review with payload:", payload);
+
+      const response = await clientFetch(`product/review`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (response?.success) {
+        setReviewData({ rating: 0, comment: "", hoverRating: 0 });
+        setReviewModal({ isOpen: false, product: null });
+      }
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      toast.error(
+        "There was an error submitting your review. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStarClick = (rating) => {
+    setReviewData((prev) => ({ ...prev, rating }));
+  };
+
+  const handleStarHover = (rating) => {
+    setReviewData((prev) => ({ ...prev, hoverRating: rating }));
+  };
+
+  const handleStarLeave = () => {
+    setReviewData((prev) => ({ ...prev, hoverRating: 0 }));
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      // --- THIS IS THE MODIFIED LINE ---
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={() => setReviewModal({ isOpen: false, product: null })}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-white rounded-2xl shadow-xl max-w-md w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-4">
+            <img
+              src={
+                reviewModal.product?.product?.images?.[0]?.url ||
+                `https://placehold.co/80x80/EBF4FF/7F9CF5?text=${(
+                  reviewModal.product?.name || "?"
+                ).charAt(0)}`
+              }
+              alt={reviewModal.product?.name}
+              className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+            />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">
+                Rate this product
+              </h3>
+              <p className="text-gray-600 text-sm mt-1">
+                {reviewModal.product?.name}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {/* Star Rating */}
+          <div className="flex justify-center mb-6">
+            <div className="flex space-x-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => handleStarClick(star)}
+                  onMouseEnter={() => handleStarHover(star)}
+                  onMouseLeave={handleStarLeave}
+                  className="focus:outline-none cursor-pointer transition-transform hover:scale-110"
+                >
+                  {star <= (reviewData.hoverRating || reviewData.rating) ? (
+                    <StarIconSolid className="w-10 h-10 text-yellow-400" />
+                  ) : (
+                    <StarIconOutline className="w-10 h-10 text-gray-300" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Rating Labels */}
+          <div className="text-center mb-2">
+            <p className="text-sm text-gray-600">
+              {reviewData.rating === 0
+                ? "Select your rating"
+                : reviewData.rating === 1
+                ? "Poor"
+                : reviewData.rating === 2
+                ? "Fair"
+                : reviewData.rating === 3
+                ? "Good"
+                : reviewData.rating === 4
+                ? "Very Good"
+                : "Excellent"}
+            </p>
+          </div>
+
+          {/* Review Comment */}
+          <textarea
+            value={reviewData.comment}
+            onChange={(e) =>
+              setReviewData((prev) => ({ ...prev, comment: e.target.value }))
+            }
+            placeholder="Share your experience with this product... (Optional)"
+            className="w-full h-32 p-4 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            rows={4}
+          />
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 border-t border-gray-200 flex space-x-3">
+          <button
+            onClick={() => setReviewModal({ isOpen: false, product: null })}
+            className="flex-1 cursor-pointer px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmitReview}
+            disabled={reviewData.rating === 0 || isSubmitting}
+            className={`flex-1 px-4 py-3 cursor-pointer rounded-xl font-medium transition-colors ${
+              reviewData.rating === 0 || isSubmitting
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-pink-600 text-white hover:bg-pink-700"
+            }`}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Review"}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 // --- MAIN CLIENT COMPONENT ---
 const OrderDetailsPage = ({ orderData }) => {
   const { order } = orderData || {};
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const [reviewModal, setReviewModal] = useState({
+    isOpen: false,
+    product: null,
+  });
+  const [reviewData, setReviewData] = useState({
+    rating: 0,
+    comment: "",
+    hoverRating: 0,
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -309,6 +493,19 @@ const OrderDetailsPage = ({ orderData }) => {
                 className="w-12 h-12 border-4 border-t-transparent border-r-transparent border-pink-500 border-l-pink-500 rounded-full"
               />
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Corrected Modal Rendering */}
+        <AnimatePresence>
+          {reviewModal.isOpen && (
+            <ReviewModal
+              reviewModal={reviewModal}
+              setReviewModal={setReviewModal}
+              reviewData={reviewData}
+              setReviewData={setReviewData}
+              orderId={order.id}
+            />
           )}
         </AnimatePresence>
 
@@ -454,6 +651,19 @@ const OrderDetailsPage = ({ orderData }) => {
                             <p className="text-sm text-gray-500 mt-1">
                               Qty: {item.quantity || 0}
                             </p>
+                            {/* Add Review Button */}
+                            <button
+                              onClick={() =>
+                                setReviewModal({
+                                  isOpen: true,
+                                  product: item,
+                                })
+                              }
+                              className="mt-3 cursor-pointer px-4 py-2 bg-pink-500 text-white text-sm font-medium rounded-lg hover:bg-pink-600 transition-colors flex items-center space-x-2"
+                            >
+                              <StarIconSolid className="w-4 h-4" />
+                              <span>Write Review</span>
+                            </button>
                           </div>
                           <div className="text-sm text-gray-600 text-right">
                             <p className="font-semibold text-gray-800">

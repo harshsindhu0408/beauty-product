@@ -2,68 +2,37 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { clientFetch } from "@/services/clientfetch";
 
 const ProductSlider = () => {
   const swiperRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const products = [
-    {
-      id: 1,
-      name: "Luminé Glow Serum",
-      price: "$24,78 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Check Detail",
-      category: "Beauty Serum",
-    },
-    {
-      id: 2,
-      name: "Hydriva Deep Serum",
-      price: "$21,45 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Beauty Serum",
-      category: "Beauty Serum",
-    },
-    {
-      id: 3,
-      name: "Veloria Age Repair Serum",
-      price: "$28,31 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Beauty Serum",
-      category: "Beauty Serum",
-    },
-    {
-      id: 4,
-      name: "Aeris Lift Serum",
-      price: "$32,79 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Beauty Serum",
-      category: "Beauty Serum",
-    },
-    {
-      id: 5,
-      name: "Radiant Glow Serum",
-      price: "$29,99 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Beauty Serum",
-      category: "Beauty Serum",
-    },
-    {
-      id: 6,
-      name: "Pure Essence Serum",
-      price: "$26,50 USD",
-      image:
-        "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg",
-      tag: "Beauty Serum",
-      category: "Beauty Serum",
-    },
-  ];
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        // Replace this with your actual clientFetch function
+        const result = await clientFetch(`product`, {
+          method: "GET",
+        });
+
+        if (result.success && result.data && result.data.products) {
+          setProducts(result.data.products);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -71,7 +40,7 @@ const ProductSlider = () => {
 
   // Initialize Swiper
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || loading) return;
 
     const initSwiper = () => {
       if (typeof window !== "undefined" && window.Swiper) {
@@ -138,7 +107,7 @@ const ProductSlider = () => {
         swiperRef.current.destroy(true, true);
       }
     };
-  }, [isClient]);
+  }, [isClient, loading]);
 
   const nextSlide = () => {
     if (swiperRef.current) {
@@ -151,6 +120,41 @@ const ProductSlider = () => {
       swiperRef.current.slidePrev();
     }
   };
+
+  // Format price function
+  const formatPrice = (price) => {
+    return `₹${price.toFixed(2)} INR`;
+  };
+
+  // Get primary image or first image
+  const getProductImage = (product) => {
+    if (product.images && product.images.length > 0) {
+      const primaryImage = product.images.find((img) => img.isPrimary);
+      return primaryImage ? primaryImage.url : product.images[0].url;
+    }
+    // Fallback image if no images available
+    return "https://t4.ftcdn.net/jpg/04/54/07/61/360_F_454076171_wETOdPON36pz5neLqXwFnvuijtEWvD2X.jpg";
+  };
+
+  // Get category name for tag
+  const getProductTag = (product) => {
+    if (product.categories && product.categories.length > 0) {
+      return product.categories[0].name;
+    }
+    return "Check Detail";
+  };
+
+  if (loading) {
+    return (
+      <section className="py-6 md:py-20 lg:py-24 px-4 mx-2 sm:mx-8 rounded-xl md:px-20 bg-gray-50">
+        <div className="mx-auto">
+          <div className="flex justify-center items-center h-64">
+            <p className="text-gray-600">Loading products...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-6 md:py-20 lg:py-24 px-4 mx-2 sm:mx-8 rounded-xl md:px-20 bg-gray-50">
@@ -186,15 +190,21 @@ const ProductSlider = () => {
         </div>
 
         {/* Product Slider */}
-        <div className="product-swiper swiper">
+        <div className="product-swiper swiper cursor-pointer">
           <div className="swiper-wrapper">
             {products.map((product) => (
-              <div key={product.id} className="swiper-slide">
+              <div
+                onClick={() => {
+                  router.push(`/products/${product.slug}`);
+                }}
+                key={product._id}
+                className="swiper-slide"
+              >
                 <div className="rounded-2xl overflow-hidden transition-all duration-300 group">
                   {/* Product Image */}
                   <div className="relative sm:h-80 bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden">
                     <img
-                      src={product.image}
+                      src={getProductImage(product)}
                       alt={product.name}
                       className="sm:w-full sm:h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
@@ -202,7 +212,7 @@ const ProductSlider = () => {
                     {/* Product Tag */}
                     <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
                       <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[8px] sm:text-sm font-medium text-gray-700">
-                        {product.tag}
+                        {getProductTag(product)}
                       </span>
                     </div>
                   </div>
@@ -213,8 +223,13 @@ const ProductSlider = () => {
                       {product.name}
                     </h4>
                     <p className="sm:text-lg font-semibold text-gray-600">
-                      {product.price}
+                      {formatPrice(product.price)}
                     </p>
+                    {product.compareAtPrice > product.price && (
+                      <p className="text-sm text-gray-500 line-through">
+                        {formatPrice(product.compareAtPrice)}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
