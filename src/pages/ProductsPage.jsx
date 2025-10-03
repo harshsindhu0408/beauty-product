@@ -20,6 +20,7 @@ export default function ProductsPage({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  console.log("this is the apiResponse --->", apiResponse);
 
   // State management
   const [isLoading, setIsLoading] = useState(true);
@@ -660,7 +661,7 @@ export default function ProductsPage({
                             {getProductCategory(product)}
                           </p>
                           <p className="text-gray-900 font-bold">
-                            ${product.price}
+                            ₹{product.price}
                           </p>
                         </div>
                       </motion.div>

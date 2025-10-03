@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 
 export default async function Product({ params }) {
   try {
-const [product, similarProducts] = await Promise.all([
-  FetchData(`product/slug/${params.slug}`),
-  FetchData(`product/${params.slug}/similar`)
-]);
+    const [product, similarProducts] = await Promise.all([
+      FetchData(`product/slug/${params.slug}`),
+      FetchData(`product/${params.slug}/similar`),
+    ]);
 
+    console.log("product", product);
 
     return (
       <div className="min-h-screen bg-gray-50 pt-26">
@@ -48,29 +49,55 @@ const [product, similarProducts] = await Promise.all([
   }
 }
 
-// Optional: Generate metadata for better SEO
+// Generate metadata for better SEO using product's meta fields
 export async function generateMetadata({ params }) {
   try {
-    const product = await FetchData(`product/slug/${params.slug}`);
+    const productResponse = await FetchData(`product/slug/${params.slug}`);
+    const product = productResponse.data?.product;
 
-    if (!product || !product.data) {
+    if (!product) {
       return {
         title: "Product Not Found",
       };
     }
 
+    // Use the metaTitle and metaDescription from the product data
+    const metaTitle = product.metaTitle || product.name || "Product";
+    const metaDescription = product.metaDescription || product.shortDescription || product.description || "Product details";
+    const images = product.images?.map(img => img.url) || [];
+
     return {
-      title: product.data.name || "Product",
-      description: product.data.description || "Product details",
+      title: metaTitle,
+      description: metaDescription,
+      // You can also add other meta tags for better SEO
+      openGraph: {
+        title: metaTitle,
+        description: metaDescription,
+        images: images,
+        type: 'website', // Valid Open Graph types: 'website', 'article', 'profile', etc.
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${params.slug}`,
+      },
+      twitter: {
+        card: images.length > 0 ? 'summary_large_image' : 'summary',
+        title: metaTitle,
+        description: metaDescription,
+        images: images,
+      },
+      // Additional product-specific meta tags
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${params.slug}`,
+      },
     };
   } catch (error) {
+    console.error("Error generating metadata:", error);
     return {
       title: "Product",
+      description: "Product details",
     };
   }
 }
 
-// Optional: Generate static params if using static generation
+// Generate static params if using static generation
 export async function generateStaticParams() {
   try {
     const products = await FetchData("products");
