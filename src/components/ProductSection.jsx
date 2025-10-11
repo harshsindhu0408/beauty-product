@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { ExpandableSections } from "./ExpandableSections";
 import { AnimatePresence } from "framer-motion";
+import { shareProduct } from "@/utils/share";
+import toast from "react-hot-toast";
 
 const Sparkles = () => {
   // A utility to generate a random number in a range
@@ -92,7 +94,22 @@ const ProductSection = ({
   // Mock handlers
 
   const toggleWishlist = () => setIsWishlisted(!isWishlisted);
-  const shareProduct = () => console.log("Share product");
+
+  const handleShareProduct = async () => {
+    try {
+      const result = await shareProduct(product, selectedVariant);
+
+      if (result === "copy") {
+        toast.success("Product link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing product:", error);
+      toast.error("Failed to share product", {
+        duration: 3000,
+        position: "bottom-center",
+      });
+    }
+  };
 
   // Render star ratings
   const renderStars = (rating) => {
@@ -149,23 +166,10 @@ const ProductSection = ({
             {/* Action buttons on image */}
             <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
-                onClick={toggleWishlist}
-                className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                onClick={handleShareProduct}
+                className="p-2 cursor-pointer bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
               >
-                <Heart
-                  size={20}
-                  className={
-                    isWishlisted
-                      ? "fill-green-600 text-green-600"
-                      : "text-gray-600"
-                  }
-                />
-              </button>
-              <button
-                onClick={shareProduct}
-                className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
-              >
-                <Share2 size={20} className="text-gray-600" />
+                <Share2 size={24} className="text-gray-600" />
               </button>
             </div>
           </motion.div>
@@ -177,7 +181,7 @@ const ProductSection = ({
                 <button
                   key={index}
                   onClick={() => setActiveImage(index)}
-                  className={`aspect-square overflow-hidden rounded-xl border-2 transition-all ${
+                  className={`aspect-square cursor-pointer overflow-hidden rounded-xl border-2 transition-all ${
                     activeImage === index
                       ? "border-green-600 ring-2 ring-green-200"
                       : "border-gray-200 hover:border-green-400"
@@ -207,19 +211,8 @@ const ProductSection = ({
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
                 {product.name}
               </h1>
-              <button
-                onClick={toggleWishlist}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                <Heart
-                  size={24}
-                  className={
-                    isWishlisted
-                      ? "fill-green-600 text-green-600"
-                      : "text-gray-400"
-                  }
-                />
-              </button>
+              
+              
             </div>
 
             <div className="flex items-center mt-2">
@@ -345,7 +338,7 @@ const ProductSection = ({
             <div className="flex items-center border border-gray-300 rounded-full">
               <button
                 onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-green-600 transition-colors"
+                className="w-10 cursor-pointer h-10 flex items-center justify-center text-gray-600 hover:text-green-600 transition-colors"
                 disabled={quantity <= 1}
               >
                 <span className="sr-only">Decrease quantity</span>−
@@ -353,7 +346,7 @@ const ProductSection = ({
               <span className="w-10 text-center font-medium">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-green-600 transition-colors"
+                className="w-10 cursor-pointer h-10 flex items-center justify-center text-gray-600 hover:text-green-600 transition-colors"
                 disabled={selectedVariant && quantity >= selectedVariant.stock}
               >
                 <span className="sr-only">Increase quantity</span>+
@@ -407,7 +400,7 @@ const ProductSection = ({
             </button>
 
             <button
-                onClick={buyNowHandler}
+              onClick={buyNowHandler}
               disabled={!product.isInStock}
               className="flex-1 cursor-pointer bg-gray-900 text-white py-4 px-8 rounded-full font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >

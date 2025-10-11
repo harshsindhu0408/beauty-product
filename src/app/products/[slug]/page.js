@@ -9,8 +9,6 @@ export default async function Product({ params }) {
       FetchData(`product/${params.slug}/similar`),
     ]);
 
-    console.log("product", product);
-
     return (
       <div className="min-h-screen bg-gray-50 pt-26">
         <ProductPage
