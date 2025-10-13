@@ -388,7 +388,7 @@ export default function PaymentCallbackPage() {
                         Need Help?
                       </motion.h2>
                       <div className="hidden md:block h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent w-full my-8" />
-                      <p className="text-purple-600 font-medium">We're here for you</p>
+                      <p className="text-purple-600 font-medium">We&apos;re here for you</p>
                     </div>
                     <div className="md:w-2/3">
                       <motion.div
