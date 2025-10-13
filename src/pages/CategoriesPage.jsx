@@ -386,23 +386,42 @@ const CategoriesPage = ({
                         variants={itemVariants}
                         whileHover={{ y: -5 }}
                         className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 group cursor-pointer"
-                        onClick={() =>
-                          router.push(`/products?category=${category.slug}`)
-                        }
+                        onClick={() => {
+                          // Prevent navigation for "coming soon" items if desired
+                          if (category.comingSoon) return;
+                          router.push(`/products?category=${category.slug}`);
+                        }}
                       >
                         <div className="aspect-square w-full relative overflow-hidden">
+                          {/* ✨ NEW: Coming Soon Badge ✨ */}
+                          {category.comingSoon && (
+                            <div className="absolute top-2 -right-8 w-32 transform rotate-45 bg-gradient-to-r from-purple-600 to-pink-500 text-center text-white font-semibold text-xs py-1 shadow-lg z-10">
+                              Coming Soon
+                            </div>
+                          )}
+
                           <motion.img
                             src={
                               category.image[0]?.url ||
                               "/placeholder-category.jpg"
                             }
                             alt={category.name}
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full object-cover ${
+                              // Optionally grayscale the image for "coming soon" items
+                              category.comingSoon ? "filter grayscale" : ""
+                            }`}
                             initial={{ scale: 1 }}
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 flex items-end p-4 ${
+                              // Don't show the hover effect for "coming soon" items
+                              category.isComingSoon
+                                ? "opacity-0"
+                                : "group-hover:opacity-100"
+                            }`}
+                          >
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
@@ -416,9 +435,6 @@ const CategoriesPage = ({
                           <h3 className="font-bold text-gray-900 mb-1">
                             {category.name}
                           </h3>
-                          <p className="text-gray-500 text-sm mb-2">
-                            {category.productsCount || 0} products
-                          </p>
                           <div className="flex items-center justify-between">
                             <span
                               className={`text-xs px-2 py-1 rounded-full ${

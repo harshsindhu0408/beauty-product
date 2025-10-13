@@ -20,7 +20,7 @@ export default function ProductsPage({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  console.log("this is the apiResponse --->", apiResponse);
+
 
   // State management
   const [isLoading, setIsLoading] = useState(true);
