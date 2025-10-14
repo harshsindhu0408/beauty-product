@@ -194,6 +194,7 @@ const AddressTabForShipping = ({
             Choose an Address
           </h3>
           <motion.button
+            type="button"
             onClick={() => handleOpenModal("add")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
@@ -264,6 +265,7 @@ const AddressTabForShipping = ({
                     </div>
                     <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-4">
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenModal("edit", address);
@@ -273,6 +275,7 @@ const AddressTabForShipping = ({
                         <Pencil size={12} /> Edit
                       </button>
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenModal("delete", address);
@@ -473,7 +476,13 @@ const AddressForm = ({ onSave, initialData, isModal = false }) => {
           whileTap={{ scale: 0.98 }}
           className="px-6 py-2 text-sm font-semibold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg shadow-sm"
         >
-          {isSubmitting ? <LoaderCircle className="animate-spin" /> : (initialData ? 'Update Address' : 'Save Address')}
+          {isSubmitting ? (
+            <LoaderCircle className="animate-spin" />
+          ) : initialData ? (
+            "Update Address"
+          ) : (
+            "Save Address"
+          )}
         </motion.button>
       </div>
     </div>
@@ -502,7 +511,11 @@ const AddressModal = ({ isOpen, onClose, onSave, addressToEdit }) => {
               <h3 className="text-lg font-bold">
                 {addressToEdit ? "Edit Address" : "Add New Address"}
               </h3>
-              <button onClick={onClose} className="p-1 rounded-full">
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1 rounded-full"
+              >
                 <X size={20} />
               </button>
             </header>
@@ -571,6 +584,7 @@ const DeleteConfirmationModal = ({
             </p>
             <div className="flex justify-center gap-4 mt-6">
               <motion.button
+                type="button"
                 onClick={onClose}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
@@ -579,6 +593,7 @@ const DeleteConfirmationModal = ({
                 Cancel
               </motion.button>
               <motion.button
+                type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
                 whileHover={{ scale: 1.05 }}
