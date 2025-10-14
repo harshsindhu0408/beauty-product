@@ -56,6 +56,7 @@ const AddressTabForShipping = ({
   addressesData,
   onAddressSelect,
   selectedAddressId,
+  refreshAddresses,
 }) => {
   const [addresses, setAddresses] = useState(addressesData?.addresses || []);
   const [modalState, setModalState] = useState({ type: null, data: null });
@@ -105,6 +106,8 @@ const AddressTabForShipping = ({
         if (selectedAddressId === updatedAddress._id) {
           onAddressSelect(transformAddressForForm(updatedAddress));
         }
+
+        refreshAddresses?.();
       } else {
         // --- Adding new address ---
         const response = await clientFetch("address", {
@@ -120,6 +123,8 @@ const AddressTabForShipping = ({
 
         // *** Automatically select the newly added address ***
         onAddressSelect(transformAddressForForm(newAddress));
+
+        refreshAddresses?.();
       }
 
       onComplete();
@@ -147,6 +152,8 @@ const AddressTabForShipping = ({
       if (selectedAddressId === addressToDelete._id) {
         onAddressSelect(null);
       }
+
+      refreshAddresses?.();
 
       onComplete();
     } catch (error) {

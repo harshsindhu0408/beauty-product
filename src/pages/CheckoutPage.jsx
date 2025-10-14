@@ -5,13 +5,26 @@ import { MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
 import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
+import { clientFetch } from "@/services/clientfetch";
 
 const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [addressesState, setAddressesState] = useState(addresses);
   const cartItems = sessionData?.items || [];
+
+  const refreshAddresses = async () => {
+    try {
+      const response = await clientFetch("address?isActive=true");
+      if (response.success) {
+        setAddressesState(response.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to refresh addresses:", error);
+    }
+  };
 
   const handleOrderSuccess = async (orderData) => {
     try {
@@ -334,7 +347,8 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
             setError={setError}
             prevStep={prevStep}
             isSubmitting={isSubmitting}
-            addresses={addresses}
+            addresses={addressesState}
+            refreshAddresses={refreshAddresses}
             cartItems={cartItems}
           />
 
