@@ -414,22 +414,24 @@ const CategoriesPage = ({
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
                           />
-                          <div
-                            className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 flex items-end p-4 ${
-                              // Don't show the hover effect for "coming soon" items
-                              category.isComingSoon
-                                ? "opacity-0"
-                                : "group-hover:opacity-100"
-                            }`}
-                          >
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              className="bg-white cursor-pointer text-pink-600 px-4 py-1.5 rounded-full font-medium text-sm"
+                          {!category.comingSoon && (
+                            <div
+                              className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 flex items-end p-4 ${
+                                // Don't show the hover effect for "coming soon" items
+                                category.isComingSoon
+                                  ? "opacity-0"
+                                  : "group-hover:opacity-100"
+                              }`}
                             >
-                              View Products
-                            </motion.button>
-                          </div>
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-white cursor-pointer text-pink-600 px-4 py-1.5 rounded-full font-medium text-sm"
+                              >
+                                View Products
+                              </motion.button>
+                            </div>
+                          )}
                         </div>
                         <div className="p-4">
                           <h3 className="font-bold text-gray-900 mb-1">

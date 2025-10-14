@@ -2,6 +2,8 @@ import ProductPage from "@/pages/ProductPage";
 import { FetchData } from "@/services/useServerFetch";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Product({ params }) {
   try {
     const [product, similarProducts] = await Promise.all([
@@ -96,16 +98,16 @@ export async function generateMetadata({ params }) {
 }
 
 // Generate static params if using static generation
-export async function generateStaticParams() {
-  try {
-    const products = await FetchData("products");
-    return (
-      products.data?.map((product) => ({
-        slug: product.slug,
-      })) || []
-    );
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return [];
-  }
-}
+// export async function generateStaticParams() {
+//   try {
+//     const products = await FetchData("products");
+//     return (
+//       products.data?.map((product) => ({
+//         slug: product.slug,
+//       })) || []
+//     );
+//   } catch (error) {
+//     console.error("Error generating static params:", error);
+//     return [];
+//   }
+// }

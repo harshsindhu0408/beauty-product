@@ -3,6 +3,8 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import { FetchData } from "@/services/useServerFetch";
 import CheckoutError from "@/components/CheckoutError";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CheckoutProducts({ searchParams }) {
   try {
     await userAuthCheckOnServer();

@@ -75,6 +75,8 @@ function addCategoriesJsonLd(categories) {
   return structuredData;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function Categories({ searchParams }) {
   const params = await searchParams;
   const page = parseInt(params.page) || 1;
