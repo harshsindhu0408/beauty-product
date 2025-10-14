@@ -6,11 +6,11 @@ import Navigation from "./Navigation";
 
 // Sample images - replace these URLs with your actual images
 const backgroundImages = [
-  "/hero1.webp", 
-  "/hero2.webp", 
-  "/hero3.webp", 
-  "/hero4.webp", 
-  "/hero5.webp", 
+  "/hero1.webp",
+  "/hero2.webp",
+  "/hero3.webp",
+  "/hero4.webp",
+  "/hero5.webp",
 ];
 
 const BackgroundSlider = ({ imageRef }) => {

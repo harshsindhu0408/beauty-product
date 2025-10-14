@@ -9,7 +9,6 @@ import {
 } from "framer-motion";
 import { useState, useRef } from "react";
 import { ChevronDown, ChevronUp, HelpCircle, Leaf } from "lucide-react";
-import Footer from "@/components/Footer";
 
 const FAQPage = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -110,7 +109,7 @@ const FAQPage = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="relative mt-20 pb-10 px-6">
+        <section className="relative pt-26  pb-10 px-6">
           <motion.div
             style={{ y: y1, opacity }}
             className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
@@ -300,7 +299,6 @@ const FAQPage = () => {
         </section>
       </div>
 
-      <Footer/>
     </ReactLenis>
   );
 };
