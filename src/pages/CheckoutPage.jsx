@@ -7,7 +7,7 @@ import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
 import { clientFetch } from "@/services/clientfetch";
 
-const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
+const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -135,39 +135,42 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
   };
 
   // Form state
-  const [formData, setFormData] = useState({
-    // Shipping Address
-    shippingAddress: {
-      _id: null,
-      firstName: "",
-      lastName: "",
-      email: sessionData?.userEmail || "", // Auto-fill email from session
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "India",
-    },
-    // Billing Address
-    billingAddress: {
-      sameAsShipping: true,
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "India",
-    },
-    // Payment method
-    paymentMethod: "online", // "online" or "cod"
-    // Shipping method
-    shippingMethod: "standard",
-    // Order notes
-    notes: "",
+  const [formData, setFormData] = useState(() => {
+    const nameParts = userData?.profile?.name?.split(' ') || [];
+    return {
+      // Shipping Address
+      shippingAddress: {
+        _id: null,
+        firstName: nameParts[0] || "",
+        lastName: nameParts.slice(1).join(' ') || "",
+        email: userData?.email || sessionData?.userEmail || "",
+        phone: userData?.profile?.phone || "",
+        address: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "India",
+      },
+      // Billing Address
+      billingAddress: {
+        sameAsShipping: true,
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "India",
+      },
+      // Payment method
+      paymentMethod: "online", // "online" or "cod"
+      // Shipping method
+      shippingMethod: "standard",
+      // Order notes
+      notes: "",
+    };
   });
 
   const calculateOrderSummary = () => {
