@@ -17,11 +17,12 @@ export default async function CheckoutProducts({ searchParams }) {
     }
 
     // Fetch checkout session data from API
-    const [sessionResult, addressesResult] = await Promise.allSettled([
+    const [sessionResult, addressesResult, profileResult] = await Promise.allSettled([
       FetchData(`checkout/verify?sessionId=${sessionId}`, {
         method: "GET",
       }),
       FetchData("address?isActive=true"),
+      FetchData("profile"),
     ]);
 
     // Handle session response
@@ -41,6 +42,14 @@ export default async function CheckoutProducts({ searchParams }) {
       console.warn("Addresses fetch failed, using empty array:", addressesResult.reason);
     }
 
+    // Handle profile response
+    let userData = null;
+    if (profileResult.status === "fulfilled") {
+      userData = profileResult.value.data || null;
+    } else {
+      console.warn("Profile fetch failed:", profileResult.reason);
+    }
+
     // Check if the session contains an error (based on your backend structure)
     if (session?.error) {
       throw new Error(session.message || "Invalid checkout session");
@@ -57,6 +66,7 @@ export default async function CheckoutProducts({ searchParams }) {
           addresses={userAddresses}
           sessionData={session.data}
           sessionId={sessionId}
+          userData={userData}
         />
       </div>
     );

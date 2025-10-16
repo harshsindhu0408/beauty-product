@@ -32,8 +32,7 @@ export const FetchData = async (url: string, options: { method?: string; headers
       if (res.status === 500) {
         throw new Error(`Server error: Failed to fetch data from ${url}`);
       } else if (res.status === 401) {
-        console.warn(`Unauthorized access to ${url}`);
-        // Return null instead of throwing to avoid breaking the page
+        cookieStore.delete("accessToken")
         return null;
       } else {
         console.warn(`Failed to fetch data from ${url}: ${res.statusText}`);
