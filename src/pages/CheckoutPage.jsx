@@ -5,6 +5,7 @@ import { MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
 import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
+import { setCookie } from "@/utils/cookies";
 
 const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
   const router = useRouter();
@@ -109,8 +110,10 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
       }
 
       console.log("this is the data we have here right now --->", data);
-      
-      localStorage.setItem("currentOrderId", data.data.order.id);
+
+      localStorage.setItem("currentOrderId", data?.data?.order?.id || data?.data?.order?._id)
+
+      setCookie("currentOrderId", data?.data?.order?.id || data?.data?.order?._id, 1); // Expires in 1 day
 
       // Handle successful order creation
       handleOrderSuccess(data);

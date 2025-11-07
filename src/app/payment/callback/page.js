@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
+import { deleteCookie, getCookie } from "@/utils/cookies";
 
 export default function PaymentCallbackPage() {
   const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ export default function PaymentCallbackPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState("verifying");
   const [message, setMessage] = useState("Verifying your payment...");
-  
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,10 +34,14 @@ export default function PaymentCallbackPage() {
     const verifyPayment = async () => {
       try {
         // Get all parameters from URL
-        const razorpay_payment_id = searchParams.get('razorpay_payment_id');
-        const razorpay_payment_link_id = searchParams.get('razorpay_payment_link_id');
-        const razorpay_payment_link_status = searchParams.get('razorpay_payment_link_status');
-        const razorpay_signature = searchParams.get('razorpay_signature');
+        const razorpay_payment_id = searchParams.get("razorpay_payment_id");
+        const razorpay_payment_link_id = searchParams.get(
+          "razorpay_payment_link_id"
+        );
+        const razorpay_payment_link_status = searchParams.get(
+          "razorpay_payment_link_status"
+        );
+        const razorpay_signature = searchParams.get("razorpay_signature");
 
         // Check if we have the necessary parameters
         if (!razorpay_payment_id || !razorpay_signature) {
@@ -47,11 +52,20 @@ export default function PaymentCallbackPage() {
         }
 
         // Get order ID from localStorage (assuming you stored it when creating the order)
-        const orderId = localStorage.getItem('currentOrderId');
-        
+        const orderIdFromCookie = getCookie("currentOrderId");
+        const orderIdFromLocalStorage = localStorage.getItem("currentOrderId");
+        const orderId = orderIdFromCookie || orderIdFromLocalStorage;
+
+        console.log(
+          "this is the order id we have from the console here ---->",
+          orderId
+        );
+
         if (!orderId) {
           setPaymentStatus("error");
-          setMessage("Unable to find order information. Please contact support.");
+          setMessage(
+            "Unable to find order information. Please contact support."
+          );
           setIsLoading(false);
           return;
         }
@@ -72,24 +86,31 @@ export default function PaymentCallbackPage() {
 
         if (result && result.success) {
           setPaymentStatus("success");
-          setMessage("Payment verified successfully! Your order is being processed.");
-          
+          setMessage(
+            "Payment verified successfully! Your order is being processed."
+          );
+
           // Clear the stored order ID
-          localStorage.removeItem('currentOrderId');
-          
+          localStorage.removeItem("currentOrderId");
+          deleteCookie("currentOrderId");
+
           // Redirect to success page after 3 seconds
           setTimeout(() => {
             router.push(`/order/${orderId}`);
           }, 3000);
         } else {
           setPaymentStatus("error");
-          setMessage(result?.message || "Payment verification failed. Please try again or contact support.");
+          setMessage(
+            result?.message ||
+              "Payment verification failed. Please try again or contact support."
+          );
         }
-
       } catch (error) {
         console.error("Payment verification error:", error);
         setPaymentStatus("error");
-        setMessage("An error occurred while verifying payment. Please contact support.");
+        setMessage(
+          "An error occurred while verifying payment. Please contact support."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -142,8 +163,18 @@ export default function PaymentCallbackPage() {
         return {
           icon: (
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
               </svg>
             </div>
           ),
@@ -156,8 +187,18 @@ export default function PaymentCallbackPage() {
         return {
           icon: (
             <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
               </svg>
             </div>
           ),
@@ -257,10 +298,7 @@ export default function PaymentCallbackPage() {
                 }}
                 className="text-center"
               >
-                <motion.div
-                  variants={fadeIn}
-                  className="mb-8"
-                >
+                <motion.div variants={fadeIn} className="mb-8">
                   {statusContent.icon}
                 </motion.div>
 
@@ -277,10 +315,10 @@ export default function PaymentCallbackPage() {
                     },
                   }}
                   className={`text-4xl md:text-6xl font-bold mb-8 leading-tight font-serif ${
-                    statusContent.color === "green" 
-                      ? "text-green-600" 
-                      : statusContent.color === "red" 
-                      ? "text-red-600" 
+                    statusContent.color === "green"
+                      ? "text-green-600"
+                      : statusContent.color === "red"
+                      ? "text-red-600"
                       : "text-blue-600"
                   }`}
                 >
@@ -291,10 +329,10 @@ export default function PaymentCallbackPage() {
                       animate={{ scaleX: 1 }}
                       transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
                       className={`absolute bottom-0 left-0 w-full h-4 z-0 transform origin-left ${
-                        statusContent.color === "green" 
-                          ? "bg-green-200/60" 
-                          : statusContent.color === "red" 
-                          ? "bg-red-200/60" 
+                        statusContent.color === "green"
+                          ? "bg-green-200/60"
+                          : statusContent.color === "red"
+                          ? "bg-red-200/60"
                           : "bg-blue-200/60"
                       }`}
                       style={{ bottom: "15%" }}
@@ -352,7 +390,7 @@ export default function PaymentCallbackPage() {
                       </Link>
                     </>
                   )}
-                  
+
                   {paymentStatus !== "error" && (
                     <Link href="/">
                       <motion.button
@@ -388,7 +426,9 @@ export default function PaymentCallbackPage() {
                         Need Help?
                       </motion.h2>
                       <div className="hidden md:block h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent w-full my-8" />
-                      <p className="text-purple-600 font-medium">We&apos;re here for you</p>
+                      <p className="text-purple-600 font-medium">
+                        We&apos;re here for you
+                      </p>
                     </div>
                     <div className="md:w-2/3">
                       <motion.div

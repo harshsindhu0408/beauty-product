@@ -1,7 +1,7 @@
 // lib/clientFetch.js
 
 export const clientFetch = async (url, options = {}) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.saundryaearth.com/api/v1/";
 
   try {
     let accessToken = null;
