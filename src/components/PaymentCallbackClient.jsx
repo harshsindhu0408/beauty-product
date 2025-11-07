@@ -10,7 +10,8 @@ import {
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
-import { getCookie } from "@/utils/cookies";
+import { deleteCookie, getCookie } from "@/utils/cookies";
+import { Loader2, Check, X, HelpCircle } from "lucide-react";
 
 export default function PaymentCallbackClient() {
   const searchParams = useSearchParams();
@@ -18,7 +19,7 @@ export default function PaymentCallbackClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState("verifying");
   const [message, setMessage] = useState("Verifying your payment...");
-  
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -34,10 +35,14 @@ export default function PaymentCallbackClient() {
     const verifyPayment = async () => {
       try {
         // Get all parameters from URL
-        const razorpay_payment_id = searchParams.get('razorpay_payment_id');
-        const razorpay_payment_link_id = searchParams.get('razorpay_payment_link_id');
-        const razorpay_payment_link_status = searchParams.get('razorpay_payment_link_status');
-        const razorpay_signature = searchParams.get('razorpay_signature');
+        const razorpay_payment_id = searchParams.get("razorpay_payment_id");
+        const razorpay_payment_link_id = searchParams.get(
+          "razorpay_payment_link_id"
+        );
+        const razorpay_payment_link_status = searchParams.get(
+          "razorpay_payment_link_status"
+        );
+        const razorpay_signature = searchParams.get("razorpay_signature");
 
         // Check if we have the necessary parameters
         if (!razorpay_payment_id || !razorpay_signature) {
@@ -48,10 +53,10 @@ export default function PaymentCallbackClient() {
         }
 
         // Get order ID from localStorage (assuming you stored it when creating the order)
-       const orderIdFromCookie = getCookie("currentOrderId");
+        const orderIdFromCookie = getCookie("currentOrderId");
         const orderIdFromLocalStorage = localStorage.getItem("currentOrderId");
         const orderId = orderIdFromCookie || orderIdFromLocalStorage;
-        
+
         if (!orderId) {
           setPaymentStatus("error");
           setMessage("Order ID not found. Please contact support.");
@@ -60,34 +65,46 @@ export default function PaymentCallbackClient() {
         }
 
         // Verify the payment with your backend
-        const result = await clientFetch.post(`payment/verify`, {
+        const paymentData = {
           razorpay_payment_id,
           razorpay_payment_link_id,
           razorpay_payment_link_status,
           razorpay_signature,
-          orderId,
+        };
+
+        // Call your backend API to verify payment using clientFetch
+        const result = await clientFetch(`order/${orderId}/verify-payment`, {
+          method: "POST",
+          body: JSON.stringify(paymentData),
         });
 
         if (result.success) {
           setPaymentStatus("success");
-          setMessage("Payment verified successfully! Redirecting to your order details...");
-          
+          setMessage(
+            "Payment verified successfully! Redirecting to your order details..."
+          );
+
           // Clear the order ID from localStorage
-          localStorage.removeItem('currentOrderId');
-          
+          localStorage.removeItem("currentOrderId");
+          deleteCookie("currentOrderId");
+
           // Redirect to success page after 3 seconds
           setTimeout(() => {
             router.push(`/order/${orderId}`);
           }, 3000);
         } else {
           setPaymentStatus("error");
-          setMessage(result?.message || "Payment verification failed. Please try again or contact support.");
+          setMessage(
+            result?.message ||
+              "Payment verification failed. Please try again or contact support."
+          );
         }
-
       } catch (error) {
         console.error("Payment verification error:", error);
         setPaymentStatus("error");
-        setMessage("An error occurred while verifying payment. Please contact support.");
+        setMessage(
+          "An error occurred while verifying payment. Please contact support."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -128,8 +145,10 @@ export default function PaymentCallbackClient() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-              className="w-16 h-16 border-4 border-t-transparent border-r-transparent border-blue-500 border-l-blue-500 rounded-full"
-            />
+              className="flex items-center justify-center"
+            >
+              <Loader2 className="w-16 h-16 text-blue-500" />
+            </motion.div>
           ),
           title: "Processing Payment",
           subtitle: message,
@@ -142,11 +161,9 @@ export default function PaymentCallbackClient() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
-              className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center"
+              className="flex items-center justify-center w-20 h-20 bg-green-500 rounded-full"
             >
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="w-10 h-10 text-white" />
             </motion.div>
           ),
           title: "Payment Successful",
@@ -160,11 +177,9 @@ export default function PaymentCallbackClient() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
-              className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center"
+              className="flex items-center justify-center w-20 h-20 bg-red-500 rounded-full"
             >
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-10 h-10 text-white" />
             </motion.div>
           ),
           title: "Payment Failed",
@@ -173,7 +188,11 @@ export default function PaymentCallbackClient() {
         };
       default:
         return {
-          icon: null,
+          icon: (
+            <div className="flex items-center justify-center w-20 h-20 bg-gray-500 rounded-full">
+              <HelpCircle className="w-10 h-10 text-white" />
+            </div>
+          ),
           title: "Unknown Status",
           subtitle: "Please contact support",
           color: "gray",
@@ -184,186 +203,275 @@ export default function PaymentCallbackClient() {
   const statusContent = getStatusContent();
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <>
-        <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-          <AnimatePresence>
-            {isLoading && (
+    <>
+      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+        <AnimatePresence>
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="fixed inset-0 bg-white z-50 flex items-center justify-center"
+            >
               <motion.div
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-white z-50 flex items-center justify-center"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                className="flex items-center justify-center"
               >
-                <div className="text-center">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full mx-auto mb-4"
-                  />
-                  <p className="text-gray-600">Processing your payment...</p>
-                </div>
+                <Loader2 className="w-12 h-12 text-pink-500" />
               </motion.div>
-            )}
-          </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <main ref={containerRef} className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
-            <div className="container mx-auto px-4 py-16">
-              <motion.section
-                variants={sectionVariants}
+        <main
+          ref={containerRef}
+          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+        >
+          {/* Floating gradient blobs */}
+          <div className="fixed inset-0 -z-10 overflow-hidden">
+            <motion.div
+              className="absolute w-[80vw] h-[60vh] bg-pink-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 top-1/4 left-1/4"
+              animate={{
+                x: ["0%", "5%", "0%"],
+                y: ["0%", "10%", "0%"],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="absolute w-[80vw] h-[60vh] bg-purple-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 bottom-1/4 right-1/4"
+              animate={{
+                x: ["0%", "-8%", "0%"],
+                y: ["0%", "-12%", "0%"],
+              }}
+              transition={{
+                duration: 25,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+                delay: 2,
+              }}
+            />
+          </div>
+
+          {/* Hero Section */}
+          <section className="relative h-screen flex items-center justify-center overflow-hidden">
+            <motion.div
+              style={{ y: y1, opacity }}
+              className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
+            />
+
+            <div className="container mx-auto px-6 relative z-20">
+              <motion.div
                 initial="hidden"
                 animate="visible"
-                className="max-w-4xl mx-auto text-center"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.2,
+                      delayChildren: 0.3,
+                    },
+                  },
+                }}
+                className="text-center"
               >
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className="mb-8"
+                  variants={fadeIn}
+                  className="mb-8 flex justify-center"
                 >
                   {statusContent.icon}
                 </motion.div>
 
                 <motion.h1
-                  variants={fadeIn}
-                  className={`text-4xl font-bold mb-4 text-${statusContent.color}-600`}
+                  variants={{
+                    hidden: { opacity: 0, y: 40 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.8,
+                        ease: "easeOut",
+                      },
+                    },
+                  }}
+                  className={`text-4xl md:text-6xl font-bold mb-8 leading-tight font-serif ${
+                    statusContent.color === "green"
+                      ? "text-green-600"
+                      : statusContent.color === "red"
+                      ? "text-red-600"
+                      : "text-blue-600"
+                  }`}
                 >
-                  {statusContent.title}
+                  <span className="relative inline-block">
+                    <span className="relative z-10">{statusContent.title}</span>
+                    <motion.span
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+                      className={`absolute bottom-0 left-0 w-full h-4 z-0 transform origin-left ${
+                        statusContent.color === "green"
+                          ? "bg-green-200/60"
+                          : statusContent.color === "red"
+                          ? "bg-red-200/60"
+                          : "bg-blue-200/60"
+                      }`}
+                      style={{ bottom: "15%" }}
+                    />
+                  </span>
                 </motion.h1>
 
                 <motion.p
-                  variants={fadeIn}
-                  className="text-xl text-gray-600 mb-8"
+                  variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.8,
+                        delay: 0.6,
+                        ease: "easeOut",
+                      },
+                    },
+                  }}
+                  className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   {statusContent.subtitle}
+                  {statusContent.showRedirect && (
+                    <span className="block text-sm text-gray-500 mt-2">
+                      Redirecting to order page...
+                    </span>
+                  )}
                 </motion.p>
-
-                {paymentStatus === "error" && (
-                  <motion.div
-                    variants={fadeIn}
-                    className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8"
-                  >
-                    <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                      What to do next?
-                    </h3>
-                    <div className="space-y-4 text-left">
-                      <div>
-                        <h4 className="font-semibold text-gray-800 mb-2">Retry Payment</h4>
-                        <p className="text-gray-600 mb-2">
-                          If the payment failed due to a technical issue, please try again.
-                        </p>
-                        <Link
-                          href="/checkout"
-                          className="inline-block px-6 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors"
-                        >
-                          Try Again
-                        </Link>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-800 mb-2">Check Payment Method</h4>
-                        <p className="text-gray-600">
-                          Ensure your payment method has sufficient funds and is valid.
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-800 mb-2">Contact Support</h4>
-                        <p className="text-gray-600 mb-2">
-                          If you continue to experience issues, please contact our support team.
-                        </p>
-                        <a
-                          href="mailto:hello@saundryaearth.com"
-                          className="inline-block px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                        >
-                          Contact Support
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {paymentStatus === "success" && (
-                  <motion.div
-                    variants={fadeIn}
-                    className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8"
-                  >
-                    <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                      What's Next?
-                    </h3>
-                    <ul className="text-gray-600 space-y-2 text-left">
-                      <li>• Check your email for order confirmation</li>
-                      <li>• Track your order status in your account</li>
-                      <li>• Prepare for your beauty journey with Saundrya Earth</li>
-                    </ul>
-                  </motion.div>
-                )}
 
                 <motion.div
                   variants={fadeIn}
-                  className="space-y-4"
+                  transition={{ delay: 1 }}
+                  className="flex justify-center gap-4 flex-wrap"
                 >
-                  <Link
-                    href="/products"
-                    className="inline-block px-8 py-3 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors mr-4"
-                  >
-                    Continue Shopping
-                  </Link>
-                  <Link
-                    href="/account"
-                    className="inline-block px-8 py-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                  >
-                    View Account
-                  </Link>
-                </motion.div>
+                  {paymentStatus === "error" && (
+                    <>
+                      <Link href="/cart">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-8 cursor-pointer py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                        >
+                          Try Again
+                        </motion.button>
+                      </Link>
+                      <Link href="/support">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-8 cursor-pointer py-4 bg-gray-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                        >
+                          Contact Support
+                        </motion.button>
+                      </Link>
+                    </>
+                  )}
 
-                {paymentStatus === "error" && (
-                  <motion.div
-                    variants={{
-                      hidden: { opacity: 0 },
-                      visible: {
-                        opacity: 1,
-                        transition: {
-                          staggerChildren: 0.1,
-                          delayChildren: 0.3,
-                        },
-                      },
-                    }}
-                    className="space-y-8"
-                  >
-                    <motion.div
-                      variants={fadeIn}
-                      className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100"
-                    >
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                            Common Payment Issues
-                          </h3>
-                          <ul className="text-gray-600 space-y-2">
-                            <li>• Insufficient funds in your account</li>
-                            <li>• Network connectivity issues</li>
-                            <li>• Browser security restrictions</li>
-                            <li>• Payment method declined by bank</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                            Contact Support
-                          </h3>
-                          <a
-                            href="mailto:hello@saundryaearth.com"
-                            className="text-pink-500 hover:underline"
-                          >
-                            hello@saundryaearth.com
-                          </a>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </motion.section>
+                  {paymentStatus !== "error" && (
+                    <Link href="/">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 cursor-pointer py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                      >
+                        Return Home
+                      </motion.button>
+                    </Link>
+                  )}
+                </motion.div>
+              </motion.div>
             </div>
-          </main>
-        </ReactLenis>
-      </>
-    </Suspense>
+          </section>
+
+          {/* Additional Help Section */}
+          {paymentStatus === "error" && (
+            <div className="relative z-20 py-20">
+              <div className="container mx-auto px-6 max-w-5xl">
+                <motion.section
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={sectionVariants}
+                >
+                  <div className="flex flex-col md:flex-row gap-12 items-start">
+                    <div className="md:w-1/3 sticky top-32">
+                      <motion.h2
+                        className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
+                        style={{ y: y2 }}
+                      >
+                        Need Help?
+                      </motion.h2>
+                      <div className="hidden md:block h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent w-full my-8" />
+                      <p className="text-purple-600 font-medium">
+                        We&apos;re here for you
+                      </p>
+                    </div>
+                    <div className="md:w-2/3">
+                      <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={{
+                          hidden: { opacity: 0 },
+                          visible: {
+                            opacity: 1,
+                            transition: {
+                              staggerChildren: 0.1,
+                              delayChildren: 0.3,
+                            },
+                          },
+                        }}
+                        className="space-y-8"
+                      >
+                        <motion.div
+                          variants={fadeIn}
+                          className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100"
+                        >
+                          <div className="space-y-6">
+                            <div>
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                Common Payment Issues
+                              </h3>
+                              <ul className="text-gray-600 space-y-2">
+                                <li>• Insufficient funds in your account</li>
+                                <li>• Network connectivity issues</li>
+                                <li>• Browser security restrictions</li>
+                                <li>• Payment method declined by bank</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                Contact Support
+                              </h3>
+                              <a
+                                href="mailto:hello@saundryaearth.com"
+                                className="text-pink-500 hover:underline"
+                              >
+                                support@saundryaearth.com
+                              </a>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.section>
+              </div>
+            </div>
+          )}
+        </main>
+      </ReactLenis>
+    </>
   );
 }

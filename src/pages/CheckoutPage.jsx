@@ -6,6 +6,7 @@ import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
 import { clientFetch } from "@/services/clientfetch";
+import { setCookie } from "@/utils/cookies";
 
 const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
