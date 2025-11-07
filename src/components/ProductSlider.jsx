@@ -47,7 +47,6 @@ const ProductSlider = () => {
         const swiper = new window.Swiper(".product-swiper", {
           slidesPerView: 1.5,
           spaceBetween: 20,
-          loop: true,
           autoplay: {
             delay: 5000,
             disableOnInteraction: false,

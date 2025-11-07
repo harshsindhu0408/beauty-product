@@ -5,14 +5,26 @@ import { MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
 import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
-import { setCookie } from "@/utils/cookies";
+import { clientFetch } from "@/services/clientfetch";
 
-const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
+const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [addressesState, setAddressesState] = useState(addresses);
   const cartItems = sessionData?.items || [];
+
+  const refreshAddresses = async () => {
+    try {
+      const response = await clientFetch("address?isActive=true");
+      if (response.success) {
+        setAddressesState(response.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to refresh addresses:", error);
+    }
+  };
 
   const handleOrderSuccess = async (orderData) => {
     try {
@@ -113,7 +125,7 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
 
       localStorage.setItem("currentOrderId", data?.data?.order?.id || data?.data?.order?._id)
 
-      setCookie("currentOrderId", data?.data?.order?.id || data?.data?.order?._id, 1); // Expires in 1 day
+      setCookie("currentOrderId", data?.data?.order?.id || data?.data?.order?._id, 1);
 
       // Handle successful order creation
       handleOrderSuccess(data);
@@ -125,39 +137,42 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
   };
 
   // Form state
-  const [formData, setFormData] = useState({
-    // Shipping Address
-    shippingAddress: {
-      _id: null,
-      firstName: "",
-      lastName: "",
-      email: sessionData?.userEmail || "", // Auto-fill email from session
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "India",
-    },
-    // Billing Address
-    billingAddress: {
-      sameAsShipping: true,
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "India",
-    },
-    // Payment method
-    paymentMethod: "online", // "online" or "cod"
-    // Shipping method
-    shippingMethod: "standard",
-    // Order notes
-    notes: "",
+  const [formData, setFormData] = useState(() => {
+    const nameParts = userData?.profile?.name?.split(' ') || [];
+    return {
+      // Shipping Address
+      shippingAddress: {
+        _id: null,
+        firstName: nameParts[0] || "",
+        lastName: nameParts.slice(1).join(' ') || "",
+        email: userData?.email || sessionData?.userEmail || "",
+        phone: userData?.profile?.phone || "",
+        address: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "India",
+      },
+      // Billing Address
+      billingAddress: {
+        sameAsShipping: true,
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "India",
+      },
+      // Payment method
+      paymentMethod: "online", // "online" or "cod"
+      // Shipping method
+      shippingMethod: "standard",
+      // Order notes
+      notes: "",
+    };
   });
 
   const calculateOrderSummary = () => {
@@ -337,7 +352,8 @@ const CheckoutPage = ({ addresses, sessionData, sessionId }) => {
             setError={setError}
             prevStep={prevStep}
             isSubmitting={isSubmitting}
-            addresses={addresses}
+            addresses={addressesState}
+            refreshAddresses={refreshAddresses}
             cartItems={cartItems}
           />
 

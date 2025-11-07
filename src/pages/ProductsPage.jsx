@@ -11,6 +11,12 @@ import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
 
+export async function getServerSideProps() {
+  return {
+    props: {},
+  };
+}
+
 export default function ProductsPage({
   apiResponse,
   initialPage = 1,

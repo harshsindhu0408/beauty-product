@@ -33,6 +33,7 @@ const OrderCheckoutForm = ({
   isSubmitting,
   addresses,
   cartItems,
+  refreshAddresses,
 }) => {
   const handleAddressSelect = (selectedAddress) => {
     setFormData((prev) => ({
@@ -148,6 +149,7 @@ const OrderCheckoutForm = ({
                   addressesData={addresses}
                   onAddressSelect={handleAddressSelect}
                   selectedAddressId={formData.shippingAddress._id}
+                  refreshAddresses={refreshAddresses}
                 />
               </div>
 
