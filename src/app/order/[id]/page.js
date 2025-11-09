@@ -7,6 +7,10 @@ export default async function OrderDetails({ params }) {
     await userAuthCheckOnServer();
     const [order] = await Promise.all([FetchData(`order/${params.id}`)]);
 
+    if (!order?.data) {
+      throw new Error("Order not found");
+    }
+
     return (
       <div className="min-h-screen bg-gray-50 pt-26">
         <OrderDetailsPage orderData={order.data} />
@@ -16,7 +20,7 @@ export default async function OrderDetails({ params }) {
     console.error("Error fetching order:", error);
 
     // You could also redirect to an error page or show a custom error component
-    return (
+     return (
       <div className="min-h-screen bg-gray-50 pt-26 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
@@ -25,12 +29,12 @@ export default async function OrderDetails({ params }) {
           <p className="text-gray-600 mb-4">
             Unable to load the order. Please try again later.
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          <a 
+            href="/account"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block"
           >
-            Try Again
-          </button>
+            Back to Orders
+          </a>
         </div>
       </div>
     );
