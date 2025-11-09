@@ -43,6 +43,7 @@ export default function PaymentCallbackClient() {
           "razorpay_payment_link_status"
         );
         const razorpay_signature = searchParams.get("razorpay_signature");
+        const orderId = searchParams.get("order_id");
 
         // Check if we have the necessary parameters
         if (!razorpay_payment_id || !razorpay_signature) {
@@ -52,16 +53,7 @@ export default function PaymentCallbackClient() {
           return;
         }
 
-        // Get order ID from localStorage (assuming you stored it when creating the order)
-        const orderIdFromCookie = getCookie("currentOrderId");
-        const orderIdFromLocalStorage = localStorage.getItem("currentOrderId");
-        const orderId = orderIdFromCookie || orderIdFromLocalStorage;
-
-        console.log("orderId from cookie --->", orderIdFromCookie);
-        console.log(
-          "orderId from orderIdFromLocalStorage --->",
-          orderIdFromLocalStorage
-        );
+        console.log("orderId --->", orderId);
 
         if (!orderId) {
           setPaymentStatus("error");
