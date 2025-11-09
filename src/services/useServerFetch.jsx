@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 
-// Server-side version (for use in Server Components, Server Actions, etc.)
-export const FetchData = async (url: string, options: { method?: string; headers?: Record<string, string>; [key: string]: any } = {}) => {
+export const FetchData = async (url, options = {}) => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
   try {
@@ -23,7 +22,7 @@ export const FetchData = async (url: string, options: { method?: string; headers
     const res = await fetch(`${baseUrl}${url}`, {
       method: options.method || "GET",
       headers,
-      cache: "no-store", // 👈 This line disables caching
+      cache: "no-store", // disable caching
       credentials: "include",
       ...options,
     });
@@ -32,7 +31,7 @@ export const FetchData = async (url: string, options: { method?: string; headers
       if (res.status === 500) {
         throw new Error(`Server error: Failed to fetch data from ${url}`);
       } else if (res.status === 401) {
-        cookieStore.delete("accessToken")
+        cookieStore.delete("accessToken");
         return null;
       } else {
         console.warn(`Failed to fetch data from ${url}: ${res.statusText}`);

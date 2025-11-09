@@ -6,6 +6,10 @@ import { User, MapPin, Package, Trash2, LogOut } from "lucide-react";
 import UserProfileTab from "@/components/UserProfileTab";
 import AddressesTab from "@/components/AddressesTab";
 import OrdersTab from "@/components/OrdersTab";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { clientFetch } from "@/services/clientfetch";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -94,12 +98,45 @@ const AccountPageClient = (data) => {
   const [user, setUser] = useState(data?.userData);
   const ordersData = data?.orders;
   const addressesData = data?.addresses;
+  const router = useRouter();
 
   const [activeTab, setActiveTab] = useState("profile");
   const [isLoading, setIsLoading] = useState(true);
   // CORRECTLY initialize state from the nested addresses array
   const [addresses, setAddresses] = useState(addressesData?.addresses || []);
   const [modalState, setModalState] = useState({ type: null, data: null });
+
+  const handleLogout = async () => {
+    try {
+      // Call logout API first
+     const res =  await clientFetch("auth/logout", {
+        method: "POST",
+      });
+
+      if(res?.success) {
+        toast.success("Logged out successfully!!")
+      }
+
+      // Clear localStorage after successful API call
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userData");
+
+      // Clear cookies
+      Cookies.remove("accessToken", { path: "/" });
+
+      // Navigate to auth page
+      router.push("/auth");
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+      // Still clear local storage and redirect even if API call fails
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userData");
+      Cookies.remove("accessToken", { path: "/" });
+      router.push("/auth");
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 500);
@@ -117,12 +154,12 @@ const AccountPageClient = (data) => {
   };
 
   const handleUserUpdate = (updatedUserData) => {
-    setUser(prevUser => ({
+    setUser((prevUser) => ({
       ...prevUser,
       profile: {
         ...prevUser.profile,
-        ...updatedUserData.profile
-      }
+        ...updatedUserData.profile,
+      },
     }));
   };
 
@@ -137,7 +174,9 @@ const AccountPageClient = (data) => {
           variants={staggerContainer}
         >
           {/* --- PROFILE TAB --- */}
-          {activeTab === "profile" && <UserProfileTab user={user} setUser={setUser} />}
+          {activeTab === "profile" && (
+            <UserProfileTab user={user} setUser={setUser} />
+          )}
 
           {/* --- ADDRESSES TAB --- */}
           {activeTab === "addresses" && (
@@ -152,7 +191,7 @@ const AccountPageClient = (data) => {
   };
 
   return (
-     <>
+    <>
       <AnimatePresence>
         {isLoading && (
           <motion.div
@@ -231,7 +270,7 @@ const AccountPageClient = (data) => {
                     {user?.email || "user@example.com"}
                   </p>
                 </div>
-                
+
                 {[
                   { id: "profile", label: "My Profile", icon: User },
                   { id: "addresses", label: "My Addresses", icon: MapPin },
@@ -276,6 +315,7 @@ const AccountPageClient = (data) => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-red-600 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 cursor-pointer"
+                    onClick={handleLogout}
                   >
                     <LogOut size={20} />
                     <span>Log Out</span>
@@ -283,7 +323,7 @@ const AccountPageClient = (data) => {
                 </div>
               </nav>
             </motion.aside>
-            
+
             {/* --- MAIN CONTENT AREA --- */}
             <motion.main
               className="flex-1"
