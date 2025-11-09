@@ -57,6 +57,12 @@ export default function PaymentCallbackClient() {
         const orderIdFromLocalStorage = localStorage.getItem("currentOrderId");
         const orderId = orderIdFromCookie || orderIdFromLocalStorage;
 
+        console.log("orderId from cookie --->", orderIdFromCookie);
+        console.log(
+          "orderId from orderIdFromLocalStorage --->",
+          orderIdFromLocalStorage
+        );
+
         if (!orderId) {
           setPaymentStatus("error");
           setMessage("Order ID not found. Please contact support.");

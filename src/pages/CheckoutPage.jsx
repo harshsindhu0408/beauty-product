@@ -29,6 +29,16 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
 
   const handleOrderSuccess = async (orderData) => {
     try {
+      localStorage.setItem(
+        "currentOrderId",
+        orderData.data.order.id || orderData.data.order.id
+      );
+
+      setCookie(
+        "currentOrderId",
+        orderData.data.order.id || orderData.data.order.id,
+        1
+      );
       // For online payment, redirect to payment gateway in same window
       if (formData.paymentMethod === "online" && orderData.data.paymentLink) {
         window.location.href = orderData.data.paymentLink;
@@ -122,14 +132,8 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
         throw new Error(data.message || "Failed to create order");
       }
 
-      console.log("this is the data we have here right now --->", data);
-
-      localStorage.setItem("currentOrderId", data?.data?.order?.id || data?.data?.order?._id)
-
-      setCookie("currentOrderId", data?.data?.order?.id || data?.data?.order?._id, 1);
-
       // Handle successful order creation
-      handleOrderSuccess(data);
+      await handleOrderSuccess(data);
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -139,13 +143,13 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
 
   // Form state
   const [formData, setFormData] = useState(() => {
-    const nameParts = userData?.profile?.name?.split(' ') || [];
+    const nameParts = userData?.profile?.name?.split(" ") || [];
     return {
       // Shipping Address
       shippingAddress: {
         _id: null,
         firstName: nameParts[0] || "",
-        lastName: nameParts.slice(1).join(' ') || "",
+        lastName: nameParts.slice(1).join(" ") || "",
         email: userData?.email || sessionData?.userEmail || "",
         phone: userData?.profile?.phone || "",
         address: "",
