@@ -14,6 +14,7 @@ import {
   StarIcon as StarIconOutline,
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
+import { ShoppingBag, LayoutGrid } from "lucide-react";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -514,19 +515,6 @@ const OrderDetailsPage = ({ orderData }) => {
 
           <section className="relative pt-16 pb-8">
             <div className="container mx-auto px-6 relative">
-              {/* Back Button - Positioned independently */}
-              <motion.button
-                onClick={() => router.back()}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 0.4 }}
-                whileHover={{ scale: 1.1, backgroundColor: "#ffffff" }}
-                whileTap={{ scale: 0.95 }}
-                className="absolute top-0 left-6 p-2 cursor-pointer rounded-full bg-white/60 shadow-sm border border-gray-200 backdrop-blur-sm"
-                aria-label="Go back"
-              >
-                <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
-              </motion.button>
 
               {/* Main Centered Content Block */}
               <motion.div
@@ -628,7 +616,8 @@ const OrderDetailsPage = ({ orderData }) => {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="p-5 flex items-center space-x-4"
+                          // Changed items-center to items-start
+                          className="p-5 flex items-start space-x-4"
                         >
                           <motion.img
                             src={
@@ -759,6 +748,26 @@ const OrderDetailsPage = ({ orderData }) => {
                         </div>
                       </div>
                     </div>
+
+                    <button
+                      onClick={() => {
+                        router.push("/products");
+                      }}
+                      className="mt-3 cursor-pointer px-6 py-3 border-2 border-pink-500 text-pink-600 text-sm font-semibold rounded-xl hover:bg-pink-500 hover:text-white transition-all duration-300 flex items-center space-x-3"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      <span>Browse Products</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        router.push("/categories");
+                      }}
+                      className="mt-3 cursor-pointer px-6 py-3 border-2 border-green-500 text-green-600 text-sm font-semibold rounded-xl hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center space-x-3"
+                    >
+                      <LayoutGrid className="w-5 h-5" />
+                      <span>Browse Categories</span>
+                    </button>
                   </div>
                 </motion.div>
               </div>

@@ -81,7 +81,7 @@ const ProductSection = ({
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollRef = useRef(null);
   const thumbnailsContainerRef = useRef(null);
-  
+
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -93,7 +93,6 @@ const ProductSection = ({
           ((product.compareAtPrice - finalPrice) / product.compareAtPrice) * 100
         )
       : 0;
-
 
   const handleShareProduct = async () => {
     try {
@@ -148,7 +147,6 @@ const ProductSection = ({
       startAutoScroll();
     }
   };
-
 
   // Initialize and cleanup
   useEffect(() => {
@@ -510,7 +508,7 @@ const ProductSection = ({
             </button>
 
             <button
-              onClick={buyNowHandler}
+              onClick={() => buyNowHandler(selectedVariant, quantity)}
               disabled={!product.isInStock}
               className="flex-1 cursor-pointer bg-gray-900 text-white py-4 px-8 rounded-full font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >

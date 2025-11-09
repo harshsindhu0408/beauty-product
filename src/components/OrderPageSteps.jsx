@@ -4,7 +4,7 @@ const OrderPageSteps = ({ steps, currentStep }) => {
   return (
     <div className="mb-8">
       {/* Steps indicator */}
-      <div className="flex justify-between items-center mb-6 relative">
+      <div className="flex justify-start gap-20 items-center mb-6 relative">
         <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 -z-10"></div>
         {steps.map((step, index) => (
           <div key={step.id} className="flex flex-col items-center relative">

@@ -51,13 +51,13 @@ const OrderCheckoutForm = ({
   };
 
   return (
-    <div className="lg:col-span-2">
+    <div className="lg:col-span-2 pb-20">
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-2xl shadow-sm p-6"
       >
         <AnimatePresence mode="wait">
-          {/* Step 1: Shipping Information */}
+          {/* Step 1: Collect All Information */}
           {currentStep === 1 && (
             <motion.div
               key="step-1"
@@ -65,405 +65,410 @@ const OrderCheckoutForm = ({
               animate="visible"
               exit="hidden"
               variants={fadeIn}
-              className="space-y-6"
+              className="space-y-8"
             >
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                <MapPin size={24} className="text-pink-600" />
-                Shipping Information
-              </h2>
-
-              {/* Other shipping fields like First Name, Last Name, etc. can go here */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="shippingFirstName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="shippingFirstName"
-                    name="firstName"
-                    value={formData.shippingAddress.firstName}
-                    onChange={(e) => handleInputChange(e, "shippingAddress")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="shippingLastName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="shippingLastName"
-                    name="lastName"
-                    value={formData.shippingAddress.lastName}
-                    onChange={(e) => handleInputChange(e, "shippingAddress")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="shippingEmail"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="shippingEmail"
-                    name="email"
-                    value={formData.shippingAddress.email}
-                    onChange={(e) => handleInputChange(e, "shippingAddress")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="shippingPhone"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    id="shippingPhone"
-                    name="phone"
-                    value={formData.shippingAddress.phone}
-                    onChange={(e) => handleInputChange(e, "shippingAddress")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                  />
-                </div>
-              </div>
-
-              {/* Address Selection - Required */}
-              <div className="space-y-4">
-                <AddressTabForShipping
-                  addressesData={addresses}
-                  onAddressSelect={handleAddressSelect}
-                  selectedAddressId={formData.shippingAddress._id}
-                  refreshAddresses={refreshAddresses}
-                />
-              </div>
-
-              <div className="flex justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="bg-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-pink-700 transition-colors flex items-center gap-2"
-                >
-                  Continue to Billing
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Step 2: Billing Information */}
-          {currentStep === 2 && (
-            <motion.div
-              key="step-2"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={fadeIn}
-              className="space-y-6"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                <CreditCard size={24} className="text-pink-600" />
-                Billing Information
-              </h2>
-
-              <div className="flex items-center mb-4">
-                <input
-                  type="checkbox"
-                  id="sameAsShipping"
-                  name="sameAsShipping"
-                  checked={formData.billingAddress.sameAsShipping}
-                  onChange={(e) => handleInputChange(e, "billingAddress")}
-                  className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="sameAsShipping"
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  Same as shipping address
-                </label>
-              </div>
-
-              {!formData.billingAddress.sameAsShipping && (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="billingFirstName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        First Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="billingFirstName"
-                        name="firstName"
-                        value={formData.billingAddress.firstName}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                        required={!formData.billingAddress.sameAsShipping}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="billingLastName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="billingLastName"
-                        name="lastName"
-                        value={formData.billingAddress.lastName}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                        required={!formData.billingAddress.sameAsShipping}
-                      />
-                    </div>
+              {/* Shipping Information */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                  <div className="flex items-center justify-center w-10 h-10 bg-pink-100 rounded-lg">
+                    <MapPin size={20} className="text-pink-600" />
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="billingEmail"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        id="billingEmail"
-                        name="email"
-                        value={formData.billingAddress.email}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                        required={!formData.billingAddress.sameAsShipping}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="billingPhone"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        id="billingPhone"
-                        name="phone"
-                        value={formData.billingAddress.phone}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                      />
-                    </div>
-                  </div>
-
                   <div>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Shipping Information
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Where should we deliver your order?
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
                     <label
-                      htmlFor="billingAddress"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="shippingFirstName"
+                      className="block text-sm font-medium text-gray-700"
                     >
-                      Address *
+                      First Name *
                     </label>
                     <input
                       type="text"
-                      id="billingAddress"
-                      name="address"
-                      value={formData.billingAddress.address}
-                      onChange={(e) => handleInputChange(e, "billingAddress")}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                      required={!formData.billingAddress.sameAsShipping}
+                      id="shippingFirstName"
+                      name="firstName"
+                      value={formData.shippingAddress.firstName}
+                      onChange={(e) => handleInputChange(e, "shippingAddress")}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                      required
                     />
                   </div>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="shippingLastName"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="shippingLastName"
+                      name="lastName"
+                      value={formData.shippingAddress.lastName}
+                      onChange={(e) => handleInputChange(e, "shippingAddress")}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="shippingEmail"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="shippingEmail"
+                      name="email"
+                      value={formData.shippingAddress.email}
+                      onChange={(e) => handleInputChange(e, "shippingAddress")}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="shippingPhone"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      id="shippingPhone"
+                      name="phone"
+                      value={formData.shippingAddress.phone}
+                      onChange={(e) => handleInputChange(e, "shippingAddress")}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                      required
+                    />
+                  </div>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
+                {/* Address Selection */}
+                <div className="mt-6 pt-6 border-t border-gray-100">
+                  <AddressTabForShipping
+                    addressesData={addresses}
+                    onAddressSelect={handleAddressSelect}
+                    selectedAddressId={formData.shippingAddress._id}
+                    refreshAddresses={refreshAddresses}
+                  />
+                </div>
+              </div>
+
+              {/* Billing Information */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                  <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
+                    <CreditCard size={20} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Billing Information
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Where should we send the invoice?
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg mb-6">
+                  <input
+                    type="checkbox"
+                    id="sameAsShipping"
+                    name="sameAsShipping"
+                    checked={formData.billingAddress.sameAsShipping}
+                    onChange={(e) => handleInputChange(e, "billingAddress")}
+                    className="h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="sameAsShipping"
+                    className="ml-3 block text-sm font-medium text-gray-900"
+                  >
+                    Use same as shipping address
+                  </label>
+                </div>
+
+                {!formData.billingAddress.sameAsShipping && (
+                  <div className="space-y-6 bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingFirstName"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          First Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="billingFirstName"
+                          name="firstName"
+                          value={formData.billingAddress.firstName}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingLastName"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Last Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="billingLastName"
+                          name="lastName"
+                          value={formData.billingAddress.lastName}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingEmail"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          id="billingEmail"
+                          name="email"
+                          value={formData.billingAddress.email}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingPhone"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Phone Number *
+                        </label>
+                        <input
+                          type="tel"
+                          id="billingPhone"
+                          name="phone"
+                          value={formData.billingAddress.phone}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
                       <label
-                        htmlFor="billingCity"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        htmlFor="billingAddress"
+                        className="block text-sm font-medium text-gray-700"
                       >
-                        City *
+                        Address *
                       </label>
                       <input
                         type="text"
-                        id="billingCity"
-                        name="city"
-                        value={formData.billingAddress.city}
+                        id="billingAddress"
+                        name="address"
+                        value={formData.billingAddress.address}
                         onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                         required={!formData.billingAddress.sameAsShipping}
                       />
                     </div>
-                    <div>
-                      <label
-                        htmlFor="billingState"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        State *
-                      </label>
-                      <input
-                        type="text"
-                        id="billingState"
-                        name="state"
-                        value={formData.billingAddress.state}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                        required={!formData.billingAddress.sameAsShipping}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="billingPostalCode"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Postal Code *
-                      </label>
-                      <input
-                        type="text"
-                        id="billingPostalCode"
-                        name="postalCode"
-                        value={formData.billingAddress.postalCode}
-                        onChange={(e) => handleInputChange(e, "billingAddress")}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                        required={!formData.billingAddress.sameAsShipping}
-                      />
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingCity"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          City *
+                        </label>
+                        <input
+                          type="text"
+                          id="billingCity"
+                          name="city"
+                          value={formData.billingAddress.city}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingState"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          State *
+                        </label>
+                        <input
+                          type="text"
+                          id="billingState"
+                          name="state"
+                          value={formData.billingAddress.state}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="billingPostalCode"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Postal Code *
+                        </label>
+                        <input
+                          type="text"
+                          id="billingPostalCode"
+                          name="postalCode"
+                          value={formData.billingAddress.postalCode}
+                          onChange={(e) =>
+                            handleInputChange(e, "billingAddress")
+                          }
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          required={!formData.billingAddress.sameAsShipping}
+                        />
+                      </div>
                     </div>
                   </div>
-                </>
-              )}
-
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className="text-gray-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
-                >
-                  <ChevronLeft size={20} />
-                  Back to Shipping
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="bg-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-pink-700 transition-colors flex items-center gap-2"
-                >
-                  Continue to Payment
-                  <ChevronRight size={20} />
-                </button>
+                )}
               </div>
-            </motion.div>
-          )}
 
-          {/* Step 3: Payment Method */}
-          {currentStep === 3 && (
-            <motion.div
-              key="step-3"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={fadeIn}
-              className="space-y-6"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                <Truck size={24} className="text-pink-600" />
-                Payment Method
-              </h2>
+              {/* Payment Method */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                  <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg">
+                    <Truck size={20} className="text-green-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      Payment Method
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Choose how you want to pay
+                    </p>
+                  </div>
+                </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <input
-                    id="payment-online"
-                    name="paymentMethod"
-                    type="radio"
-                    value="online"
-                    checked={formData.paymentMethod === "online"}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
-                  />
-                  <label
-                    htmlFor="payment-online"
-                    className="ml-3 block text-sm font-medium text-gray-700"
-                  >
-                    <span className="flex items-center">
-                      Credit/Debit Card or UPI
-                      <span className="ml-2 px-2 py-1 text-xs bg-pink-100 text-pink-800 rounded-full">
-                        Recommended
+                <div className="space-y-4 ">
+                  <div className="flex items-start p-4 border-2 border-pink-200 bg-pink-50 rounded-lg hover:border-pink-300 transition-colors cursor-pointer">
+                    <input
+                      id="payment-online"
+                      name="paymentMethod"
+                      type="radio"
+                      value="online"
+                      checked={formData.paymentMethod === "online"}
+                      onChange={handleInputChange}
+                      className="h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 mt-0.5"
+                    />
+                    <label
+                      htmlFor="payment-online"
+                      className="ml-3 block text-sm font-medium text-gray-900 flex-1"
+                    >
+                      <div className="flex cursor-pointer items-center justify-between">
+                        <span className="flex items-center text-base font-semibold">
+                          Credit/Debit Card or UPI
+                          <span className="ml-3 px-2.5 py-1 text-xs bg-pink-500 text-white rounded-full font-medium">
+                            Recommended
+                          </span>
+                        </span>
+                      </div>
+                      <span className="text-sm cursor-pointer text-gray-600 mt-1 block">
+                        Pay securely using Razorpay - Instant confirmation
                       </span>
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      Pay securely using Razorpay
-                    </span>
-                  </label>
+                    </label>
+                  </div>
+
+                  <div className="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-pointer">
+                    <input
+                      id="payment-cod"
+                      name="paymentMethod"
+                      type="radio"
+                      value="cod"
+                      checked={formData.paymentMethod === "cod"}
+                      onChange={handleInputChange}
+                      className="h-5 w-5 text-pink-600 focus:ring-pink-500 border-gray-300 mt-0.5"
+                    />
+                    <label
+                      htmlFor="payment-cod"
+                      className="ml-3 cursor-pointer block text-sm font-medium text-gray-900 flex-1"
+                    >
+                      <span className="text-base cursor-pointer font-semibold">
+                        Cash on Delivery (COD)
+                      </span>
+                      <span className="text-sm text-gray-600 mt-1 block">
+                        Pay when your order is delivered - Additional charges
+                        may apply
+                      </span>
+                    </label>
+                  </div>
                 </div>
 
-                <div className="flex items-center">
-                  <input
-                    id="payment-cod"
-                    name="paymentMethod"
-                    type="radio"
-                    value="cod"
-                    checked={formData.paymentMethod === "cod"}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
-                  />
+                {/* Order Notes */}
+                <div className="mt-6 pt-6 border-t border-gray-100">
                   <label
-                    htmlFor="payment-cod"
-                    className="ml-3 block text-sm font-medium text-gray-700"
+                    htmlFor="notes"
+                    className="block text-sm font-medium text-gray-700 mb-3"
                   >
-                    Cash on Delivery (COD)
-                    <span className="text-xs text-gray-500 block">
-                      Pay when your order is delivered
-                    </span>
+                    Order Notes (Optional)
                   </label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    rows={3}
+                    value={formData.notes}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors resize-none"
+                    placeholder="Any special instructions, delivery preferences, or notes about your order..."
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Maximum 500 characters
+                  </p>
                 </div>
               </div>
 
-              {/* Order Notes */}
-              <div className="pt-4">
-                <label
-                  htmlFor="notes"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Order Notes (Optional)
-                </label>
-                <textarea
-                  id="notes"
-                  name="notes"
-                  rows={3}
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
-                  placeholder="Any special instructions for your order..."
-                />
-              </div>
-
-              <div className="flex justify-between pt-4">
+              {/* Continue Button */}
+              <div className="flex justify-end pt-4">
                 <button
                   type="button"
-                  onClick={prevStep}
-                  className="text-gray-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
-                >
-                  <ChevronLeft size={20} />
-                  Back to Billing
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="bg-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-pink-700 transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    nextStep();
+                    // Smooth scroll to top
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                  className="bg-pink-600 cursor-pointer text-white px-8 py-4 rounded-lg font-semibold hover:bg-pink-700 transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   Review Order
                   <ChevronRight size={20} />
@@ -472,10 +477,10 @@ const OrderCheckoutForm = ({
             </motion.div>
           )}
 
-          {/* Step 4: Review Order */}
-          {currentStep === 4 && (
+          {/* Step 2: Review Order & Place Order */}
+          {currentStep === 2 && (
             <motion.div
-              key="step-4"
+              key="step-2"
               initial="hidden"
               animate="visible"
               exit="hidden"
@@ -591,15 +596,15 @@ const OrderCheckoutForm = ({
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="text-gray-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                  className="text-gray-600 cursor-pointer px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
                 >
                   <ChevronLeft size={20} />
-                  Back to Payment
+                  Back to Edit
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-pink-700 transition-colors disabled:bg-pink-400 flex items-center gap-2"
+                  className="bg-pink-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium hover:bg-pink-700 transition-colors disabled:bg-pink-400 flex items-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

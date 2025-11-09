@@ -195,7 +195,7 @@ export const OrderSummary = ({ cart, formatPrice, isLoading }) => {
             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-2">
               <Truck size={14} />
             </div>
-            <span>Free shipping over $50</span>
+            <span>Free shipping over ₹1000</span>
           </div>
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-2">

@@ -42,10 +42,11 @@ const ProductPage = ({ productData, similarProducts }) => {
   const product = productData?.product;
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [status, setStatus] = useState("idle"); // 'idle', 'adding', 'added'
-  const [quantity, setQuantity] = useState(1);
 
   // Calculate final price
-  const finalPrice = product ? product.price + (selectedVariant?.priceAdjustment || 0) : 0;
+  const finalPrice = product
+    ? product.price + (selectedVariant?.priceAdjustment || 0)
+    : 0;
 
   // Use useEffect to set initial variant
   useEffect(() => {
@@ -115,24 +116,28 @@ const ProductPage = ({ productData, similarProducts }) => {
   };
 
   // Handle buy now
-  const buyNowHandler = async () => {
+  const buyNowHandler = async (selectedVariant, quantity) => {
     try {
       const payload = {
-        items: [{
-          product: {
-            _id: product._id,
-            name: product.name,
-            images: product.images,
+        items: [
+          {
+            product: {
+              _id: product._id,
+              name: product.name,
+              images: product.images,
+            },
+            quantity: quantity,
+            price: finalPrice,
+            selectedVariant: selectedVariant
+              ? {
+                  variantName: product.variants?.[0]?.name,
+                  optionName: selectedVariant.name,
+                  priceAdjustment: selectedVariant.priceAdjustment || 0,
+                }
+              : null,
+            itemTotal: finalPrice * quantity,
           },
-          quantity: quantity,
-          price: finalPrice,
-          selectedVariant: selectedVariant ? {
-            variantName: product.variants?.[0]?.name,
-            optionName: selectedVariant.name,
-            priceAdjustment: selectedVariant.priceAdjustment || 0,
-          } : null,
-          itemTotal: finalPrice * quantity,
-        }],
+        ],
         source: "buy_now",
       };
 

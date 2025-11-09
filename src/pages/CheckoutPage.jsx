@@ -111,6 +111,7 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
         shippingMethod: formData.shippingMethod,
         paymentMethod: formData.paymentMethod,
         notes: formData.notes,
+        checkoutSessionId: sessionId,
       };
 
       // Call your API to create the order
@@ -332,10 +333,8 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
 
   // Steps configuration
   const steps = [
-    { id: 1, title: "Shipping Information", icon: <MapPin size={20} /> },
-    { id: 2, title: "Billing Information", icon: <CreditCard size={20} /> },
-    { id: 3, title: "Payment Method", icon: <Truck size={20} /> },
-    { id: 4, title: "Review Order", icon: <CheckCircle size={20} /> },
+    { id: 1, title: "Order Details", icon: <MapPin size={20} /> },
+    { id: 2, title: "Review Order", icon: <CheckCircle size={20} /> },
   ];
 
   return (
