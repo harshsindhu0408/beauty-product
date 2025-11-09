@@ -361,10 +361,10 @@ export default function NotFoundPage() {
                               Email Us
                             </h3>
                             <a
-                              href="mailto:hello@saundryaearth.com"
+                              href="mailto:support@saundryaearth.com"
                               className="text-pink-500 hover:underline"
                             >
-                              hello@saundryaearth.com
+                              support@saundryaearth.com
                             </a>
                           </div>
                           <div>

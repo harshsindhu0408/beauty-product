@@ -455,7 +455,7 @@ export default function PaymentCallbackClient() {
                                 Contact Support
                               </h3>
                               <a
-                                href="mailto:hello@saundryaearth.com"
+                                href="mailto:support@saundryaearth.com"
                                 className="text-pink-500 hover:underline"
                               >
                                 support@saundryaearth.com
