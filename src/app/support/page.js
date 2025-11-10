@@ -83,14 +83,14 @@ const SupportPage = () => {
       title: "Live Chat",
       description: "Available 24/7 for instant help",
       action: "Start Chat",
-      link: "/live-chat",
+      link: "/support",
     },
     {
       icon: <Phone className="w-8 h-8 text-emerald-500" />,
       title: "Call Support",
       description: "Mon-Fri, 9AM-6PM EST",
       action: "+1 (555) 123-4567",
-      link: "tel:+15551234567",
+      link: "tel:+917403500777",
     },
   ];
 

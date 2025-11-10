@@ -115,7 +115,7 @@ const Footer = () => {
   const exploreLinks = [
     { name: "About", href: "/about" },
     { name: "Products", href: "/products" },
-    { name: "Delivery", href: "/delivery" },
+    { name: "Return & Refunds", href: "/return-refund-policy" },
     { name: "Cart", href: "/cart" },
   ];
 

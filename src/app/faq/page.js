@@ -286,7 +286,7 @@ const FAQPage = () => {
                   Contact Support
                 </motion.a>
                 <motion.a
-                  href="/live-chat"
+                  href="/support"
                   className="px-8 py-4 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-300"
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
