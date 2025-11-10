@@ -527,16 +527,6 @@ const EnhancedLiveTrackingMap = ({
             </motion.div>
           ))}
         </div>
-
-        {/* Action Buttons - Stack on mobile */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
-          <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 sm:py-3 px-4 rounded-lg sm:rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/25 text-sm sm:text-base">
-            View Detailed Route
-          </button>
-          <button className="px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 rounded-lg sm:rounded-xl font-semibold transition-all duration-200 bg-white/80 backdrop-blur-sm text-sm sm:text-base">
-            Share Status
-          </button>
-        </div>
       </div>
     </GlassCard>
   );
