@@ -898,7 +898,7 @@ const OrderTrackingPage = ({ orderData, orderId, trackingData }) => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => router.push("/orders")}
+                      onClick={() => router.push("/account")}
                       className="cursor-pointer w-full bg-white/80 border border-white/60 text-gray-700 py-3.5 px-6 rounded-2xl font-semibold hover:bg-white hover:shadow-medium transition-all duration-300 flex items-center justify-center space-x-3"
                     >
                       <ShoppingBagIcon className="w-5 h-5" />
