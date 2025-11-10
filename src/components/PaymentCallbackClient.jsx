@@ -53,8 +53,6 @@ export default function PaymentCallbackClient() {
           return;
         }
 
-        console.log("orderId --->", orderId);
-
         if (!orderId) {
           setPaymentStatus("error");
           setMessage("Order ID not found. Please contact support.");

@@ -284,7 +284,6 @@ const ReviewModal = ({
     if (isSubmitting || reviewData.rating === 0) return;
 
     setIsSubmitting(true);
-    console.log("reviewModal", reviewModal);
 
     const payload = {
       productId: reviewModal.product?.product?._id || reviewModal.product?._id,
@@ -293,8 +292,6 @@ const ReviewModal = ({
     };
 
     try {
-      console.log("Submitting review with payload:", payload);
-
       const response = await clientFetch(`product/review`, {
         method: "POST",
         body: JSON.stringify(payload),

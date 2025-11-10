@@ -120,7 +120,6 @@ const OrdersTab = ({ ordersData }) => {
   // FIX: Check length directly on ordersData prop, as it's an array.
   const hasOrders = ordersData?.orders?.length > 0;
   const router = useRouter();
-  console.log("has orders -->", hasOrders);
 
   return (
     <motion.div

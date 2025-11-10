@@ -42,8 +42,6 @@ const AddressesTab = ({ addressesData }) => {
   const [modalState, setModalState] = useState({ type: null, data: null });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("addresses", addressesData);
-
   // Sync with parent prop if it changes
   useEffect(() => {
     setAddresses(addressesData?.addresses || []);
@@ -127,7 +125,6 @@ const AddressesTab = ({ addressesData }) => {
   };
   const handleDeleteAddress = async (onComplete) => {
     const addressToDelete = modalState.data;
-    console.log("Deleting address:", addressToDelete);
 
     try {
       // --- Call API ---
@@ -146,7 +143,6 @@ const AddressesTab = ({ addressesData }) => {
         prev.filter((addr) => addr._id !== addressToDelete._id)
       );
 
-      console.log("✅ Address deleted successfully!");
       toast.success("Address deleted successfully!");
 
       onComplete();

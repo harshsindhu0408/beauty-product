@@ -199,7 +199,6 @@ const ProductShowcase = () => {
 
   const addToCartHandler = () => {
     toast.success("Launching sooonnnnn!!!!!!!");
-    console.log("hi there")
   };
 
   return (

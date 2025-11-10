@@ -246,15 +246,12 @@ export default function ProductsPage({
         };
       }
 
-      console.log("This is the payload for the quick add:", payload);
-
       const response = await clientFetch("cart", {
         method: "POST",
         body: JSON.stringify(payload),
       });
 
       if (response) {
-        console.log("Response from cart API:", response);
         if (
           response.code === "ITEM_ADDED_TO_CART" ||
           response.code === "CART_ITEM_UPDATED"

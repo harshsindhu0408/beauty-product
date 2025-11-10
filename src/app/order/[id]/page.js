@@ -8,8 +8,6 @@ export default async function OrderDetails({ params }) {
     await userAuthCheckOnServer();
     const [order] = await Promise.all([FetchData(`order/${params.id}`)]);
 
-    console.log("this is the order response ---->", order);
-
     if (!order?.data) {
       throw new Error("Order not found");
     }

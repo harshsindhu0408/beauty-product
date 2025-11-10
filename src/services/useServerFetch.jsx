@@ -27,8 +27,6 @@ export const FetchData = async (url, options = {}) => {
       ...options,
     });
 
-    console.log("this is the response --->", res);
-
     if (!res.ok) {
       if (res.status === 500) {
         throw new Error(`Server error: Failed to fetch data from ${url}`);
