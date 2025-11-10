@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import Footer from "@/components/Footer";
@@ -121,7 +120,6 @@ export default function RootLayout({ children }) {
         <NavigationWrapper />
         {children}
         <Footer />
-        <Analytics />
         <Toaster
           position="top-right"
           toastOptions={{
