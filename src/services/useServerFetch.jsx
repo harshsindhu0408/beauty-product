@@ -23,9 +23,11 @@ export const FetchData = async (url, options = {}) => {
       method: options.method || "GET",
       headers,
       cache: "no-store", // disable caching
-      credentials: "include",
+      credentials: 'include',
       ...options,
     });
+
+    console.log("this is the response --->", res);
 
     if (!res.ok) {
       if (res.status === 500) {

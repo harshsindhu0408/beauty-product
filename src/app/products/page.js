@@ -159,7 +159,7 @@ export default async function Product({ searchParams }) {
     // Run both API calls in parallel
     const [productsRes, categoriesRes] = await Promise.all([
       FetchData(apiUrl),
-      FetchData(`category/fetch/all`),
+      FetchData(`category`),
     ]);
 
     const productsData = productsRes?.data || null;
