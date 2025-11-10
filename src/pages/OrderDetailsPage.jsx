@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { clientFetch } from "@/services/clientfetch";
 import toast from "react-hot-toast";
+import CancelOrderModal from "@/components/CancelOrderModal";
 
 // --- HELPERS (Modified for INR) ---
 
@@ -455,12 +456,54 @@ const OrderDetailsPage = ({ orderData }) => {
     hoverRating: 0,
   });
 
+  const [cancelModal, setCancelModal] = useState({
+    isOpen: false,
+    orderNumber: order?.orderNumber,
+  });
+
+  const [cancelReason, setCancelReason] = useState({
+    selectedReason: "",
+    customReason: "",
+  });
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleCancelOrder = async () => {
+    if (!cancelReason.selectedReason) return;
+
+    try {
+      const finalReason =
+        cancelReason.selectedReason === "Other reason"
+          ? cancelReason.customReason
+          : cancelReason.selectedReason;
+
+      const response = await clientFetch(`order/${order._id}/cancel`, {
+        method: "POST",
+        body: JSON.stringify({ reason: finalReason }),
+      });
+
+      if (response?.success) {
+        toast.success("Order cancelled successfully");
+        setCancelModal({ isOpen: false });
+        setCancelReason({ selectedReason: "", customReason: "" });
+        // Optionally refresh the page or update order status
+        router.refresh();
+      } else {
+        throw new Error(response?.message || "Failed to cancel order");
+      }
+    } catch (error) {
+      console.error("Failed to cancel order:", error);
+      toast.error(
+        error.message ||
+          "There was an error cancelling your order. Please try again."
+      );
+    }
+  };
 
   if (!order) {
     return (
@@ -493,7 +536,6 @@ const OrderDetailsPage = ({ orderData }) => {
             </motion.div>
           )}
         </AnimatePresence>
-
         {/* Corrected Modal Rendering */}
         <AnimatePresence>
           {reviewModal.isOpen && (
@@ -505,6 +547,17 @@ const OrderDetailsPage = ({ orderData }) => {
               orderId={order.id}
             />
           )}
+
+          {/* Add Cancel Order Modal */}
+          {cancelModal.isOpen && (
+            <CancelOrderModal
+              cancelModal={cancelModal}
+              setCancelModal={setCancelModal}
+              cancelReason={cancelReason}
+              setCancelReason={setCancelReason}
+              handleCancelOrder={handleCancelOrder}
+            />
+          )}
         </AnimatePresence>
 
         <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -512,7 +565,6 @@ const OrderDetailsPage = ({ orderData }) => {
 
           <section className="relative pt-16 pb-8">
             <div className="container mx-auto px-6 relative">
-
               {/* Main Centered Content Block */}
               <motion.div
                 initial="hidden"
@@ -537,7 +589,7 @@ const OrderDetailsPage = ({ orderData }) => {
                 >
                   Order{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">
-                    #{order.orderNumber || "N/A"}
+                    #{order?.orderNumber || "N/A"}
                   </span>
                 </motion.h1>
 
@@ -582,6 +634,42 @@ const OrderDetailsPage = ({ orderData }) => {
           >
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <OrderTimeline status={order.status} />
+
+              {/* Action Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-6 flex flex-col sm:flex-row justify-center gap-4"
+              >
+                {/* Track Order Button - Always show if order is not cancelled/refunded */}
+                {!["cancelled", "refunded"].includes(order.status) && (
+                  <button
+                    onClick={() => router.push(`/track/${order._id}`)}
+                    className="cursor-pointer px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2 flex-1 sm:flex-none"
+                  >
+                    <TruckIcon className="w-5 h-5" />
+                    <span>Track Order</span>
+                  </button>
+                )}
+
+                {/* Cancel Button - Only show for cancellable orders */}
+                {(order.status === "pending" ||
+                  order.status === "processing") && (
+                  <button
+                    onClick={() =>
+                      setCancelModal({
+                        isOpen: true,
+                        orderNumber: order?.orderNumber,
+                      })
+                    }
+                    className="cursor-pointer px-6 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors flex items-center justify-center space-x-2 flex-1 sm:flex-none"
+                  >
+                    <XCircleIcon className="w-5 h-5" />
+                    <span>Cancel Order</span>
+                  </button>
+                )}
+              </motion.div>
             </div>
           </motion.section>
 
