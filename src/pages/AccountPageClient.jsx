@@ -2,7 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, MapPin, Package, Trash2, LogOut } from "lucide-react";
+import {
+  User,
+  MapPin,
+  Package,
+  Trash2,
+  LogOut,
+  MessageCircle,
+} from "lucide-react";
 import UserProfileTab from "@/components/UserProfileTab";
 import AddressesTab from "@/components/AddressesTab";
 import OrdersTab from "@/components/OrdersTab";
@@ -10,6 +17,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { clientFetch } from "@/services/clientfetch";
+import SupportTicketsTab from "@/components/SupportTicketsTab";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -96,6 +104,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, addressTitle }) => {
 const AccountPageClient = (data) => {
   // CORRECTLY destructure props with null checks
   const [user, setUser] = useState(data?.userData);
+  const [supportTickets, setSupportTickets] = useState(data?.support);
   const ordersData = data?.orders;
   const addressesData = data?.addresses;
   const router = useRouter();
@@ -109,12 +118,12 @@ const AccountPageClient = (data) => {
   const handleLogout = async () => {
     try {
       // Call logout API first
-     const res =  await clientFetch("auth/logout", {
+      const res = await clientFetch("auth/logout", {
         method: "POST",
       });
 
-      if(res?.success) {
-        toast.success("Logged out successfully!!")
+      if (res?.success) {
+        toast.success("Logged out successfully!!");
       }
 
       // Clear localStorage after successful API call
@@ -185,6 +194,11 @@ const AccountPageClient = (data) => {
 
           {/* --- ORDERS TAB --- */}
           {activeTab === "orders" && <OrdersTab ordersData={ordersData} />}
+
+          {/* --- SUPPORT TAB --- */}
+          {activeTab === "support" && (
+            <SupportTicketsTab supportTicketsData={supportTickets} />
+          )}
         </motion.div>
       </AnimatePresence>
     );
@@ -275,6 +289,11 @@ const AccountPageClient = (data) => {
                   { id: "profile", label: "My Profile", icon: User },
                   { id: "addresses", label: "My Addresses", icon: MapPin },
                   { id: "orders", label: "My Orders", icon: Package },
+                  {
+                    id: "support",
+                    label: "Support Tickets",
+                    icon: MessageCircle,
+                  },
                 ].map((tab) => (
                   <motion.button
                     key={tab.id}

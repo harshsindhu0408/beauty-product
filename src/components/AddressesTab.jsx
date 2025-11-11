@@ -9,10 +9,11 @@ import {
   X,
   AlertTriangle,
   LoaderCircle,
+  MapPin,
+  Plus,
 } from "lucide-react";
 import { clientFetch } from "@/services/clientfetch";
 import toast from "react-hot-toast";
-
 
 // --- Animation Variants (can be in a separate file) ---
 const staggerContainer = {
@@ -179,79 +180,95 @@ const AddressesTab = ({ addressesData }) => {
           className="flex justify-between items-center"
         >
           <h3 className="text-xl font-bold text-gray-800">My Addresses</h3>
-          <motion.button
+        </motion.div>
+
+        {addresses?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {addresses?.map((address) => (
+              <motion.div
+                key={address._id}
+                variants={itemVariants}
+                whileHover={{
+                  y: -5,
+                  boxShadow: "0 10px 20px -5px rgba(0,0,0,0.07)",
+                }}
+                className="bg-white/60 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-gray-200/80 relative"
+              >
+                {address.isPrimary && (
+                  <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">
+                    <Star size={12} className="fill-current" /> Primary
+                  </div>
+                )}
+                <div className="flex items-center gap-3">
+                  <div className="bg-pink-100 p-2 rounded-full">
+                    {address.addressType === "home" ? (
+                      <Home className="text-pink-500" size={20} />
+                    ) : (
+                      <Building2 className="text-pink-500" size={20} />
+                    )}
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-800">
+                    {address.title}
+                  </h4>
+                </div>
+                <address className="mt-3 text-sm text-gray-600 not-italic space-y-1">
+                  <p>
+                    {address.addressLine1}
+                    {address.addressLine2 ? `, ${address.addressLine2}` : ""}
+                  </p>
+                  <p>
+                    {address.city}, {address.state} - {address.postalCode}
+                  </p>
+                  <p>{address.country}</p>
+                  {address.landmark && (
+                    <p className="text-xs text-gray-400">
+                      Landmark: {address.landmark}
+                    </p>
+                  )}
+                </address>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4">
+                  <button
+                    onClick={() => handleOpenModal("edit", address)}
+                    className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-pink-600 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 rounded-md"
+                  >
+                    <Pencil size={14} /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleOpenModal("delete", address)}
+                    className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-700 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-md"
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            variants={itemVariants}
+            className="text-center py-16 px-6 bg-white/60 backdrop-blur-md rounded-2xl border border-gray-200/80"
+          >
+            <MapPin size={56} className="mx-auto text-gray-400" />
+            <h4 className="mt-6 text-xl font-semibold text-gray-700">
+              No Addresses Added
+            </h4>
+            <p className="mt-2 text-sm text-gray-500 max-w-xs mx-auto">
+              You haven't saved any addresses yet. Add your first address to
+              make checkout easier.
+            </p>
+            <motion.button
             onClick={() => handleOpenModal("add")}
             whileHover={{
               scale: 1.05,
               boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)",
             }}
             whileTap={{ scale: 0.98 }}
-            className="text-sm font-semibold text-white bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-lg shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2"
+            className="text-sm mt-6 font-semibold text-white bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-lg shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2"
           >
             + Add New Address
           </motion.button>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {addresses?.map((address) => (
-            <motion.div
-              key={address._id}
-              variants={itemVariants}
-              whileHover={{
-                y: -5,
-                boxShadow: "0 10px 20px -5px rgba(0,0,0,0.07)",
-              }}
-              className="bg-white/60 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-gray-200/80 relative"
-            >
-              {address.isPrimary && (
-                <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">
-                  <Star size={12} className="fill-current" /> Primary
-                </div>
-              )}
-              <div className="flex items-center gap-3">
-                <div className="bg-pink-100 p-2 rounded-full">
-                  {address.addressType === "home" ? (
-                    <Home className="text-pink-500" size={20} />
-                  ) : (
-                    <Building2 className="text-pink-500" size={20} />
-                  )}
-                </div>
-                <h4 className="text-lg font-semibold text-gray-800">
-                  {address.title}
-                </h4>
-              </div>
-              <address className="mt-3 text-sm text-gray-600 not-italic space-y-1">
-                <p>
-                  {address.addressLine1}
-                  {address.addressLine2 ? `, ${address.addressLine2}` : ""}
-                </p>
-                <p>
-                  {address.city}, {address.state} - {address.postalCode}
-                </p>
-                <p>{address.country}</p>
-                {address.landmark && (
-                  <p className="text-xs text-gray-400">
-                    Landmark: {address.landmark}
-                  </p>
-                )}
-              </address>
-              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4">
-                <button
-                  onClick={() => handleOpenModal("edit", address)}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-pink-600 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 rounded-md"
-                >
-                  <Pencil size={14} /> Edit
-                </button>
-                <button
-                  onClick={() => handleOpenModal("delete", address)}
-                  className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-700 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-md"
-                >
-                  <Trash2 size={14} /> Delete
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+          </motion.div>
+        )}
 
         {addressesData?.pagination?.totalPages > 1 && (
           <motion.div variants={itemVariants} className="mt-6 text-center">
