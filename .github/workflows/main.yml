@@ -1,0 +1,67 @@
+name: Deploy Frontend (beauty-product)
+
+# Trigger on pushes to production branch
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decode SSH key
+        run: |
+          echo "$SSH_PRIVATE_KEY_B64" | base64 --decode > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
+
+      - name: Deploy frontend on server (beauty-product)
+        env:
+          REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+        run: |
+          set -e
+
+          SSH_OPTS="-i /tmp/deploy_key \
+                    -o StrictHostKeyChecking=no \
+                    -o UserKnownHostsFile=/dev/null \
+                    -o BatchMode=yes \
+                    -o ConnectTimeout=10"
+
+          echo "Connecting to ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT || '22' }}"
+          
+          ssh $SSH_OPTS -p ${{ secrets.SSH_PORT || '22' }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s << 'EOF'
+            set -e
+            # switch to beauty-product dir
+            cd /home/ubuntu/beauty-product || { echo "beauty-product dir not found"; exit 1; }
+
+            # provide token safely for git if REPO_TOKEN is set (works for private repos)
+            export GIT_TOKEN="${REPO_TOKEN:-}"
+
+            # Stop pm2 process for frontend (if exists)
+            pm2 delete saundrya-app || true
+
+            # Pull latest production branch (using http.extraheader to avoid token in URL)
+            if [ -n "$GIT_TOKEN" ]; then
+              git -c http.extraheader="Authorization: Bearer $GIT_TOKEN" pull origin production
+            else
+              git pull origin production
+            fi
+
+            # Install deps and build
+            npm ci --prefer-offline --no-audit --progress=false || true
+            npm run build || true
+
+            # Optionally start/restart pm2 process if frontend served by node (uncomment if needed)
+            # pm2 start ecosystem.config.cjs --only saundrya-app || true
+
+            # Reload nginx to pick up new static files / config
+            sudo nginx -t || true
+            sudo systemctl reload nginx || true
+            sudo systemctl restart nginx || true
+
+            # Reload all pm2 processes to pick new ecosystem changes
+            pm2 reload all || true
+
+            echo "Frontend deploy (beauty-product) finished."
