@@ -1,0 +1,56 @@
+name: Fetch PM2 logs (manual)
+
+on:
+  workflow_dispatch:    # manual trigger from GitHub UI
+
+jobs:
+  fetch-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup ssh-agent
+        uses: webfactory/ssh-agent@v0.8.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ensure known_hosts (optional)
+        run: |
+          mkdir -p ~/.ssh
+          if [ -n "${{ secrets.KNOWN_HOSTS }}" ]; then
+            echo "${{ secrets.KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+            chmod 600 ~/.ssh/known_hosts
+          fi
+
+      - name: Fetch logs from server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            echo "===== pm2 status ====="
+            pm2 status || true
+            echo
+
+            echo "===== last 300 lines: e-commerce-server (api-server) stdout ====="
+            tail -n 300 /home/${{ secrets.SSH_USER }}/.pm2/logs/api-server-out.log || echo "file not found or no stdout log"
+            echo
+
+            echo "===== last 300 lines: e-commerce-server (api-server) stderr ====="
+            tail -n 300 /home/${{ secrets.SSH_USER }}/.pm2/logs/api-server-error.log || echo "file not found or no error log"
+            echo
+
+            echo "===== last 300 lines: beauty-product (saundrya-app) stdout ====="
+            tail -n 300 /home/${{ secrets.SSH_USER }}/.pm2/logs/saundrya-app-out.log || echo "file not found or no stdout log"
+            echo
+
+            echo "===== last 300 lines: beauty-product (saundrya-app) stderr ====="
+            tail -n 300 /home/${{ secrets.SSH_USER }}/.pm2/logs/saundrya-app-error.log || echo "file not found or no error log"
+            echo
+
+            echo "===== Nginx status and last logs ====="
+            sudo nginx -t || true
+            sudo systemctl status nginx --no-pager || true
+            sudo journalctl -u nginx -n 100 --no-pager || true
