@@ -2,9 +2,7 @@ name: Deploy Frontend Only (saundrya-app)
 
 # Trigger on pushes to production branch (change branch name if needed)
 on:
-  push:
-    branches:
-      - production
+  workflow_dispatch:   # ⬅️ ONLY manual trigger, no auto runs
 
 jobs:
   deploy-frontend:
