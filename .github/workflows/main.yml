@@ -1,4 +1,4 @@
-name: Fetch PM2 logs (manual)
+name: Fetch PM2 logs
 
 on:
   workflow_dispatch:
