@@ -1,6 +1,6 @@
-name: Deploy Frontend (beauty-product)
+name: Deploy Frontend Only (saundrya-app)
 
-# Trigger on pushes to production branch
+# Trigger on pushes to production branch (change branch name if needed)
 on:
   push:
     branches:
@@ -17,12 +17,11 @@ jobs:
         env:
           SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
 
-      - name: Deploy frontend on server (beauty-product)
+      - name: Deploy frontend on server (beauty-product) — only frontend actions, DO NOT touch api-server
         env:
           REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
           set -e
-
           SSH_OPTS="-i /tmp/deploy_key \
                     -o StrictHostKeyChecking=no \
                     -o UserKnownHostsFile=/dev/null \
@@ -31,37 +30,33 @@ jobs:
 
           echo "Connecting to ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT || '22' }}"
           
+          # Only touch /home/ubuntu/beauty-product and saundrya-app pm2 process
           ssh $SSH_OPTS -p ${{ secrets.SSH_PORT || '22' }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s << 'EOF'
             set -e
-            # switch to beauty-product dir
             cd /home/ubuntu/beauty-product || { echo "beauty-product dir not found"; exit 1; }
 
-            # provide token safely for git if REPO_TOKEN is set (works for private repos)
+            # Use token for private repos if provided
             export GIT_TOKEN="${REPO_TOKEN:-}"
 
-            # Stop pm2 process for frontend (if exists)
-            pm2 delete saundrya-app || true
-
-            # Pull latest production branch (using http.extraheader to avoid token in URL)
+            # Pull latest production branch only for frontend
             if [ -n "$GIT_TOKEN" ]; then
               git -c http.extraheader="Authorization: Bearer $GIT_TOKEN" pull origin production
             else
               git pull origin production
             fi
 
-            # Install deps and build
+            # Install and build
             npm ci --prefer-offline --no-audit --progress=false || true
             npm run build || true
 
-            # Optionally start/restart pm2 process if frontend served by node (uncomment if needed)
-            # pm2 start ecosystem.config.cjs --only saundrya-app || true
+            # Manage pm2 for only saundrya-app (do NOT touch api-server)
+            # Use --update-env if you changed environment variables in ecosystem or .env
+            pm2 describe saundrya-app > /dev/null 2>&1 && \
+              pm2 restart saundrya-app --update-env || \
+              pm2 start npm --name "saundrya-app" --cwd /home/ubuntu/beauty-product -- start
 
-            # Reload nginx to pick up new static files / config
+            # Reload nginx to serve new assets (unchanged for api-server proxy)
             sudo nginx -t || true
             sudo systemctl reload nginx || true
-            sudo systemctl restart nginx || true
 
-            # Reload all pm2 processes to pick new ecosystem changes
-            pm2 reload all || true
-
-            echo "Frontend deploy (beauty-product) finished."
+            echo "Frontend deploy finished - api-server was NOT modified."
