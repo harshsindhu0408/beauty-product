@@ -20,18 +20,57 @@ import {
   Wrench,
   CircleDollarSign,
 } from "lucide-react";
-import Footer from "@/components/Footer";
+import { clientFetch } from "@/services/clientfetch";
 
 const SupportPage = () => {
   const [activeTab, setActiveTab] = useState("general");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const containerRef = useRef(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
+    subject: "General Support Inquiry", // Add subject field
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const containerRef = useRef(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        subject: formData.subject,
+        message: `Name: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`,
+      };
+
+      const response = await clientFetch(`support`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (response.success) {
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+          subject: "General Support Inquiry",
+        });
+
+        // Reset after 5 seconds
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        throw new Error(response.message || "Failed to submit support request");
+      }
+    } catch (error) {
+      console.error("Support request error:", error);
+      setIsSubmitting(false);
+      // You might want to add error state handling here
+    }
+  };
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -49,25 +88,6 @@ const SupportPage = () => {
       label: "General Support",
       icon: <MessageSquare className="w-5 h-5" />,
     },
-    {
-      id: "technical",
-      label: "Technical Issues",
-      icon: <Zap className="w-5 h-5" />,
-    },
-    {
-      id: "billing",
-      label: "Billing Help",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path d="M21 12H3M12 2v6m0 14v-6M5 5l14 14M5 19l14-14" />
-        </svg>
-      ),
-    },
   ];
 
   const contactMethods = [
@@ -83,31 +103,16 @@ const SupportPage = () => {
       title: "Live Chat",
       description: "Available 24/7 for instant help",
       action: "Start Chat",
-      link: "/live-chat",
+      link: "/support",
     },
     {
       icon: <Phone className="w-8 h-8 text-emerald-500" />,
       title: "Call Support",
       description: "Mon-Fri, 9AM-6PM EST",
       action: "+1 (555) 123-4567",
-      link: "tel:+15551234567",
+      link: "tel:+917403500777",
     },
   ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({ name: "", email: "", message: "" });
-
-      // Reset after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000);
-    }, 2000);
-  };
 
   return (
     <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
@@ -143,7 +148,7 @@ const SupportPage = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="relative pt-20 pb-20 px-6">
+        <section className="relative pt-26 px-6">
           <motion.div
             style={{ y: y1, rotateX }}
             className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
@@ -370,6 +375,29 @@ const SupportPage = () => {
                               required
                             />
                           </div>
+
+                          <div>
+                            <label
+                              htmlFor="subject"
+                              className="block text-sm font-medium text-gray-700 mb-1"
+                            >
+                              Subject
+                            </label>
+                            <input
+                              type="text"
+                              id="subject"
+                              value={formData.subject}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  subject: e.target.value,
+                                })
+                              }
+                              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                              required
+                            />
+                          </div>
+
                           <div>
                             <label
                               htmlFor="message"
@@ -419,42 +447,6 @@ const SupportPage = () => {
                     </div>
                   </motion.div>
                 )}
-
-                {activeTab === "technical" && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-col items-center justify-center text-center py-20 min-h-[400px]"
-                  >
-                    <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Wrench className="w-10 h-10 text-indigo-600" />
-                    </div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
-                      Technical Support
-                    </h3>
-                    <p className="text-xl text-gray-500">Launching Soon! 🚀</p>
-                  </motion.div>
-                )}
-
-                {activeTab === "billing" && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-col items-center justify-center text-center py-20 min-h-[400px]"
-                  >
-                    <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <CircleDollarSign className="w-10 h-10 text-pink-600" />
-                    </div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
-                      Billing Inquiries
-                    </h3>
-                    <p className="text-xl text-gray-500">Launching Soon! 💵</p>
-                  </motion.div>
-                )}
-
-                {/* Other tabs content would go here */}
               </div>
             </motion.div>
 
@@ -555,8 +547,6 @@ const SupportPage = () => {
           </div>
         </section>
       </div>
-
-      <Footer />
     </ReactLenis>
   );
 };
