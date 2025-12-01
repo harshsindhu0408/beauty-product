@@ -1,0 +1,60 @@
+name: Deploy Frontend Only (saundrya-app)
+
+# Trigger on pushes to production branch (change branch name if needed)
+on:
+  workflow_dispatch:   # ⬅️ ONLY manual trigger, no auto runs
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decode SSH key
+        run: |
+          echo "$SSH_PRIVATE_KEY_B64" | base64 --decode > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
+
+      - name: Deploy frontend on server (beauty-product) — only frontend actions, DO NOT touch api-server
+        env:
+          REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+        run: |
+          set -e
+          SSH_OPTS="-i /tmp/deploy_key \
+                    -o StrictHostKeyChecking=no \
+                    -o UserKnownHostsFile=/dev/null \
+                    -o BatchMode=yes \
+                    -o ConnectTimeout=10"
+
+          echo "Connecting to ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT || '22' }}"
+          
+          # Only touch /home/ubuntu/beauty-product and saundrya-app pm2 process
+          ssh $SSH_OPTS -p ${{ secrets.SSH_PORT || '22' }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s << 'EOF'
+            set -e
+            cd /home/ubuntu/beauty-product || { echo "beauty-product dir not found"; exit 1; }
+
+            # Use token for private repos if provided
+            export GIT_TOKEN="${REPO_TOKEN:-}"
+
+            # Pull latest production branch only for frontend
+            if [ -n "$GIT_TOKEN" ]; then
+              git -c http.extraheader="Authorization: Bearer $GIT_TOKEN" pull origin production
+            else
+              git pull origin production
+            fi
+
+            # Install and build
+            npm ci --prefer-offline --no-audit --progress=false || true
+            npm run build || true
+
+            # Manage pm2 for only saundrya-app (do NOT touch api-server)
+            # Use --update-env if you changed environment variables in ecosystem or .env
+            pm2 describe saundrya-app > /dev/null 2>&1 && \
+              pm2 restart saundrya-app --update-env || \
+              pm2 start npm --name "saundrya-app" --cwd /home/ubuntu/beauty-product -- start
+
+            # Reload nginx to serve new assets (unchanged for api-server proxy)
+            sudo nginx -t || true
+            sudo systemctl reload nginx || true
+
+            echo "Frontend deploy finished - api-server was NOT modified."
