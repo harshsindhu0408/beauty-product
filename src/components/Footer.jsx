@@ -98,18 +98,9 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Youtube, href: "#", label: "YouTube" },
-    {
-      icon: () => (
-        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.347-.09.381-.297 1.199-.336 1.363-.051.225-.165.271-.381.165-1.521-.708-2.474-2.94-2.474-4.733 0-3.86 2.806-7.4 8.085-7.4 4.243 0 7.539 3.028 7.539 7.065 0 4.215-2.659 7.6-6.35 7.6-1.24 0-2.41-.646-2.81-1.419l-.762 2.906c-.275 1.067-1.018 2.407-1.518 3.22C9.597 23.718 10.779 24.001 12.017 24.001c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z" />
-        </svg>
-      ),
-      href: "#",
-      label: "Pinterest",
-    },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Instagram, href: "https://www.instagram.com/saundryaearth/", label: "Instagram" },
+    
+    { icon: Linkedin, href: "https://www.linkedin.com/in/harshsindhu0408/", label: "LinkedIn" },
   ];
 
   const exploreLinks = [
@@ -432,6 +423,7 @@ const Footer = () => {
                   <a
                     key={index}
                     href={social.href}
+                    target="_blank"
                     className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg"
                     aria-label={social.label}
                   >

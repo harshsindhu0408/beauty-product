@@ -2,17 +2,18 @@ import ProductPage from "@/pages/ProductPage";
 import { FetchData } from "@/services/useServerFetch";
 import { notFound } from "next/navigation";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function Product({ params }) {
+  const { slug } = await params;
   try {
     const [product, similarProducts] = await Promise.all([
-      FetchData(`product/slug/${params.slug}`),
-      FetchData(`product/${params.slug}/similar`),
+      FetchData(`product/slug/${slug}`),
+      FetchData(`product/${slug}/similar`),
     ]);
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-26">
+      <div className="min-h-screen bg-gray-50">
         <ProductPage
           productData={product.data}
           similarProducts={similarProducts.data}
@@ -29,7 +30,7 @@ export default async function Product({ params }) {
 
     // You could also redirect to an error page or show a custom error component
     return (
-      <div className="min-h-screen bg-gray-50 pt-26 flex items-center justify-center">
+      <div className="min-h-screen pt-20 bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Something went wrong
@@ -51,8 +52,9 @@ export default async function Product({ params }) {
 
 // Generate metadata for better SEO using product's meta fields
 export async function generateMetadata({ params }) {
+  const { slug } = await params;
   try {
-    const productResponse = await FetchData(`product/slug/${params.slug}`);
+    const productResponse = await FetchData(`product/slug/${slug}`);
     const product = productResponse.data?.product;
 
     if (!product) {
@@ -63,8 +65,12 @@ export async function generateMetadata({ params }) {
 
     // Use the metaTitle and metaDescription from the product data
     const metaTitle = product.metaTitle || product.name || "Product";
-    const metaDescription = product.metaDescription || product.shortDescription || product.description || "Product details";
-    const images = product.images?.map(img => img.url) || [];
+    const metaDescription =
+      product.metaDescription ||
+      product.shortDescription ||
+      product.description ||
+      "Product details";
+    const images = product.images?.map((img) => img.url) || [];
 
     return {
       title: metaTitle,
@@ -74,18 +80,18 @@ export async function generateMetadata({ params }) {
         title: metaTitle,
         description: metaDescription,
         images: images,
-        type: 'website', // Valid Open Graph types: 'website', 'article', 'profile', etc.
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${params.slug}`,
+        type: "website", // Valid Open Graph types: 'website', 'article', 'profile', etc.
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
       },
       twitter: {
-        card: images.length > 0 ? 'summary_large_image' : 'summary',
+        card: images.length > 0 ? "summary_large_image" : "summary",
         title: metaTitle,
         description: metaDescription,
         images: images,
       },
       // Additional product-specific meta tags
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${params.slug}`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${slug}`,
       },
     };
   } catch (error) {

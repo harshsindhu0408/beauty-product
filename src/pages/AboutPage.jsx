@@ -6,21 +6,19 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
-import dynamic from 'next/dynamic';
-
+import dynamic from "next/dynamic";
 
 const ReactLenis = dynamic(
-  () => import('@studio-freight/react-lenis').then((mod) => mod.ReactLenis),
+  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
   { ssr: false }
 );
 
 export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+
+  // Use window scroll instead of target ref to avoid hydration mismatch
+  const { scrollYProgress } = useScroll();
 
   const teamMembers = [
     {

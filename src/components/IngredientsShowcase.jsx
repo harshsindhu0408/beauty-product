@@ -1,41 +1,33 @@
 "use client";
 import React from "react";
-import { DollarSign, Shield, Award, Leaf, Package, Heart } from "lucide-react";
+import { Sparkles, Droplet, Leaf, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
-const WhyChooseUs = () => {
-  const features = [
+const IngredientsShowcase = () => {
+  const ingredients = [
     {
-      icon: Award,
-      title: "Premium Quality",
-      description:
-        "Finest ingredients crafted with care for exceptional results.",
-    },
-    {
-      icon: Shield,
-      title: "100% Authentic",
-      description: "Quality-checked products with free return guarantee.",
+      icon: Droplet,
+      name: "Hyaluronic Acid",
+      benefit: "Deep Hydration",
+      description: "Locks in moisture for plump, dewy skin.",
     },
     {
       icon: Leaf,
-      title: "Eco-Friendly",
-      description:
-        "Sustainable ingredients and environmentally conscious practices.",
+      name: "Natural Botanicals",
+      benefit: "Pure & Gentle",
+      description: "Plant-based ingredients that nourish naturally.",
     },
     {
-      icon: DollarSign,
-      title: "Best Value",
-      description: "Premium products at competitive prices for everyone.",
+      icon: Sparkles,
+      name: "Vitamin C",
+      benefit: "Radiant Glow",
+      description: "Brightens and evens skin tone.",
     },
     {
-      icon: Package,
-      title: "Fast Delivery",
-      description: "Quick and secure shipping to your doorstep.",
-    },
-    {
-      icon: Heart,
-      title: "Expert Care",
-      description: "Professional-grade formulations for your skin.",
+      icon: Shield,
+      name: "Antioxidants",
+      benefit: "Protection",
+      description: "Defends against environmental damage.",
     },
   ];
 
@@ -73,7 +65,7 @@ const WhyChooseUs = () => {
             viewport={{ once: true }}
             className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-3 font-medium"
           >
-            Our Promise
+            Power Ingredients
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -82,7 +74,7 @@ const WhyChooseUs = () => {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900 leading-tight mb-4"
           >
-            Why Choose Us
+            What Makes It Work
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -91,42 +83,40 @@ const WhyChooseUs = () => {
             transition={{ delay: 0.2 }}
             className="text-sm md:text-base text-gray-600 leading-relaxed"
           >
-            Experience the difference with premium beauty products crafted for
-            exceptional results.
+            Scientifically proven ingredients that deliver real results.
           </motion.p>
         </div>
 
-        {/* Features Grid */}
+        {/* Ingredients Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {features.map((feature, index) => (
+          {ingredients.map((ingredient, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="group cursor-pointer relative bg-white rounded-2xl p-8 transition-all duration-300 hover:shadow-lg border border-gray-100 hover:border-gray-200"
+              className="group text-center p-8 bg-white rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300"
             >
               {/* Icon */}
-              <div className="mb-6">
-                <div className="w-14 h-14 rounded-full bg-gray-900 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md group-hover:shadow-lg group-hover:bg-gray-800">
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-50 rounded-full mb-6 group-hover:bg-gray-900 transition-colors duration-300">
+                <ingredient.icon className="w-7 h-7 text-gray-900 group-hover:text-white transition-colors duration-300" />
               </div>
 
               {/* Content */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 font-serif">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2 font-serif">
+                {ingredient.name}
+              </h3>
+              <p className="text-xs uppercase tracking-wider text-gray-500 mb-3 font-semibold">
+                {ingredient.benefit}
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {ingredient.description}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -135,4 +125,4 @@ const WhyChooseUs = () => {
   );
 };
 
-export default WhyChooseUs;
+export default IngredientsShowcase;

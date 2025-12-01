@@ -364,18 +364,18 @@ const ProductSection = ({
               </p>
 
               {/* Original Price */}
-              {product.compareAtPrice > finalPrice && (
+              {selectedVariant?.compareAtPrice > finalPrice && (
                 <p className="text-xl text-gray-400 line-through">
-                  ₹{product.compareAtPrice.toLocaleString("en-IN")}
+                  ₹{selectedVariant?.compareAtPrice}
                 </p>
               )}
 
               {/* Discount Percentage */}
-              {product.compareAtPrice > finalPrice && (
+              {selectedVariant?.compareAtPrice > finalPrice && (
                 <span className="bg-green-100 text-green-800 text-sm font-semibold px-2.5 py-1 rounded-full">
                   {Math.round(
-                    ((product.compareAtPrice - finalPrice) /
-                      product.compareAtPrice) *
+                    ((selectedVariant?.compareAtPrice - finalPrice) /
+                      selectedVariant?.compareAtPrice) *
                       100
                   )}
                   % OFF

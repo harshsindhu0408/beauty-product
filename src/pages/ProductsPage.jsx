@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
+import { Filter, FilterIcon } from "lucide-react";
 
 export async function getServerSideProps() {
   return {
@@ -272,29 +273,12 @@ export default function ProductsPage({
   return (
     <>
       <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed inset-0 bg-white z-50 flex items-center justify-center"
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                className="w-12 h-12 border-4 border-t-transparent border-r-transparent border-pink-500 border-l-pink-500 rounded-full"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <main
           ref={containerRef}
           className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
         >
           {/* Hero Section */}
-          <section className="relative pt-26 flex items-center justify-center overflow-hidden">
+          <section className="relative flex items-center justify-center overflow-hidden">
             <motion.div
               style={{ y: y1, opacity }}
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
@@ -382,36 +366,15 @@ export default function ProductsPage({
 
                 {/* Filter Toggle Button */}
                 <div className="flex items-center gap-4">
-                  <motion.button
-                    onClick={() => setShowFilters(!showFilters)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="4" y1="21" x2="4" y2="14"></line>
-                      <line x1="4" y1="10" x2="4" y2="3"></line>
-                      <line x1="12" y1="21" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12" y2="3"></line>
-                      <line x1="20" y1="21" x2="20" y2="16"></line>
-                      <line x1="20" y1="12" x2="20" y2="3"></line>
-                      <line x1="1" y1="14" x2="7" y2="14"></line>
-                      <line x1="9" y1="8" x2="15" y2="8"></line>
-                      <line x1="17" y1="16" x2="23" y2="16"></line>
-                    </svg>
-                    Filters
-                  </motion.button>
-
+                <motion.button
+                  onClick={() => setShowFilters(!showFilters)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex cursor-pointer items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  <FilterIcon/> 
+                  <span>Filters</span>
+                </motion.button>
                   {(filters.category !== "all" ||
                     filters.minPrice ||
                     filters.maxPrice ||

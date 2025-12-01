@@ -1,115 +1,159 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import MainContent from "./MainContent";
 import ReviewsCard from "./ReviewsCard";
 import Navigation from "./Navigation";
+import NextImage from "next/image";
 
-// Sample images - replace these URLs with your actual images
-const backgroundImages = [
-  "/hero1.webp",
-  "/hero2.webp",
-  "/hero3.webp",
-  "/hero4.webp",
-  "/hero5.webp",
-];
+// Preload images for better performance
+const preloadImages = (imageUrls) => {
+  if (typeof window === "undefined") return;
 
-const BackgroundSlider = ({ imageRef }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isClient, setIsClient] = useState(false);
+  imageUrls.forEach((url) => {
+    const img = new window.Image(); // Use window.Image for SSR safety
+    img.src = url;
+  });
+};
+
+const BackgroundSlider = ({ imageRef, banners, currentIndex, containerHeight }) => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const sliderRef = useRef(null);
-  const intervalRef = useRef(null);
+  const gsapRef = useRef(null);
 
+  // Memoize image URLs to prevent unnecessary re-renders
+  const memoizedImages = useMemo(
+    () => banners.map((b) => b.image.url),
+    [banners]
+  );
+
+  // Load GSAP once
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    // Auto-play functionality
-    const startAutoPlay = () => {
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-          prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000); // Change image every 5 seconds
-    };
-
-    startAutoPlay();
-
-    // Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    const loadGSAP = async () => {
+      if (typeof window !== "undefined" && !window.gsap) {
+        const { default: gsap } = await import("gsap");
+        gsapRef.current = gsap;
+        window.gsap = gsap;
+      } else if (window.gsap) {
+        gsapRef.current = window.gsap;
       }
     };
-  }, [isClient]);
 
+    loadGSAP();
+  }, []);
+
+  // Preload images and set loaded state
   useEffect(() => {
-    if (!isClient || typeof window === "undefined" || !window.gsap) return;
+    if (memoizedImages.length === 0) return;
 
-    const { gsap } = window;
-    const images = sliderRef.current?.querySelectorAll(".bg-image");
+    preloadImages(memoizedImages);
 
-    if (images) {
-      // Hide all images first
-      gsap.set(images, { opacity: 0 });
+    // Check if images are loaded
+    let loadedCount = 0;
+    const totalImages = memoizedImages.length;
 
-      // Show current image with fade effect
-      gsap.to(images[currentIndex], {
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-      });
+    const checkImageLoad = () => {
+      loadedCount++;
+      if (loadedCount === totalImages) {
+        setImagesLoaded(true);
+      }
+    };
 
-      // Hide previous images
-      images.forEach((img, index) => {
-        if (index !== currentIndex) {
-          gsap.to(img, {
-            opacity: 0,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        }
-      });
+    memoizedImages.forEach((url) => {
+      const img = new window.Image(); // Use window.Image for SSR safety
+      img.onload = checkImageLoad;
+      img.onerror = checkImageLoad; // Even if error, count it
+      img.src = url;
+    });
+
+    // Fallback timeout
+    const timeoutId = setTimeout(() => setImagesLoaded(true), 1000);
+    return () => clearTimeout(timeoutId);
+  }, [memoizedImages]);
+
+  // GSAP animations with debouncing
+  useEffect(() => {
+    if (!imagesLoaded || !gsapRef.current) return;
+
+    const images = sliderRef.current?.querySelectorAll(".bg-image-container");
+    if (!images || images.length === 0) return;
+
+    const gsap = gsapRef.current;
+
+    // Animate only the current and previous images
+    gsap.to(images[currentIndex], {
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.out",
+      zIndex: 2,
+    });
+
+    // Ken Burns effect for current image
+    const currentImgElement = images[currentIndex].querySelector("img");
+    if (currentImgElement) {
+      gsap.fromTo(
+        currentImgElement,
+        { scale: 1 },
+        { scale: 1.05, duration: 10, ease: "power1.out" }
+      );
     }
-  }, [currentIndex, isClient]);
 
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-    // Reset the interval when user manually changes slide
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-          prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000);
-    }
-  };
-
-  if (!isClient) return null;
+    // Hide all other images
+    Array.from(images).forEach((container, index) => {
+      if (index !== currentIndex) {
+        gsap.to(container, {
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          zIndex: 1,
+        });
+      }
+    });
+  }, [currentIndex, imagesLoaded]);
 
   return (
-    <div ref={imageRef} className="absolute inset-0 w-full h-full">
+    <div 
+      ref={imageRef} 
+      className="absolute inset-0 w-full bg-gray-900"
+      style={{ height: containerHeight }}
+    >
       <div ref={sliderRef} className="relative w-full h-full">
-        {backgroundImages.map((image, index) => (
+        {memoizedImages.map((image, index) => (
           <div
-            key={index}
-            className="bg-image absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            key={`bg-image-${index}`}
+            className="bg-image-container absolute inset-0 w-full h-full overflow-hidden"
             style={{
-              backgroundImage: `url(${image})`,
               opacity: index === currentIndex ? 1 : 0,
+              zIndex: index === currentIndex ? 2 : 1,
             }}
-          />
+          >
+            <NextImage
+              src={image}
+              alt={`Banner ${index + 1}`}
+              fill
+              priority={index === 0}
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 100vw, 100vw"
+              quality={100}
+            />
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black/5" />
+          </div>
         ))}
       </div>
     </div>
   );
 };
 
-// Main Hero Component with Background Slider
-const BeaucareHero = () => {
+// Main Hero Component with optimizations
+const BeaucareHero = ({ banners = [] }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [heroHeight, setHeroHeight] = useState("85vh"); // Default height
   const heroRef = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
@@ -117,190 +161,398 @@ const BeaucareHero = () => {
   const navRef = useRef(null);
   const reviewsRef = useRef(null);
   const imageRef = useRef(null);
-  const [isClient, setIsClient] = useState(false);
+  const gsapRef = useRef(null);
+  const rafRef = useRef(null);
+  const intervalRef = useRef(null);
 
+  // Use Intersection Observer for scroll animations
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Responsive height calculation
   useEffect(() => {
-    setIsClient(true);
+    const calculateHeroHeight = () => {
+      if (typeof window === "undefined") return;
+      
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      // Mobile devices (portrait)
+      if (width <= 640) {
+        // For mobile, use a percentage of viewport height
+        // or screen height minus navigation
+        return height <= 667 ? "85vh" : "75vh"; // iPhone SE to larger phones
+      }
+      
+      // Tablet devices
+      if (width <= 1024) {
+        // For tablets, adjust based on orientation
+        const isPortrait = height > width;
+        return isPortrait ? "70vh" : "65vh";
+      }
+      
+      // Desktop devices
+      if (width <= 1440) {
+        return "75vh";
+      }
+      
+      // Large desktop screens
+      return "70vh";
+    };
+
+    const updateHeight = () => {
+      setHeroHeight(calculateHeroHeight());
+    };
+
+    // Initial calculation
+    updateHeight();
+
+    // Update on resize with debounce
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateHeight, 150);
+    };
+
+    window.addEventListener("resize", handleResize);
+    
+    // Also update on orientation change
+    window.addEventListener("orientationchange", updateHeight);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", updateHeight);
+      clearTimeout(resizeTimeout);
+    };
   }, []);
 
+  // Auto-play logic
   useEffect(() => {
-    if (!isClient) return;
+    if (!banners || banners.length === 0) return;
 
-    const initAnimations = () => {
-      if (typeof window !== "undefined" && window.gsap) {
-        const { gsap } = window;
+    const startAutoPlay = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
 
-        // Set initial states
-        gsap.set([titleRef.current, subtitleRef.current, buttonRef.current], {
-          opacity: 0,
-          y: 100,
-        });
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+      }, 5000);
+    };
 
-        gsap.set(navRef.current, {
-          opacity: 0,
-          y: -30,
-        });
+    startAutoPlay();
 
-        gsap.set(reviewsRef.current, {
-          opacity: 0,
-          scale: 0.8,
-        });
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [banners.length]);
 
-        gsap.set(imageRef.current, {
-          opacity: 0,
-          scale: 1.1,
-        });
-
-        const tl = gsap.timeline({ delay: 0.2 });
-
-        tl.to(imageRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 1.5,
-          ease: "power2.out",
-        })
-
-          .to(
-            navRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-            "-=1.2"
-          )
-
-          .to(
-            titleRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1,
-              ease: "power2.out",
-            },
-            "-=0.5"
-          )
-
-          .to(
-            subtitleRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-            "-=0.3"
-          )
-
-          .to(
-            buttonRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              ease: "power2.out",
-            },
-            "-=0.2"
-          )
-
-          .to(
-            reviewsRef.current,
-            {
-              opacity: 1,
-              scale: 1,
-              duration: 0.8,
-              ease: "back.out(1.7)",
-            },
-            "-=0.4"
-          );
-
-        const handleScroll = () => {
-          if (typeof window !== "undefined") {
-            const scrolled = window.pageYOffset;
-            const parallaxSpeed = 0.5;
-
-            if (imageRef.current) {
-              gsap.to(imageRef.current, {
-                y: scrolled * parallaxSpeed,
-                duration: 0.8,
-                ease: "power2.out",
-              });
-            }
-          }
-        };
-
-        if (typeof window !== "undefined") {
-          window.addEventListener("scroll", handleScroll);
-        }
-
-        return () => {
-          if (typeof window !== "undefined") {
-            window.removeEventListener("scroll", handleScroll);
-          }
-        };
+  // Load GSAP with dynamic import
+  useEffect(() => {
+    const loadGSAP = async () => {
+      if (typeof window !== "undefined" && !window.gsap) {
+        const { default: gsap } = await import("gsap");
+        gsapRef.current = gsap;
+        window.gsap = gsap;
+        initAnimations();
+      } else if (window.gsap) {
+        gsapRef.current = window.gsap;
+        initAnimations();
       }
     };
 
-    if (typeof window !== "undefined") {
-      if (!window.gsap) {
-        const script = document.createElement("script");
-        script.src =
-          "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js";
-        script.onload = initAnimations;
-        document.head.appendChild(script);
-      } else {
-        initAnimations();
+    loadGSAP();
+
+    // Cleanup
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
       }
-    }
-  }, [isClient]);
+    };
+  }, []);
 
-  const handleButtonHover = (isHovering) => {
-    if (typeof window !== "undefined" && window.gsap && buttonRef.current) {
-      window.gsap.to(buttonRef.current, {
+  // Intersection Observer for hero section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "50px",
+      }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    return () => {
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current);
+      }
+    };
+  }, []);
+
+  // Optimized scroll handler with requestAnimationFrame
+  const handleScroll = useCallback(() => {
+    if (!isVisible || !imageRef.current || !gsapRef.current) return;
+
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+
+    rafRef.current = requestAnimationFrame(() => {
+      const scrolled = window.pageYOffset;
+      const parallaxSpeed = 0.3; // Reduced for better performance
+
+      gsapRef.current.to(imageRef.current, {
+        y: scrolled * parallaxSpeed,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    });
+  }, [isVisible]);
+
+  // Throttled scroll event listener
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+      }
+    };
+
+    window.addEventListener("scroll", throttledScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", throttledScroll);
+    };
+  }, [isVisible, handleScroll]);
+
+  const initAnimations = useCallback(() => {
+    if (!gsapRef.current || !isVisible) return;
+
+    // Filter out null refs
+    const elementsToAnimate = [
+      titleRef.current,
+      subtitleRef.current,
+      buttonRef.current,
+    ].filter(Boolean);
+
+    if (elementsToAnimate.length > 0) {
+      gsapRef.current.set(elementsToAnimate, {
+        opacity: 0,
+        y: 50,
+      });
+    }
+
+    if (navRef.current) {
+      gsapRef.current.set(navRef.current, {
+        opacity: 0,
+        y: -20,
+      });
+    }
+
+    if (reviewsRef.current) {
+      gsapRef.current.set(reviewsRef.current, {
+        opacity: 0,
+        scale: 0.95,
+      });
+    }
+
+    if (imageRef.current) {
+      gsapRef.current.set(imageRef.current, {
+        opacity: 0,
+        scale: 1.05,
+      });
+    }
+
+    // Create timeline
+    const tl = gsapRef.current.timeline({
+      delay: 0.1,
+      defaults: { ease: "power2.out" },
+    });
+
+    if (imageRef.current) {
+      tl.to(imageRef.current, {
+        opacity: 1,
+        scale: 1,
+        duration: 1.2,
+      });
+    }
+
+    if (navRef.current) {
+      tl.to(
+        navRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.8"
+      );
+    }
+
+    if (titleRef.current) {
+      tl.to(
+        titleRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+        },
+        "-=0.4"
+      );
+    }
+
+    if (subtitleRef.current) {
+      tl.to(
+        subtitleRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        },
+        "-=0.2"
+      );
+    }
+
+    if (buttonRef.current) {
+      tl.to(
+        buttonRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+        },
+        "-=0.1"
+      );
+    }
+
+    if (reviewsRef.current) {
+      tl.to(
+        reviewsRef.current,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "back.out(1.4)",
+        },
+        "-=0.3"
+      );
+    }
+  }, [isVisible]);
+
+  // Re-run animations when component becomes visible
+  useEffect(() => {
+    if (isVisible && gsapRef.current) {
+      initAnimations();
+    }
+  }, [isVisible, initAnimations]);
+
+  // Animate text change
+  useEffect(() => {
+    if (!gsapRef.current) return;
+    const gsap = gsapRef.current;
+
+    const elementsToAnimate = [titleRef.current, subtitleRef.current].filter(
+      Boolean
+    );
+
+    if (elementsToAnimate.length > 0) {
+      const tl = gsap.timeline();
+      tl.fromTo(
+        elementsToAnimate,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
+      );
+    }
+  }, [currentIndex]);
+
+  const handleButtonHover = useCallback((isHovering) => {
+    if (gsapRef.current && buttonRef.current) {
+      gsapRef.current.to(buttonRef.current, {
         scale: isHovering ? 1.05 : 1,
-        duration: 0.3,
+        duration: 0.2,
         ease: "power2.out",
       });
     }
-  };
+  }, []);
 
-  const handleNavItemHover = (element, isHovering) => {
-    if (typeof window !== "undefined" && window.gsap) {
-      window.gsap.to(element, {
+  const handleNavItemHover = useCallback((element, isHovering) => {
+    if (gsapRef.current && element) {
+      gsapRef.current.to(element, {
         scale: isHovering ? 0.95 : 1,
-        duration: 0.3,
+        duration: 0.2,
         ease: "power2.out",
       });
     }
-  };
+  }, []);
+
+  const currentBanner =
+    banners && banners.length > 0 ? banners[currentIndex] : null;
 
   return (
-    <div ref={heroRef} className="relative min-h-screen overflow-hidden">
-      {/* Background Slider */}
-      <BackgroundSlider imageRef={imageRef} />
+    <div
+      ref={heroRef}
+      className="flex flex-col w-full"
+      // Prevent image drag
+      onDragStart={(e) => e.preventDefault()}
+    >
+      {/* Navigation - Sticky and separate */}
+      <Navigation navRef={navRef} handleNavItemHover={handleNavItemHover} />
 
-      {/* Dark Overlay for Better Text Readability */}
-      <div className="absolute inset-0 bg-black/20" />
+      {/* Hero Section with dynamic height */}
+      <div 
+        className="relative w-full overflow-hidden"
+        style={{ 
+          height: heroHeight,
+          minHeight: "400px", // Fallback minimum height
+          maxHeight: "900px", // Prevent it from getting too tall on large screens
+        }}
+      >
+        {/* Background Slider with optimized loading */}
+        {banners && banners.length > 0 && (
+          <BackgroundSlider
+            imageRef={imageRef}
+            banners={banners}
+            currentIndex={currentIndex}
+            containerHeight={heroHeight}
+          />
+        )}
 
-      {/* Content */}
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Navigation Component */}
-        <Navigation navRef={navRef} handleNavItemHover={handleNavItemHover} />
-
-        {/* Main Content Component */}
-        <MainContent
-          titleRef={titleRef}
-          subtitleRef={subtitleRef}
-          buttonRef={buttonRef}
-          handleButtonHover={handleButtonHover}
+        {/* Optimized overlay with gradient for performance */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 100%)",
+          }}
         />
 
-        {/* Reviews Card Component */}
-        <ReviewsCard reviewsRef={reviewsRef} />
+        {/* Content with optimized stacking context */}
+        <div className="relative z-10 h-full flex flex-col justify-end pb-6 md:pb-10 lg:pb-12 px-4 sm:px-6 md:px-8 lg:px-12">
+          <MainContent
+            titleRef={titleRef}
+            subtitleRef={subtitleRef}
+            buttonRef={buttonRef}
+            handleButtonHover={handleButtonHover}
+            title={currentBanner?.title}
+            description={currentBanner?.description}
+            targetUrl={currentBanner?.targetUrl}
+          />
+
+          {/* <ReviewsCard reviewsRef={reviewsRef} isVisible={isVisible} /> */}
+        </div>
       </div>
     </div>
   );
 };
 
-export default BeaucareHero;
+export default React.memo(BeaucareHero);

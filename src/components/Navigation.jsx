@@ -44,7 +44,6 @@ const debounce = (func, wait) => {
   };
 };
 
-
 // Search Result Skeleton
 const SearchResultSkeleton = () => (
   <div className="flex items-center gap-4 p-3 animate-pulse">
@@ -56,6 +55,48 @@ const SearchResultSkeleton = () => (
   </div>
 );
 
+const Logo = () => (
+  <div className="relative group cursor-pointer flex items-center gap-2">
+    <div className="relative w-10 h-10">
+      <svg
+        viewBox="0 0 100 100"
+        className="w-full h-full transform transition-transform duration-500 group-hover:rotate-180"
+      >
+        <defs>
+          <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1a1a1a" />
+            <stop offset="100%" stopColor="#4a4a4a" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M50 0 C20 0 0 20 0 50 C0 80 20 100 50 100 C80 100 100 80 100 50 C100 20 80 0 50 0 Z M50 90 C30 90 10 70 10 50 C10 30 30 10 50 10 C70 10 90 30 90 50 C90 70 70 90 50 90 Z"
+          fill="url(#leafGradient)"
+          className="opacity-20"
+        />
+        <path
+          d="M50 20 C35 20 25 35 25 50 C25 65 35 80 50 80 C65 80 75 65 75 50 C75 35 65 20 50 20 Z"
+          fill="none"
+          stroke="url(#leafGradient)"
+          strokeWidth="2"
+          className="animate-[spin_1s_ease-out_1]"
+        />
+        <path
+          d="M50 25 C50 25 30 40 30 60 C30 75 45 75 50 60 C55 75 70 75 70 60 C70 40 50 25 50 25 Z"
+          fill="url(#leafGradient)"
+        />
+      </svg>
+    </div>
+    <div className="flex flex-col">
+      <span className="text-xl font-serif font-bold tracking-wider text-gray-900 leading-none">
+        SAUNDRYA
+      </span>
+      <span className="text-[10px] font-sans tracking-[0.3em] text-gray-500 uppercase">
+        Earth
+      </span>
+    </div>
+  </div>
+);
+
 const Navigation = ({ navRef }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +104,7 @@ const Navigation = ({ navRef }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [hasCompletedSearch, setHasCompletedSearch] = useState(false);
-  
+
   const searchContainerRef = useRef(null);
   const router = useRouter();
 
@@ -166,7 +207,7 @@ const Navigation = ({ navRef }) => {
 
   // Search Results Content
   const searchResultsContent = (
-    <div className="max-h-[60vh] overflow-y-auto">
+    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
       {searchQuery.trim() && !hasCompletedSearch && (
         <div className="p-2">
           <SearchResultSkeleton />
@@ -197,22 +238,22 @@ const Navigation = ({ navRef }) => {
                       router.push(`/products/${product.slug || product._id}`);
                       handleResultClick();
                     }}
-                    className="block w-full text-left p-3 hover:bg-gray-100/80 transition-colors rounded-lg cursor-pointer"
+                    className="block w-full text-left p-3 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer group"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="relative flex-shrink-0 h-16 w-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                      <div className="relative flex-shrink-0 h-16 w-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden group-hover:shadow-md transition-shadow">
                         {imageUrl ? (
                           <img
                             src={imageUrl}
                             alt={product.name}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                           />
                         ) : (
                           <ImageIcon className="h-8 w-8 text-gray-400" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 truncate">
+                        <p className="font-semibold text-sm text-gray-900 truncate group-hover:text-black transition-colors">
                           {product.name}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">
@@ -231,10 +272,12 @@ const Navigation = ({ navRef }) => {
           <div className="p-2 border-t border-gray-100">
             <div
               onClick={() => {
-                router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+                router.push(
+                  `/products?search=${encodeURIComponent(searchQuery)}`
+                );
                 handleClearSearch();
               }}
-              className="group flex items-center justify-center w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
+              className="group flex items-center justify-center w-full text-center px-4 py-3 text-sm font-semibold text-white bg-black rounded-lg hover:bg-gray-800 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               View All {searchResults.length}+ Results
               <ArrowRight className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" />
@@ -247,32 +290,33 @@ const Navigation = ({ navRef }) => {
 
   return (
     <>
-      <nav ref={navRef} className="top-0 left-0 right-0 z-50 px-4 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="backdrop-blur-lg rounded-full px-4 py-2 sm:px-8 sm:py-4 flex items-center justify-between border-2 bg-white/20 border-white/45 transition-all duration-300">
-            
+      <nav
+        ref={navRef}
+        className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 transition-all duration-300"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20 gap-8">
             {/* Left: Logo */}
-            <div className="text-2xl sm:text-3xl font-bold font-serif text-white tracking-wide cursor-pointer"
-              onClick={() => handleNavigation("/")}>
-              Saundrya Earth
+            <div onClick={() => handleNavigation("/")}>
+              <Logo />
             </div>
 
             {/* Center: Search */}
             <div
               ref={searchContainerRef}
-              className="hidden md:flex items-center flex-1 mx-8 max-w-lg relative"
+              className="hidden md:flex items-center flex-1 max-w-xl relative group"
             >
-              <form
-                onSubmit={handleSearchSubmit}
-                className="w-full"
-              >
-                <div className="relative flex items-center w-full h-12 rounded-full 
-                           bg-white/20 border border-white/40 
-                           focus-within:bg-white/30 focus-within:border-white/60
-                           transition-all duration-300 ease-in-out">
+              <form onSubmit={handleSearchSubmit} className="w-full">
+                <div
+                  className="relative flex items-center w-full h-12 rounded-full 
+                           bg-gray-50 border border-gray-200
+                           focus-within:bg-white focus-within:border-gray-400 focus-within:shadow-lg
+                           hover:border-gray-300
+                           transition-all duration-300 ease-out"
+                >
                   <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none z-10"
-                    size={20}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10 transition-colors group-focus-within:text-gray-600"
+                    size={18}
                   />
 
                   <AnimatePresence mode="wait">
@@ -283,7 +327,7 @@ const Navigation = ({ navRef }) => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="absolute left-12 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none"
+                        className="absolute left-12 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none font-medium tracking-wide"
                       >
                         {placeholders[placeholderIndex]}
                       </motion.div>
@@ -295,8 +339,8 @@ const Navigation = ({ navRef }) => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
-                    className="w-full h-full pl-12 pr-10 rounded-full text-white 
-                             bg-transparent placeholder-transparent 
+                    className="w-full h-full pl-12 pr-10 rounded-full text-gray-900 
+                             bg-transparent placeholder-transparent text-sm font-medium
                              focus:outline-none focus:ring-0"
                   />
 
@@ -308,10 +352,10 @@ const Navigation = ({ navRef }) => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-white/70 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                         aria-label="Clear search"
                       >
-                        <X size={18} />
+                        <X size={16} />
                       </motion.button>
                     )}
                   </AnimatePresence>
@@ -321,11 +365,11 @@ const Navigation = ({ navRef }) => {
               <AnimatePresence>
                 {isSearchFocused && searchQuery.trim().length > 0 && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                    className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-white/20 bg-white/95 backdrop-blur-lg shadow-2xl z-50 overflow-hidden"
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="absolute top-full left-0 right-0 mt-4 rounded-2xl border border-gray-100 bg-white shadow-2xl z-50 overflow-hidden ring-1 ring-black/5"
                   >
                     {searchResultsContent}
                   </motion.div>
@@ -334,17 +378,24 @@ const Navigation = ({ navRef }) => {
             </div>
 
             {/* Right: Nav Tabs */}
-            <div className="hidden md:flex items-center space-x-10">
+            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 return (
                   <div
                     key={link.name}
                     onClick={() => handleNavigation(link.href)}
-                    className="flex items-center gap-1 font-light text-lg text-white/90 hover:text-white transition-colors duration-300 cursor-pointer"
+                    className="group flex flex-col items-center gap-1 cursor-pointer"
                   >
-                    <Icon className="h-4 w-4" />
-                    {link.name}
+                    <div className="relative p-2 rounded-full group-hover:bg-gray-50 transition-colors duration-300">
+                      <Icon className="h-5 w-5 text-gray-600 group-hover:text-black transition-colors duration-300" />
+                      {link.name === "Cart" && (
+                        <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full ring-2 ring-white" />
+                      )}
+                    </div>
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-gray-500 group-hover:text-black transition-colors duration-300">
+                      {link.name}
+                    </span>
                   </div>
                 );
               })}
@@ -352,7 +403,7 @@ const Navigation = ({ navRef }) => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-white transition-colors duration-300"
+              className="md:hidden p-2 text-gray-900 transition-colors duration-300 hover:bg-gray-50 rounded-full"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -360,48 +411,60 @@ const Navigation = ({ navRef }) => {
           </div>
 
           {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="md:hidden mt-4 backdrop-blur-lg rounded-2xl p-6 space-y-4 bg-white/95 transition-all duration-300">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <div
-                    key={link.name}
-                    onClick={() => handleNavigation(link.href)}
-                    className="flex items-center gap-2 font-medium py-2 text-gray-800 transition-colors duration-300 cursor-pointer"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {link.name}
-                  </div>
-                );
-              })}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="md:hidden overflow-hidden border-t border-gray-100"
+              >
+                <div className="py-6 space-y-6 bg-white">
+                  {/* Mobile Search */}
+                  <div className="relative px-4">
+                    <form
+                      onSubmit={handleSearchSubmit}
+                      className="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-3 border border-gray-100 focus-within:border-gray-300 focus-within:shadow-sm transition-all"
+                    >
+                      <Search className="h-5 w-5 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-transparent text-gray-900 placeholder-gray-400 text-base outline-none w-full font-medium"
+                      />
+                    </form>
 
-              <hr className="border-gray-200 transition-colors duration-300" />
-
-              {/* Mobile Search */}
-              <div className="relative">
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2"
-                >
-                  <Search className="h-4 w-4 text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent text-gray-700 placeholder-gray-500 text-sm outline-none w-full"
-                  />
-                </form>
-                
-                {searchQuery.trim() && (
-                  <div className="absolute top-full left-0 right-0 mt-2 rounded-lg border bg-white shadow-sm overflow-hidden z-10">
-                    {searchResultsContent}
+                    {searchQuery.trim() && (
+                      <div className="absolute top-full left-4 right-4 mt-2 rounded-xl border bg-white shadow-xl overflow-hidden z-10">
+                        {searchResultsContent}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-          )}
+
+                  <div className="grid grid-cols-2 gap-4 px-4">
+                    {navLinks.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <div
+                          key={link.name}
+                          onClick={() => handleNavigation(link.href)}
+                          className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all duration-200 cursor-pointer"
+                        >
+                          <Icon className="h-6 w-6 text-gray-700" />
+                          <span className="font-medium text-sm text-gray-900">
+                            {link.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
     </>

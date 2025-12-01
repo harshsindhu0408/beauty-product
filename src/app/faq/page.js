@@ -77,36 +77,6 @@ const FAQPage = () => {
         ref={containerRef}
         className="min-h-screen bg-gradient-to-b from-emerald-50 to-white"
       >
-        {/* Floating decorative elements */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-          <motion.div
-            className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-100/20 rounded-full filter blur-[100px]"
-            animate={{
-              x: ["0%", "5%", "0%"],
-              y: ["0%", "10%", "0%"],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-amber-100/20 rounded-lg rotate-45 filter blur-[90px]"
-            animate={{
-              x: ["0%", "-8%", "0%"],
-              y: ["0%", "-12%", "0%"],
-            }}
-            transition={{
-              duration: 30,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-              delay: 3,
-            }}
-          />
-        </div>
 
         {/* Hero Section */}
         <section className="relative pt-26  pb-10 px-6">

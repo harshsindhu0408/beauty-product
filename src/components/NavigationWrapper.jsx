@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import NavigationMain from "./NavigationMain";
+import Navigation from "./Navigation";
 
 export default function NavigationWrapper() {
   const pathname = usePathname();
@@ -10,5 +10,5 @@ export default function NavigationWrapper() {
     return null;
   }
   
-  return <NavigationMain />;
+  return <Navigation />;
 }

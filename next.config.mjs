@@ -5,13 +5,27 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "8080", // 👈 allow your backend dev server
-        pathname: "/uploads/products/**",
+        pathname: "/uploads/**",
       },
       {
         protocol: "https",
         hostname: "api.saundryaearth.com",
         pathname: "/uploads/products/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.saundryaearth.com",
+        pathname: "/uploads/banners/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.saundryaearth.com",
+        pathname: "/uploads/categories/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
     ],
   },
