@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Plus, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
+import { clientFetch } from "@/services/clientfetch";
 
 const ProductShowcase = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -11,61 +12,74 @@ const ProductShowcase = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showExitAnimation, setShowExitAnimation] = useState(false);
   const [showEnterAnimation, setShowEnterAnimation] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const sectionRef = useRef(null);
   const autoPlayRef = useRef(null);
 
-  const products = [
-    {
-      id: 1,
-      title: "Our New Quality Product For Your Beauty",
-      image: "/droper1.png",
-      description:
-        "Serum is a lightweight, fast-absorbing formula designed to target breakouts and reduce skin redness. Infused with salicylic acid and soothing botanicals, it helps unclog pores and prevent future acne without stripping the skin. P in E and ferulic acid for maximum potency.",
-      price: 29.5,
-      background: "",
-      backgroundText: "Silvara blemmis",
-    },
-    {
-      id: 2,
-      title: "Premium Hydrating Moisturizer",
-      image: "/droper.png",
-      description:
-        "Rich, nourishing moisturizer with hyaluronic acid and ceramides. Perfect for dry and sensitive skin, providing 24-hour hydration while strengthening the skin barrier. Powerful antioxidant serum with 20% Vitamin C to brigh aximum potency.",
-      price: 35.0,
-      background: "",
-      backgroundText: "Hydra luxe",
-    },
-    {
-      id: 3,
-      title: "Vitamin C Brightening Serum",
-      image: "/droper1.png",
-      description:
-        "Powerful antioxidant serum with 20% Vitamin C to brighten dull skin and reduce dark spots. Enhanced with vitamin E and ferulic acid for maximum potency. Powerful antioxidant serum with 20% Vitamin C to bri id for maximum potency.",
-      price: 42.0,
-      background: "",
-      backgroundText: "Vitamin glow",
-    },
-  ];
-
-  // Auto-play functionality
+  // Fetch products from API
   useEffect(() => {
-    if (isAutoPlaying && isVisible) {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const result = await clientFetch(`product`, {
+          method: "GET",
+        });
+
+        if (result.success && result.data && result.data.products) {
+          // Transform API products to match your component structure
+          const transformedProducts = result.data.products.map((product, index) => ({
+            id: product._id,
+            title: product.name,
+            image: product.images && product.images.length > 0 ? 
+                   product.images.find(img => img.isPrimary)?.url || product.images[0].url : 
+                   "/droper1.png", // fallback image
+            description: product.shortDescription || product.description,
+            price: (product.price / 100).toFixed(1),
+            background: "",
+            backgroundText: product.brand?.name || "Product"
+          }));
+          setProducts(transformedProducts);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        // Fallback to default products if API fails
+        setProducts([
+          {
+            id: 1,
+            title: "Our New Quality Product For Your Beauty",
+            image: "/droper1.png",
+            description: "Serum is a lightweight, fast-absorbing formula designed to target breakouts and reduce skin redness.",
+            price: 29.5,
+            background: "",
+            backgroundText: "Silvara blemmis",
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Auto-play functionality - updated dependency
+  useEffect(() => {
+    if (isAutoPlaying && isVisible && products.length > 0) {
       autoPlayRef.current = setInterval(() => {
         setShowExitAnimation(true);
         setShowEnterAnimation(false);
         setSlideDirection("next");
 
-        // First show exit animation
         setTimeout(() => {
           setCurrentSlide((prev) => (prev + 1) % products.length);
           setShowExitAnimation(false);
 
-          // Trigger enter animation after slide change
           setTimeout(() => {
             setShowEnterAnimation(true);
-          }, 50); // Small delay to ensure DOM update
-        }, 400); // Exit animation duration
-      }, 4000); // Change slide every 4 seconds
+          }, 50);
+        }, 400);
+      }, 4000);
     }
 
     return () => {
@@ -161,11 +175,30 @@ const ProductShowcase = () => {
     setTimeout(resumeAutoPlay, 8000);
   };
 
+  if (loading) {
+    return (
+      <section id="product" className="sm:py-20 px-4 md:px-20 relative z-0 overflow-hidden">
+        <div className="flex justify-center items-center h-96">
+          <p className="text-gray-600">Loading products...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section id="product" className="sm:py-20 px-4 md:px-20 relative z-0 overflow-hidden">
+        <div className="flex justify-center items-center h-96">
+          <p className="text-gray-600">No products available</p>
+        </div>
+      </section>
+    );
+  }
+
   const currentProduct = products[currentSlide];
 
   const addToCartHandler = () => {
     toast.success("Launching sooonnnnn!!!!!!!");
-    console.log("hi there")
   };
 
   return (

@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/next";
-
 import "./globals.css";
+import NavigationWrapper from "@/components/NavigationWrapper";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +27,6 @@ export const metadata = {
   description:
     "Discover your natural radiance with Saundrya Earth. We offer a curated collection of premium, organic, and ethically sourced beauty products. Enhance your beauty, naturally.",
 
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
-
   keywords: [
     "natural beauty",
     "organic skincare",
@@ -40,7 +35,6 @@ export const metadata = {
     "ethical beauty",
     "ayurvedic cosmetics",
   ],
-
 
   authors: [{ name: "Saundrya Earth", url: siteUrl }],
   creator: "Saundrya Earth",
@@ -87,6 +81,11 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -109,6 +108,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+                  __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PZBBS2NH');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
         {/* Add JSON-LD to the head */}
         <script
           type="application/ld+json"
@@ -118,8 +128,19 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PZBBS2NH"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
+        <NavigationWrapper />
         {children}
-        <Analytics />
+        <Footer />
         <Toaster
           position="top-right"
           toastOptions={{

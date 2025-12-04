@@ -1,6 +1,5 @@
 "use client";
 import { ReactLenis } from "@studio-freight/react-lenis";
-import Footer from "@/components/Footer";
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
@@ -192,7 +191,7 @@ export default function NotFoundPage() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                      className="px-8 cursor-pointer py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
                     >
                       Return Home
                     </motion.button>
@@ -362,10 +361,10 @@ export default function NotFoundPage() {
                               Email Us
                             </h3>
                             <a
-                              href="mailto:hello@saundryaearth.com"
+                              href="mailto:support@saundryaearth.com"
                               className="text-pink-500 hover:underline"
                             >
-                              hello@saundryaearth.com
+                              support@saundryaearth.com
                             </a>
                           </div>
                           <div>
@@ -434,8 +433,6 @@ export default function NotFoundPage() {
           </div>
         </main>
       </ReactLenis>
-
-      <Footer />
     </>
   );
 }
