@@ -6,8 +6,11 @@ export const FetchData = async (url, options = {}) => {
 
   try {
     // Get access token from cookies on server
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
+    let accessToken;
+    if (!options.skipAuth) {
+      const cookieStore = await cookies();
+      accessToken = cookieStore.get("accessToken")?.value;
+    }
 
     const headers = {
       "Content-Type": "application/json",
@@ -23,7 +26,7 @@ export const FetchData = async (url, options = {}) => {
       method: options.method || "GET",
       headers,
       cache: "no-store", // disable caching
-      credentials: 'include',
+      credentials: "include",
       ...options,
     });
 

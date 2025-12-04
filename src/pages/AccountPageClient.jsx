@@ -110,8 +110,6 @@ const AccountPageClient = (data) => {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState("profile");
-  const [isLoading, setIsLoading] = useState(true);
-  // CORRECTLY initialize state from the nested addresses array
   const [addresses, setAddresses] = useState(addressesData?.addresses || []);
   const [modalState, setModalState] = useState({ type: null, data: null });
 
@@ -146,11 +144,6 @@ const AccountPageClient = (data) => {
       router.push("/auth");
     }
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleCloseModal = () => setModalState({ type: null, data: null });
   const handleDeleteAddress = () => {
@@ -206,22 +199,6 @@ const AccountPageClient = (data) => {
 
   return (
     <>
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 bg-white z-50 flex items-center justify-center"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-              className="w-12 h-12 border-4 border-t-transparent border-pink-500 rounded-full"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
       <main className="min-h-screen bg-gray-50 font-sans relative overflow-hidden">
         {/* Floating gradient blobs */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
