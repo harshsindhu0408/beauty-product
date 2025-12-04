@@ -61,7 +61,7 @@ export default async function CheckoutProducts({ searchParams }) {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-32">
+      <div className="min-h-screen bg-gray-50 pt-10">
         <CheckoutPage
           addresses={userAddresses}
           sessionData={session.data}

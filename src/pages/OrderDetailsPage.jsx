@@ -563,7 +563,7 @@ const OrderDetailsPage = ({ orderData }) => {
         <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Header Section */}
 
-          <section className="relative pt-16 pb-8">
+          <section className="relative pb-8">
             <div className="container mx-auto px-6 relative">
               {/* Main Centered Content Block */}
               <motion.div

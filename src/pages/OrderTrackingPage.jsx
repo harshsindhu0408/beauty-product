@@ -673,7 +673,7 @@ const OrderTrackingPage = ({ orderData, orderId, trackingData }) => {
           </div>
 
           {/* Header Section */}
-          <section className="relative pt-20 pb-12">
+          <section className="relative pb-12">
             <div className="container mx-auto px-6 relative">
               <motion.div
                 initial="hidden"

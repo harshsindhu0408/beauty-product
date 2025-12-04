@@ -13,7 +13,7 @@ export default async function OrderDetails({ params }) {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-26">
+      <div className="min-h-screen bg-gray-50 pt-10">
         <OrderDetailsPage orderData={order.data} />
       </div>
     );
@@ -21,7 +21,7 @@ export default async function OrderDetails({ params }) {
     console.error("Error fetching order:", error);
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-26 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 pt-10 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Something went wrong

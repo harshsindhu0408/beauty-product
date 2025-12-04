@@ -10,6 +10,7 @@ import MainContent from "./MainContent";
 import ReviewsCard from "./ReviewsCard";
 import Navigation from "./Navigation";
 import NextImage from "next/image";
+import Link from "next/link";
 
 // Preload images for better performance
 const preloadImages = (imageUrls) => {
@@ -21,7 +22,12 @@ const preloadImages = (imageUrls) => {
   });
 };
 
-const BackgroundSlider = ({ imageRef, banners, currentIndex, containerHeight }) => {
+const BackgroundSlider = ({
+  imageRef,
+  banners,
+  currentIndex,
+  containerHeight,
+}) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const sliderRef = useRef(null);
   const gsapRef = useRef(null);
@@ -117,8 +123,8 @@ const BackgroundSlider = ({ imageRef, banners, currentIndex, containerHeight }) 
   }, [currentIndex, imagesLoaded]);
 
   return (
-    <div 
-      ref={imageRef} 
+    <div
+      ref={imageRef}
       className="absolute inset-0 w-full bg-gray-900"
       style={{ height: containerHeight }}
     >
@@ -172,29 +178,29 @@ const BeaucareHero = ({ banners = [] }) => {
   useEffect(() => {
     const calculateHeroHeight = () => {
       if (typeof window === "undefined") return;
-      
+
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       // Mobile devices (portrait)
       if (width <= 640) {
         // For mobile, use a percentage of viewport height
         // or screen height minus navigation
         return height <= 667 ? "85vh" : "75vh"; // iPhone SE to larger phones
       }
-      
+
       // Tablet devices
       if (width <= 1024) {
         // For tablets, adjust based on orientation
         const isPortrait = height > width;
         return isPortrait ? "70vh" : "65vh";
       }
-      
+
       // Desktop devices
       if (width <= 1440) {
         return "75vh";
       }
-      
+
       // Large desktop screens
       return "70vh";
     };
@@ -214,7 +220,7 @@ const BeaucareHero = ({ banners = [] }) => {
     };
 
     window.addEventListener("resize", handleResize);
-    
+
     // Also update on orientation change
     window.addEventListener("orientationchange", updateHeight);
 
@@ -509,22 +515,28 @@ const BeaucareHero = ({ banners = [] }) => {
       <Navigation navRef={navRef} handleNavItemHover={handleNavItemHover} />
 
       {/* Hero Section with dynamic height */}
-      <div 
+      <div
         className="relative w-full overflow-hidden"
-        style={{ 
+        style={{
           height: heroHeight,
           minHeight: "400px", // Fallback minimum height
           maxHeight: "900px", // Prevent it from getting too tall on large screens
         }}
       >
-        {/* Background Slider with optimized loading */}
+        {/* Background Slider with optimized loading - wrapped in Link for click functionality */}
         {banners && banners.length > 0 && (
-          <BackgroundSlider
-            imageRef={imageRef}
-            banners={banners}
-            currentIndex={currentIndex}
-            containerHeight={heroHeight}
-          />
+          <Link
+            href={currentBanner?.targetUrl || "/products"}
+            className="cursor-pointer block absolute inset-0"
+          >
+            <BackgroundSlider
+              imageRef={imageRef}
+              banners={banners}
+              currentIndex={currentIndex}
+              containerHeight={heroHeight}
+              href={currentBanner?.targetUrl || "/products"}
+            />
+          </Link>
         )}
 
         {/* Optimized overlay with gradient for performance */}

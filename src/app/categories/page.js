@@ -117,7 +117,7 @@ export default async function Categories({ searchParams }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         
-        <div className="min-h-screen bg-gray-50 pt-26">
+        <div className="min-h-screen bg-gray-50 pt-10">
           {/* Hidden SEO-friendly content for search engines */}
           <div className="sr-only" aria-hidden="true">
             <h1>Premium Beauty & Skincare Categories</h1>

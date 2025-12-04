@@ -12,7 +12,7 @@ export default async function OrderTrackingDetails({ params }) {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-26">
+      <div className="min-h-screen bg-gray-50 pt-10">
         <OrderTrackingPage
           orderData={order?.data}
           orderId={params.id}
