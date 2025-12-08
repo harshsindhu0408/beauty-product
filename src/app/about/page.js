@@ -23,26 +23,10 @@ export const metadata = {
     description: 'Where science meets soul in the pursuit of conscious beauty. Discover our ethical skincare revolution and sustainable practices.',
     url: 'https://saundryaearth.com/about',
     siteName: 'Saundrya Earth',
-    images: [
-      {
-        url: 'https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/Gemini_Generated_Image_mrz04nmrz04nmrz0_wyivyp.png',
-        width: 1200,
-        height: 630,
-        alt: 'Saundrya Earth - Conscious Beauty Revolution',
-      },
-    ],
     locale: 'en_US',
     type: 'website',
   },
 
-  // Twitter Card
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About Saundrya Earth | Conscious Beauty Revolution',
-    description: 'Where science meets soul in conscious beauty. Ethical, sustainable, carbon-negative skincare.',
-    creator: '@saundryaearth',
-    images: ['https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/Gemini_Generated_Image_mrz04nmrz04nmrz0_wyivyp.png'],
-  },
 
   // Additional Meta Tags for SEO
   robots: {
