@@ -1,5 +1,10 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+@layer base {
+  /* Your custom base styles */
+}
 
 .playfair-display {
   font-family: var(--font-playfair), serif;
@@ -20,4 +25,3 @@
 .animate-infinite-scroll {
   animation: infinite-scroll linear infinite;
 }
-
