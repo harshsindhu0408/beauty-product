@@ -491,7 +491,7 @@ export default function TermsOfService() {
                     className="absolute inset-0 opacity-10 bg-repeat"
                     style={{
                       backgroundImage:
-                        "url('https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/pattern_leaf_wyivyp.png')",
+                        "url('https://t3.ftcdn.net/jpg/06/11/24/66/360_F_611246646_AG50BIrYvobgrcTGHLOOnRRRzypsLBId.jpg')",
                     }}
                   ></div>
                   <div className="relative z-10">

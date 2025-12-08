@@ -9,8 +9,8 @@
   "components/ClientOnlyLenis.jsx -> @studio-freight/react-lenis": {
     "id": 40800,
     "files": [
-      "static/chunks/800-cf68c833ad624254.js",
-      "static/chunks/2734-c1641326e7d6b43b.js"
+      "static/chunks/2734-c1641326e7d6b43b.js",
+      "static/chunks/800-cf68c833ad624254.js"
     ]
   },
   "pages/AboutPage.jsx -> @studio-freight/react-lenis": {

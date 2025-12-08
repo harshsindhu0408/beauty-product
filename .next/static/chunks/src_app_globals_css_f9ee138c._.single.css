@@ -6696,8 +6696,8 @@
 }
 
 .playfair-display {
+  font-family: var(--font-playfair), serif;
   font-optical-sizing: auto;
-  font-family: Playfair Display, serif;
   font-style: normal;
   font-weight: 400;
 }
