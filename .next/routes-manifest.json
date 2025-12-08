@@ -268,11 +268,11 @@
   "dataRoutes": [
     {
       "page": "/CategoriesPage",
-      "dataRouteRegex": "^/_next/data/yZhAYAIBbnU1zST7hYaRh/CategoriesPage\\.json$"
+      "dataRouteRegex": "^/_next/data/1PtbqmSh6zbiN6mkbu82C/CategoriesPage\\.json$"
     },
     {
       "page": "/ProductsPage",
-      "dataRouteRegex": "^/_next/data/yZhAYAIBbnU1zST7hYaRh/ProductsPage\\.json$"
+      "dataRouteRegex": "^/_next/data/1PtbqmSh6zbiN6mkbu82C/ProductsPage\\.json$"
     }
   ],
   "rsc": {

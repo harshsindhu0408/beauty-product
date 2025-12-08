@@ -59,6 +59,54 @@
         "x-next-revalidate-tag-token"
       ]
     },
+    "/privacy-policy": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/privacy-policy",
+      "dataRoute": "/privacy-policy.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/faq": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/faq",
+      "dataRoute": "/faq.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
     "/support": {
       "experimentalBypassFor": [
         {
@@ -107,30 +155,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/testimonials": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/testimonials",
-      "dataRoute": "/testimonials.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/about": {
       "experimentalBypassFor": [
         {
@@ -155,7 +179,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/privacy-policy": {
+    "/testimonials": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -168,8 +192,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/privacy-policy",
-      "dataRoute": "/privacy-policy.rsc",
+      "srcRoute": "/testimonials",
+      "dataRoute": "/testimonials.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -204,30 +228,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/auth": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/auth",
-      "dataRoute": "/auth.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/return-refund-policy": {
       "experimentalBypassFor": [
         {
@@ -252,7 +252,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/faq": {
+    "/auth": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -265,8 +265,8 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/faq",
-      "dataRoute": "/faq.rsc",
+      "srcRoute": "/auth",
+      "dataRoute": "/auth.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -280,8 +280,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "8429dbb239c8f731e5c749b2c3478cee",
-    "previewModeSigningKey": "8c5d59533507b22ec9ec8b2bb9fc3f1a2579e8338d9a6e8653224cd810ac7371",
-    "previewModeEncryptionKey": "cfbacc74e93e85e692b7938f010159557e6c802547faacf1894bd94a2ed066bf"
+    "previewModeId": "f843d4a4fbc9993d0c05384a57f023e6",
+    "previewModeSigningKey": "9692dffa2c410ead05d9f8878072e7737ea12b5630d93218abcbaf0d9ec4c46a",
+    "previewModeEncryptionKey": "3c19fcde6195eef4e12170fde9eec3767d413dcdeb3ae3a27e552dc8d722eb91"
   }
 }
