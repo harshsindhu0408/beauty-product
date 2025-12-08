@@ -311,8 +311,8 @@ export default function TermsOfService() {
                         className="text-lg text-gray-600 leading-relaxed mb-6"
                       >
                         These Terms of Service govern your use of Saundrya
-                        Earth&apost;s digital platforms, products, and services. By
-                        engaging with our brand, you&apost;re entering into a
+                        Earth&apost;s digital platforms, products, and services.
+                        By engaging with our brand, you&apost;re entering into a
                         conscious agreement that respects both parties rights
                         and responsibilities.
                       </motion.p>
@@ -487,7 +487,13 @@ export default function TermsOfService() {
                 className="mt-32"
               >
                 <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-3xl p-10 border border-green-100 shadow-lg overflow-hidden relative">
-                  <div className="absolute inset-0 opacity-10 bg-[url('https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/pattern_leaf_wyivyp.png')] bg-repeat"></div>
+                  <div
+                    className="absolute inset-0 opacity-10 bg-repeat"
+                    style={{
+                      backgroundImage:
+                        "url('https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/pattern_leaf_wyivyp.png')",
+                    }}
+                  ></div>
                   <div className="relative z-10">
                     <div className="flex flex-col md:flex-row gap-10 items-center">
                       <div className="md:w-1/2">
@@ -586,7 +592,6 @@ export default function TermsOfService() {
           </div>
         </main>
       </ReactLenis>
-
     </>
   );
 }
