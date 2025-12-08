@@ -20,30 +20,6 @@ export default function AboutPage() {
   // Use window scroll instead of target ref to avoid hydration mismatch
   const { scrollYProgress } = useScroll();
 
-  // const teamMembers = [
-  //   {
-  //     id: 1,
-  //     name: "Mr. Anirudh Dalal",
-  //     role: "CEO & MD",
-  //     imageSrc:
-  //       "https://res.cloudinary.com/dnvjct2if/image/upload/v1752659080/Gemini_Generated_Image_mrz04nmrz04nmrz0_wyivyp.png",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Ms. Anushka",
-  //     role: "Head Herbalist & Botanist",
-  //     imageSrc:
-  //       "https://res.cloudinary.com/dnvjct2if/image/upload/v1752658912/Gemini_Generated_Image_tt0c78tt0c78tt0c_uun3pn.png",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Me. Harsh Sindhu",
-  //     role: "Tech Lead",
-  //     imageSrc:
-  //       "https://media.licdn.com/dms/image/v2/D4D03AQEARa1CJpVydw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1693982290041?e=1764201600&v=beta&t=Ebvg_Cqz4tJ1ty9ANB--Op5CafrLpYIA4g4_Ow38PZE",
-  //   },
-  // ];
-
   // Parallax effects
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
