@@ -1,0 +1,20 @@
+{
+  "/_error": "pages/_error.js",
+  "/_app": "pages/_app.js",
+  "/CartPage": "pages/CartPage.html",
+  "/AboutPage": "pages/AboutPage.html",
+  "/CheckoutPage": "pages/CheckoutPage.html",
+  "/AccountPageClient": "pages/AccountPageClient.html",
+  "/ProductPage": "pages/ProductPage.html",
+  "/ForgetPasswordClient": "pages/ForgetPasswordClient.html",
+  "/OrderTrackingPage": "pages/OrderTrackingPage.html",
+  "/OrderDetailsPage": "pages/OrderDetailsPage.html",
+  "/RefundReturnPage": "pages/RefundReturnPage.html",
+  "/SupportTicketClient": "pages/SupportTicketClient.html",
+  "/ResetPasswordPageClient": "pages/ResetPasswordPageClient.html",
+  "/VerifyOtpPageClient": "pages/VerifyOtpPageClient.html",
+  "/CategoriesPage": "pages/CategoriesPage.js",
+  "/ProductsPage": "pages/ProductsPage.js",
+  "/_document": "pages/_document.js",
+  "/404": "pages/404.html"
+}
