@@ -30,44 +30,36 @@ export const clientFetch = async (url, options = {}) => {
       ...options,
     });
 
+    const data = await res.json(); // Always parse JSON first
+    
     // ✅ CORRECTED: Handle non-OK responses
     if (!res.ok) {
-      let errorData = null;
-      try {
-        errorData = await res.json();
-      } catch (e) {
-        // Ignore JSON parse errors if response body is not JSON
-      }
+      const errorData = data || {
+        message: res.statusText || "An error occurred"
+      };
 
-      const errorMessage =
-        errorData?.message || res.statusText || "An error occurred";
-
-      if (res.status === 500) {
-        throw new Error(`Server error: Failed to fetch data from ${url}`);
-      } else if (res.status === 404) {
-        console.warn(`Resource not found: ${url}`);
-        return null;
-      } else if (res.status === 401) {
-        console.warn(`Unauthorized access to ${url}`);
-
-        // 🚫 Trigger logout process for 401 responses
-        await handleLogout();
-        return null;
-      } else {
-        // Throw error for 400 Bad Request and others so the UI can catch and show the message
-        console.warn(`Failed to fetch data from ${url}: ${res.statusText}`);
-        throw new Error(errorMessage);
-      }
+      // Create error with full response data
+      const error = new Error(errorData.message || 'API Error');
+      error.response = res;
+      error.data = errorData;
+      error.status = res.status;
+      
+      throw error;
     }
 
-    const data = await res.json();
     return data;
   } catch (error) {
     if (options.throwError) {
       throw error;
     }
     console.error("Error fetching data:", error);
-    return null;
+    
+    // Only return null for non-critical errors or when throwError is false
+    if (error.status === 404 && !options.throwError) {
+      return null;
+    }
+    
+    throw error; // Re-throw for the calling function to handle
   }
 };
 

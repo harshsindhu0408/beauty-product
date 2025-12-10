@@ -59,47 +59,56 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
     }
   };
 
-  const handleApplyPromo = async () => {
-    if (!promoCode.trim()) {
-      toast.error("Please enter a promo code");
-      return;
-    }
+const handleApplyPromo = async () => {
+  if (!promoCode.trim()) {
+    toast.error("Please enter a promo code");
+    return;
+  }
 
-    setIsPromoLoading(true);
-    try {
-      const payload = {
-        code: promoCode,
-        sessionId: sessionId,
-      };
+  setIsPromoLoading(true);
+  try {
+    const payload = {
+      code: promoCode,
+      sessionId: sessionId,
+    };
 
-      const response = await clientFetch("promo/apply", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        throwError: true,
-      });
+    const response = await clientFetch("promo/apply", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      throwError: true, // This ensures errors are thrown
+    });
 
-      if (response?.success) {
-        toast.success(response?.message);
+    if (response?.success) {
+      toast.success(response?.message || "Promo code applied successfully!");
 
-        // Re-fetch session to get the full updated state
-        const sessionResponse = await clientFetch(
-          `checkout/verify?sessionId=${sessionId}`
-        );
-        if (sessionResponse?.success) {
-          setSessionState(sessionResponse.data);
-        }
-
-        setPromoCode("");
-      }
-    } catch (error) {
-      toast.error(
-        error?.message || "An error occurred while applying promo code"
+      // Re-fetch session to get the full updated state
+      const sessionResponse = await clientFetch(
+        `checkout/verify?sessionId=${sessionId}`
       );
-      console.error(error?.message);
-    } finally {
-      setIsPromoLoading(false);
+      if (sessionResponse?.success) {
+        setSessionState(sessionResponse.data);
+      }
+
+      setPromoCode("");
     }
-  };
+  } catch (error) {
+    // Handle 404 and other errors properly
+    const errorMessage = error.data?.message || 
+                        error.message || 
+                        "An error occurred while applying promo code";
+    
+    // Check if it's a 404 error (Invalid promo code)
+    if (error.status === 404) {
+      toast.error(errorMessage);
+    } else {
+      // Handle other types of errors
+      console.error("Promo code error:", error);
+      toast.error(errorMessage);
+    }
+  } finally {
+    setIsPromoLoading(false);
+  }
+};
 
   const handleRemovePromo = async () => {
     setIsPromoLoading(true);
