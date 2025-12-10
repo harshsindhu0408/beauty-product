@@ -3,7 +3,7 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import { FetchData } from "@/services/useServerFetch";
 import CheckoutError from "@/components/CheckoutError";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function CheckoutProducts({ searchParams }) {
   try {
@@ -17,13 +17,14 @@ export default async function CheckoutProducts({ searchParams }) {
     }
 
     // Fetch checkout session data from API
-    const [sessionResult, addressesResult, profileResult] = await Promise.allSettled([
-      FetchData(`checkout/verify?sessionId=${sessionId}`, {
-        method: "GET",
-      }),
-      FetchData("address?isActive=true"),
-      FetchData("profile"),
-    ]);
+    const [sessionResult, addressesResult, profileResult] =
+      await Promise.allSettled([
+        FetchData(`checkout/verify?sessionId=${sessionId}`, {
+          method: "GET",
+        }),
+        FetchData("address?isActive=true"),
+        FetchData("profile"),
+      ]);
 
     // Handle session response
     let session = null;
@@ -39,7 +40,10 @@ export default async function CheckoutProducts({ searchParams }) {
     if (addressesResult.status === "fulfilled") {
       userAddresses = addressesResult.value.data || [];
     } else {
-      console.warn("Addresses fetch failed, using empty array:", addressesResult.reason);
+      console.warn(
+        "Addresses fetch failed, using empty array:",
+        addressesResult.reason
+      );
     }
 
     // Handle profile response

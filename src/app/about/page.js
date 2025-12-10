@@ -5,28 +5,31 @@ export default function About() {
 }
 
 export const metadata = {
-  title: 'About Saundrya Earth | Conscious Beauty Revolution | Ethical Skincare',
-  description: 'Discover Saundrya Earth - where science meets soul in conscious beauty. Learn about our ethical skincare, sustainable practices, and beauty revolution. Vegan, cruelty-free, carbon-negative.',
-  keywords: 'conscious beauty, ethical skincare, sustainable beauty, vegan skincare, cruelty-free, carbon-negative, Saundrya Earth, natural skincare, clean beauty',
-  authors: [{ name: 'Saundrya Earth' }],
-  creator: 'Saundrya Earth',
-  publisher: 'Saundrya Earth',
+  title:
+    "About Saundrya Earth | Conscious Beauty Revolution | Ethical Skincare",
+  description:
+    "Discover Saundrya Earth - where science meets soul in conscious beauty. Learn about our ethical skincare, sustainable practices, and beauty revolution. Vegan, cruelty-free, carbon-negative.",
+  keywords:
+    "conscious beauty, ethical skincare, sustainable beauty, vegan skincare, cruelty-free, carbon-negative, Saundrya Earth, natural skincare, clean beauty",
+  authors: [{ name: "Saundrya Earth" }],
+  creator: "Saundrya Earth",
+  publisher: "Saundrya Earth",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  
+
   // Open Graph Tags
   openGraph: {
-    title: 'About Saundrya Earth | Redefining Conscious Beauty',
-    description: 'Where science meets soul in the pursuit of conscious beauty. Discover our ethical skincare revolution and sustainable practices.',
-    url: 'https://saundryaearth.com/about',
-    siteName: 'Saundrya Earth',
-    locale: 'en_US',
-    type: 'website',
+    title: "About Saundrya Earth | Redefining Conscious Beauty",
+    description:
+      "Where science meets soul in the pursuit of conscious beauty. Discover our ethical skincare revolution and sustainable practices.",
+    url: "https://saundryaearth.com/about",
+    siteName: "Saundrya Earth",
+    locale: "en_US",
+    type: "website",
   },
-
 
   // Additional Meta Tags for SEO
   robots: {
@@ -35,44 +38,45 @@ export const metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 
   // Canonical URL
   alternates: {
-    canonical: 'https://saundryaearth.com/about',
+    canonical: "https://saundryaearth.com/about",
   },
 
   // Verification (if you have these)
   verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
+    google: "your-google-verification-code",
+    yandex: "your-yandex-verification-code",
+    yahoo: "your-yahoo-verification-code",
   },
 
   // Structured Data (JSON-LD) - This will be added separately
   other: {
-    'application/ld+json': JSON.stringify({
+    "application/ld+json": JSON.stringify({
       "@context": "https://schema.org",
       "@type": "AboutPage",
-      "name": "About Saundrya Earth",
-      "description": "Saundrya Earth is a conscious beauty brand combining science and soul to create ethical, sustainable skincare products.",
-      "url": "https://saundryaearth.com/about",
-      "publisher": {
+      name: "About Saundrya Earth",
+      description:
+        "Saundrya Earth is a conscious beauty brand combining science and soul to create ethical, sustainable skincare products.",
+      url: "https://saundryaearth.com/about",
+      publisher: {
         "@type": "Organization",
-        "name": "Saundrya Earth",
-        "logo": {
+        name: "Saundrya Earth",
+        logo: {
           "@type": "ImageObject",
-          "url": "https://saundryaearth.com/logo.png"
-        }
+          url: "https://saundryaearth.com/logo.png",
+        },
       },
-      "mainEntityOfPage": {
+      mainEntityOfPage: {
         "@type": "WebPage",
-        "@id": "https://saundryaearth.com/about"
-      }
+        "@id": "https://saundryaearth.com/about",
+      },
     }),
   },
 };
@@ -82,62 +86,64 @@ export const generateStructuredData = () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Saundrya Earth",
-    "alternateName": "Saundrya Earth Conscious Beauty",
-    "url": "https://saundryaearth.com",
-    "logo": "https://saundryaearth.com/logo.png",
-    "description": "Conscious beauty brand creating ethical, sustainable skincare where science meets soul",
-    "slogan": "Where science meets soul in the pursuit of conscious beauty",
-    "foundingDate": "2023",
-    "founders": [
+    name: "Saundrya Earth",
+    alternateName: "Saundrya Earth Conscious Beauty",
+    url: "https://saundryaearth.com",
+    logo: "https://saundryaearth.com/logo.png",
+    description:
+      "Conscious beauty brand creating ethical, sustainable skincare where science meets soul",
+    slogan: "Where science meets soul in the pursuit of conscious beauty",
+    foundingDate: "2023",
+    founders: [
       {
         "@type": "Person",
-        "name": "Anirudh Dalal"
+        name: "Anirudh Dalal",
       },
       {
         "@type": "Person",
-        "name": "Anushka"
+        name: "Anushka",
       },
       {
         "@type": "Person",
-        "name": "Harsh Sindhu"
-      }
+        name: "Harsh Sindhu",
+      },
     ],
-    "address": {
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": "Your Street Address",
-      "addressLocality": "Your City",
-      "addressRegion": "Your State",
-      "postalCode": "Your ZIP",
-      "addressCountry": "IN"
+      streetAddress: "Your Street Address",
+      addressLocality: "Your City",
+      addressRegion: "Your State",
+      postalCode: "Your ZIP",
+      addressCountry: "IN",
     },
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "telephone": "+91-XXXXXXXXXX",
-      "contactType": "customer service",
-      "email": "hello@saundryaearth.com",
-      "areaServed": "IN",
-      "availableLanguage": ["en", "hi"]
+      telephone: "+91-XXXXXXXXXX",
+      contactType: "customer service",
+      email: "hello@saundryaearth.com",
+      areaServed: "IN",
+      availableLanguage: ["en", "hi"],
     },
-    "sameAs": [
+    sameAs: [
       "https://www.instagram.com/saundryaearth",
       "https://www.facebook.com/saundryaearth",
       "https://www.linkedin.com/company/saundryaearth",
-      "https://twitter.com/saundryaearth"
+      "https://twitter.com/saundryaearth",
     ],
-    "makesOffer": [
+    makesOffer: [
       {
         "@type": "Offer",
-        "itemOffered": {
+        itemOffered: {
           "@type": "Service",
-          "name": "Ethical Skincare Products",
-          "description": "Vegan, cruelty-free, sustainable skincare products"
-        }
-      }
+          name: "Ethical Skincare Products",
+          description: "Vegan, cruelty-free, sustainable skincare products",
+        },
+      },
     ],
-    "keywords": "conscious beauty, ethical skincare, sustainable beauty, vegan skincare, cruelty-free, carbon-negative beauty",
-    "ethicsPolicy": "https://saundryaearth.com/ethics",
-    "sustainabilityPolicy": "https://saundryaearth.com/sustainability"
+    keywords:
+      "conscious beauty, ethical skincare, sustainable beauty, vegan skincare, cruelty-free, carbon-negative beauty",
+    ethicsPolicy: "https://saundryaearth.com/ethics",
+    sustainabilityPolicy: "https://saundryaearth.com/sustainability",
   };
 
   return structuredData;

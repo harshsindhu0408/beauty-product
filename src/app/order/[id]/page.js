@@ -29,7 +29,7 @@ export default async function OrderDetails({ params }) {
           <p className="text-gray-600 mb-4">
             Unable to load the order. Please try again later.
           </p>
-          <a 
+          <a
             href="/orders"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block"
           >

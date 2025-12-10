@@ -23,9 +23,7 @@ function ResetPasswordLoading() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Set New Password
             </h1>
-            <p className="text-gray-500 mb-4">
-              Loading...
-            </p>
+            <p className="text-gray-500 mb-4">Loading...</p>
           </div>
           <div className="flex justify-center">
             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -38,4 +36,4 @@ function ResetPasswordLoading() {
 
 export default ResetPasswordPage;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

@@ -1,7 +1,8 @@
 // src/services/clientfetch.js
 
 export const clientFetch = async (url, options = {}) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.saundryaearth.com/api/v1/";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_URL || "https://api.saundryaearth.com/api/v1/";
 
   try {
     let accessToken = null;
@@ -29,8 +30,18 @@ export const clientFetch = async (url, options = {}) => {
       ...options,
     });
 
-    // ✅ CORRECTED: Handle non-OK responses (fixed syntax error)
+    // ✅ CORRECTED: Handle non-OK responses
     if (!res.ok) {
+      let errorData = null;
+      try {
+        errorData = await res.json();
+      } catch (e) {
+        // Ignore JSON parse errors if response body is not JSON
+      }
+
+      const errorMessage =
+        errorData?.message || res.statusText || "An error occurred";
+
       if (res.status === 500) {
         throw new Error(`Server error: Failed to fetch data from ${url}`);
       } else if (res.status === 404) {
@@ -38,19 +49,23 @@ export const clientFetch = async (url, options = {}) => {
         return null;
       } else if (res.status === 401) {
         console.warn(`Unauthorized access to ${url}`);
-        
+
         // 🚫 Trigger logout process for 401 responses
         await handleLogout();
         return null;
       } else {
+        // Throw error for 400 Bad Request and others so the UI can catch and show the message
         console.warn(`Failed to fetch data from ${url}: ${res.statusText}`);
-        return null;
+        throw new Error(errorMessage);
       }
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
+    if (options.throwError) {
+      throw error;
+    }
     console.error("Error fetching data:", error);
     return null;
   }
@@ -62,19 +77,21 @@ export const handleLogout = async () => {
 
   try {
     // Optional: Call logout endpoint to invalidate token on server
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.saundryaearth.com/api/v1/";
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://api.saundryaearth.com/api/v1/";
     const accessToken = localStorage.getItem("accessToken");
-    
+
     if (accessToken) {
       await fetch(`${baseUrl}auth/logout`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-      }).catch(err => {
+      }).catch((err) => {
         // Silently fail if logout API call fails
-        console.warn('Logout API call failed:', err);
+        console.warn("Logout API call failed:", err);
       });
     }
   } finally {
@@ -82,7 +99,7 @@ export const handleLogout = async () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userData");
-    
+
     // Delete all auth-related cookies
     const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {

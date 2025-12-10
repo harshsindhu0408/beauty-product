@@ -14,7 +14,7 @@ export default async function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-12">
       {cartData && <CartPage initialCartData={cartData.data} />}
     </div>
   );

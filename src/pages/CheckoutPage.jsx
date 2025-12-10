@@ -7,6 +7,7 @@ import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
 import { clientFetch } from "@/services/clientfetch";
 import { setCookie } from "@/utils/cookies";
+import toast from "react-hot-toast";
 
 const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
@@ -15,6 +16,12 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const [error, setError] = useState(null);
   const [addressesState, setAddressesState] = useState(addresses);
   const cartItems = sessionData?.items || [];
+
+  // Promo Code State
+  const [promoCode, setPromoCode] = useState("");
+  // Initialize session state from initial sessionData
+  const [sessionState, setSessionState] = useState(sessionData || {});
+  const [isPromoLoading, setIsPromoLoading] = useState(false);
 
   const refreshAddresses = async () => {
     try {
@@ -49,6 +56,82 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
     } catch (error) {
       console.error("Order success handling error:", error);
       setError("Failed to process order. Please contact support.");
+    }
+  };
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) {
+      toast.error("Please enter a promo code");
+      return;
+    }
+
+    setIsPromoLoading(true);
+    try {
+      const payload = {
+        code: promoCode,
+        sessionId: sessionId,
+      };
+
+      const response = await clientFetch("promo/apply", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        throwError: true,
+      });
+
+      if (response?.success) {
+        toast.success(response?.message);
+
+        // Re-fetch session to get the full updated state
+        const sessionResponse = await clientFetch(
+          `checkout/verify?sessionId=${sessionId}`
+        );
+        if (sessionResponse?.success) {
+          setSessionState(sessionResponse.data);
+        }
+
+        setPromoCode("");
+      }
+    } catch (error) {
+      toast.error(
+        error?.message || "An error occurred while applying promo code"
+      );
+      console.error(error?.message);
+    } finally {
+      setIsPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = async () => {
+    setIsPromoLoading(true);
+    const payload = {
+      code: sessionState?.appliedPromoCode?.code,
+      sessionId: sessionId,
+    };
+    try {
+      const response = await clientFetch("promo/remove", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        throwError: true,
+      });
+
+      if (response && response.success) {
+        toast.success("Promo code removed");
+
+        // Re-fetch session to get the full updated state
+        const sessionResponse = await clientFetch(
+          `checkout/verify?sessionId=${sessionId}`
+        );
+        if (sessionResponse?.success) {
+          setSessionState(sessionResponse.data);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.message || "An error occurred while removing promo code"
+      );
+    } finally {
+      setIsPromoLoading(false);
     }
   };
 
@@ -112,6 +195,7 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
         paymentMethod: formData.paymentMethod,
         notes: formData.notes,
         checkoutSessionId: sessionId,
+        discountCode: sessionState?.appliedPromoCode?.code, // Send discount code with order
       };
 
       // Call your API to create the order
@@ -182,18 +266,13 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   });
 
   const calculateOrderSummary = () => {
-    const subtotal = cartItems.reduce((sum, item) => sum + item.itemTotal, 0);
-
-    // Mock shipping calculation (would come from your API in reality)
-    const shippingTotal = 0;
-    const taxTotal = subtotal * 0;
-    const grandTotal = subtotal + shippingTotal + taxTotal;
-
+    // Directly use values from sessionState as they are server-calculated
     return {
-      subtotal,
-      shippingTotal,
-      taxTotal,
-      grandTotal,
+      subtotal: sessionState?.subtotal || 0,
+      shippingTotal: sessionState?.shippingTotal || 0, // Use shippingTotal or shippingCharges based on API response
+      taxTotal: sessionState?.taxTotal || 0,
+      discountAmount: sessionState?.discountAmount || 0,
+      grandTotal: sessionState?.grandTotal || 0,
     };
   };
 
@@ -362,7 +441,16 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
           />
 
           {/* Order Summary */}
-          <OrderData cartItems={cartItems} orderSummary={orderSummary} />
+          <OrderData
+            cartItems={cartItems}
+            orderSummary={orderSummary}
+            promoCode={promoCode}
+            setPromoCode={setPromoCode}
+            handleApplyPromo={handleApplyPromo}
+            handleRemovePromo={handleRemovePromo}
+            isPromoLoading={isPromoLoading}
+            appliedPromo={sessionState?.appliedPromoCode}
+          />
         </div>
       </div>
     </div>

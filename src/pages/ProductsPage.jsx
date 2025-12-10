@@ -275,10 +275,10 @@ export default function ProductsPage({
       <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
         <main
           ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+          className="min-h-screen pt-10 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
         >
           {/* Hero Section */}
-          <section className="relative flex items-center justify-center overflow-hidden">
+          <section className="relative pt-10 flex items-center justify-center overflow-hidden">
             <motion.div
               style={{ y: y1, opacity }}
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"

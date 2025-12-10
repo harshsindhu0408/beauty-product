@@ -176,7 +176,7 @@ const CartPage = ({ initialCartData }) => {
 
   return (
     <div ref={containerRef} className="min-h-screen font-sans bg-gray-50/50">
-      <main className="max-w-7xl mx-auto px-4 py-20 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}

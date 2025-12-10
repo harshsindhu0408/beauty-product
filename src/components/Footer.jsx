@@ -98,9 +98,17 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: "https://www.instagram.com/saundryaearth/", label: "Instagram" },
-    
-    { icon: Linkedin, href: "https://www.linkedin.com/in/harshsindhu0408/", label: "LinkedIn" },
+    {
+      icon: Instagram,
+      href: "https://www.instagram.com/saundryaearth/",
+      label: "Instagram",
+    },
+
+    {
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/harshsindhu0408/",
+      label: "LinkedIn",
+    },
   ];
 
   const exploreLinks = [
@@ -491,7 +499,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section - Copyright */}
-        <p className="text-white text-[24vw] -z-50 mt-50 -translate-x-5 sm:-translate-x-20 playfair-display leading-[50%]">
+        {/* Bottom Section - Copyright */}
+        <p className="text-white text-[24vw] -z-50 mt-50 -translate-x-5 sm:-translate-x-20 playfair-display leading-[50%] pointer-events-none select-none">
           Saundrya
         </p>
       </div>
