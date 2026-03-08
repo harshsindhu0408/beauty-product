@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { GoogleLogin } from "@react-oauth/google";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -296,10 +297,12 @@ const Auth = () => {
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src="/Saundrya1.png"
             alt="Saundrya Earth Beauty"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-stone-900/70 via-emerald-950/50 to-stone-900/60" />
@@ -440,7 +443,7 @@ const Auth = () => {
             <p className="text-stone-500 mt-2 text-sm leading-relaxed">
               {isLogin
                 ? "Sign in to continue your beauty journey with us."
-                : "Join Saundrya Earth and discover nature's best kept secrets."}
+                : "Join Saundrya Earth and discover nature&apos;s best kept secrets."}
             </p>
           </motion.div>
 
@@ -671,7 +674,9 @@ const Auth = () => {
             className="mt-8 text-center"
           >
             <p className="text-sm text-stone-500">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
+              {isLogin
+                ? "Don&apos;t have an account?"
+                : "Already have an account?"}
               <button
                 onClick={switchMode}
                 className="ml-1.5 font-semibold text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer"

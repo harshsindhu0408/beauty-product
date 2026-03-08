@@ -1,31 +1,16 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const ReactLenis = dynamic(
-  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
-  { ssr: false }
-);
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 
 export default function PrivacyPolicyPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -41,10 +26,7 @@ export default function PrivacyPolicyPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -52,10 +34,7 @@ export default function PrivacyPolicyPage() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   // Policy sections data
   const policySections = [
@@ -68,8 +47,7 @@ export default function PrivacyPolicyPage() {
         "- Skin profile data you voluntarily share for product recommendations",
         "- Purchase history and preferences to personalize your experience",
         "- Device and usage data for website optimization (collected through cookies)",
-      ],
-    },
+      ]},
     {
       id: 2,
       title: "How We Use Your Data",
@@ -80,8 +58,7 @@ export default function PrivacyPolicyPage() {
         "- Process transactions with our ethical banking partners",
         "- Communicate important product updates and regenerative initiatives",
         "- Enhance your digital experience with mindful interface design",
-      ],
-    },
+      ]},
     {
       id: 3,
       title: "Data Protection",
@@ -92,8 +69,7 @@ export default function PrivacyPolicyPage() {
         "- Strict access controls limited to essential personnel",
         "- Anonymization of data used for research purposes",
         "- Secure deletion protocols when data is no longer required",
-      ],
-    },
+      ]},
     {
       id: 4,
       title: "Third-Party Sharing",
@@ -103,8 +79,7 @@ export default function PrivacyPolicyPage() {
         "- Never sell or rent personal information to advertisers",
         "- Share anonymized data only for scientific research with institutional review boards",
         "- Disclose all third-party processors in our annual transparency report",
-      ],
-    },
+      ]},
     {
       id: 5,
       title: "Your Rights",
@@ -115,8 +90,7 @@ export default function PrivacyPolicyPage() {
         "- Withdraw consent for specific processing activities",
         "- Request deletion of personal data (with exceptions for legal requirements)",
         "- Opt-out of marketing communications with one click",
-      ],
-    },
+      ]},
     {
       id: 6,
       title: "Policy Updates",
@@ -126,21 +100,17 @@ export default function PrivacyPolicyPage() {
         "- Archive previous versions for historical reference",
         "- Provide summary of changes in plain language",
         "- Offer opt-in consent for new data uses when required",
-      ],
-    },
+      ]},
   ];
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-        <main
-          ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+      
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Hero Section */}
           <section className="relative pb-10 flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -154,10 +124,7 @@ export default function PrivacyPolicyPage() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -168,10 +135,7 @@ export default function PrivacyPolicyPage() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block">Privacy with</span>
@@ -196,10 +160,7 @@ export default function PrivacyPolicyPage() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   Our commitment to data integrity mirrors our formulation
@@ -229,7 +190,7 @@ export default function PrivacyPolicyPage() {
                     <div className="md:w-1/3">
                       <motion.h2
                         className="text-3xl font-bold text-gray-900 mb-6 font-serif"
-                        style={{ y: y2 }}
+                        
                       >
                         Our Privacy Promise
                       </motion.h2>
@@ -239,8 +200,7 @@ export default function PrivacyPolicyPage() {
                         {new Date().toLocaleDateString("en-US", {
                           month: "long",
                           day: "numeric",
-                          year: "numeric",
-                        })}
+                          year: "numeric"})}
                       </p>
                     </div>
                     <div className="md:w-2/3">
@@ -307,8 +267,8 @@ export default function PrivacyPolicyPage() {
                         index % 3 === 0
                           ? "bg-pink-300"
                           : index % 3 === 1
-                          ? "bg-purple-300"
-                          : "bg-blue-300"
+                            ? "bg-purple-300"
+                            : "bg-blue-300"
                       } blur-xl`}
                     ></div>
 
@@ -341,13 +301,11 @@ export default function PrivacyPolicyPage() {
                             key={pIndex}
                             initial={{
                               opacity: 0,
-                              x: pIndex % 2 === 0 ? -20 : 20,
-                            }}
+                              x: pIndex % 2 === 0 ? -20 : 20}}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{
                               delay: 0.1 * pIndex + 0.3,
-                              ease: "easeOut",
-                            }}
+                              ease: "easeOut"}}
                             viewport={{ once: true }}
                             className="text-gray-600 leading-relaxed"
                           >
@@ -478,7 +436,7 @@ export default function PrivacyPolicyPage() {
             </div>
           </div>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

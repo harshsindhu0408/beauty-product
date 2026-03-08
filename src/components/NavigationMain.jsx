@@ -111,7 +111,7 @@ const NavigationMain = () => {
       setIsSearching(true);
       try {
         const data = await clientFetch(
-          `product?search=${encodeURIComponent(query)}&limit=5`
+          `product?search=${encodeURIComponent(query)}&limit=5`,
         );
         setSearchResults(data?.data?.products || []);
       } catch (error) {
@@ -122,7 +122,7 @@ const NavigationMain = () => {
         setHasCompletedSearch(true);
       }
     }, 300),
-    []
+    [],
   );
 
   // Effect to trigger search when query changes
@@ -137,7 +137,7 @@ const NavigationMain = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/products/search?q=${encodeURIComponent(
-        searchQuery
+        searchQuery,
       )}`;
       setSearchQuery("");
       setIsSearchFocused(false);
@@ -245,10 +245,11 @@ const NavigationMain = () => {
       <div className="max-w-7xl mx-auto">
         <div
           className="relative md:py-4 py-2 flex items-center justify-between gap-6 px-8
-                     rounded-full border border-white/40 
-                     bg-white/30 backdrop-blur-xl
-                     shadow-[0_8px_32px_rgba(31,38,135,0.2)] 
-                     ring-1 ring-white/20"
+                     rounded-full border border-gray-200/40 
+                     bg-white/60 backdrop-blur-2xl
+                     shadow-[0_4px_24px_rgba(0,0,0,0.06)] 
+                     ring-1 ring-black/5
+                     transition-all duration-300"
         >
           <Link
             href="/"
@@ -262,48 +263,46 @@ const NavigationMain = () => {
             className="hidden md:block flex-1 max-w-xl relative"
           >
             <form onSubmit={handleSearchSubmit} className="w-full">
-              {/* This container now holds both the input and the animated placeholder */}
               <div
-                className="relative flex items-center w-full h-12 rounded-full 
-                           bg-white/50 border border-black/40 
-                           focus-within:bg-white focus-within:border-black focus-within:ring-2 focus-within:ring-black/10
-                           transition-all duration-300 ease-in-out"
+                className="relative flex items-center w-full h-11 rounded-full 
+                           bg-gray-100/50 border border-transparent
+                           focus-within:bg-white focus-within:border-gray-200 focus-within:ring-4 focus-within:ring-black/5
+                           transition-all duration-500 ease-out group"
               >
                 <Search
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10"
-                  size={20}
+                  className="ml-4 text-gray-400 group-focus-within:text-black transition-colors pointer-events-none z-10"
+                  size={18}
                 />
 
-                {/* ✨ 1. The Animated Placeholder */}
-                {/* This only shows when the input is not focused and is empty. */}
-                <AnimatePresence mode="wait">
-                  {!isSearchFocused && !searchQuery && (
-                    <motion.div
-                      key={placeholderIndex}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="absolute left-12 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none"
-                    >
-                      {placeholders[placeholderIndex]}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="relative flex-1 h-full flex items-center overflow-hidden">
+                  {/* ✨ 1. The Animated Placeholder */}
+                  <AnimatePresence mode="wait">
+                    {!isSearchFocused && !searchQuery && (
+                      <motion.div
+                        key={placeholderIndex}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                        className="absolute inset-0 flex items-center pl-3 text-gray-400 font-medium text-sm pointer-events-none"
+                      >
+                        {placeholders[placeholderIndex]}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                {/* ✨ 2. The Input Element */}
-                {/* It's now transparent so the animated placeholder behind it can be seen. */}
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)} // We now track blur
-                  // Note the transparent placeholder and background
-                  className="w-full h-full pl-12 pr-10 rounded-full text-gray-900 
-                             bg-transparent placeholder-transparent 
-                             focus:outline-none focus:ring-0"
-                />
+                  {/* ✨ 2. The Input Element */}
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setIsSearchFocused(false)}
+                    className="w-full h-full pl-3 pr-10 rounded-full text-sm font-medium text-gray-900 
+                               bg-transparent placeholder-transparent 
+                               focus:outline-none focus:ring-0 leading-none"
+                  />
+                </div>
 
                 <AnimatePresence>
                   {searchQuery && (
@@ -339,23 +338,40 @@ const NavigationMain = () => {
             </AnimatePresence>
           </div>
 
-          <div className="hidden md:flex items-center gap-x-6">
-            {navLinks.map(({ name, href, icon: Icon }) => (
-              <Link
-                key={name}
-                href={href}
-                className="flex items-center gap-2 font-medium text-gray-700 hover:text-black transition-colors"
-              >
-                <Icon size={20} />
-                <span className="hidden lg:inline">{name}</span>
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-x-8">
+            {navLinks.map(({ name, href, icon: Icon }) => {
+              const isActive =
+                typeof window !== "undefined" &&
+                window.location.pathname === href;
+              return (
+                <Link
+                  key={name}
+                  href={href}
+                  className="relative group flex items-center gap-2 font-semibold text-sm text-gray-700 hover:text-black transition-colors"
+                >
+                  {/* Subtle hover effect / active state */}
+                  <Icon
+                    size={18}
+                    className="group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <span className="hidden lg:inline">{name}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="navUnderline"
+                      className="absolute -bottom-[22px] left-0 right-0 h-0.5 bg-black rounded-full"
+                    />
+                  )}
+                </Link>
+              );
+            })}
             <Link
               href="/account"
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+              className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-900 text-white hover:bg-black transition-all hover:shadow-lg hover:shadow-black/10 active:scale-95"
             >
-              <User size={20} />
-              <span className="hidden lg:inline">Account</span>
+              <User size={18} />
+              <span className="hidden lg:inline text-sm font-bold tracking-wide">
+                Account
+              </span>
             </Link>
           </div>
 

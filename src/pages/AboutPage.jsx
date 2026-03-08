@@ -2,29 +2,18 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import dynamic from "next/dynamic";
 
-const ReactLenis = dynamic(
-  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
-  { ssr: false }
-);
 
 export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
 
   // Use window scroll instead of target ref to avoid hydration mismatch
-  const { scrollYProgress } = useScroll();
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -40,10 +29,7 @@ export default function AboutPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -51,14 +37,11 @@ export default function AboutPage() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <AnimatePresence>
           {isLoading && (
             <motion.div
@@ -86,49 +69,43 @@ export default function AboutPage() {
               className="absolute w-[80vw] h-[60vh] bg-pink-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 top-1/4 left-1/4"
               animate={{
                 x: ["0%", "5%", "0%"],
-                y: ["0%", "10%", "0%"],
-              }}
+                y: ["0%", "10%", "0%"]}}
               transition={{
                 duration: 20,
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "easeInOut",
-              }}
+                ease: "easeInOut"}}
             />
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-purple-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 bottom-1/4 right-1/4"
               animate={{
                 x: ["0%", "-8%", "0%"],
-                y: ["0%", "-12%", "0%"],
-              }}
+                y: ["0%", "-12%", "0%"]}}
               transition={{
                 duration: 25,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 2,
-              }}
+                delay: 2}}
             />
             <motion.div
               className="absolute w-[60vw] h-[50vh] bg-blue-100 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 top-1/3 right-1/3"
               animate={{
                 x: ["0%", "15%", "0%"],
-                y: ["0%", "-5%", "0%"],
-              }}
+                y: ["0%", "-5%", "0%"]}}
               transition={{
                 duration: 30,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 4,
-              }}
+                delay: 4}}
             />
           </div>
 
           {/* Hero Section */}
           <section className="relative pt-10 flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -142,10 +119,7 @@ export default function AboutPage() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -156,10 +130,7 @@ export default function AboutPage() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block">Redefining</span>
@@ -184,10 +155,7 @@ export default function AboutPage() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   Where science meets soul in the pursuit of conscious beauty
@@ -238,7 +206,7 @@ export default function AboutPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Our Ethos
                     </motion.h2>
@@ -256,10 +224,7 @@ export default function AboutPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -323,7 +288,7 @@ export default function AboutPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Ethical Impact
                     </motion.h2>
@@ -341,10 +306,7 @@ export default function AboutPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -407,7 +369,7 @@ export default function AboutPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Our Sustainable Foundation
                     </motion.h2>
@@ -428,10 +390,7 @@ export default function AboutPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -516,7 +475,7 @@ export default function AboutPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       The Ritual
                     </motion.h2>
@@ -534,10 +493,7 @@ export default function AboutPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -570,8 +526,7 @@ export default function AboutPage() {
                               whileInView={{ x: 0, opacity: 1 }}
                               transition={{
                                 delay: index * 0.1 + 0.5,
-                                ease: "easeOut",
-                              }}
+                                ease: "easeOut"}}
                               viewport={{ once: true }}
                               className="flex items-start"
                             >
@@ -611,7 +566,7 @@ export default function AboutPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Our Collective
                     </motion.h2>
@@ -629,10 +584,7 @@ export default function AboutPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -695,7 +647,7 @@ export default function AboutPage() {
             </div>
           </div>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

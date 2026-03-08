@@ -13,7 +13,7 @@ export async function generateMetadata({ searchParams }) {
     description:
       "Discover Saundrya Earth's premium Ayurvedic skincare collection. Natural, chemical-free serums, creams, and beauty products for radiant, healthy skin. Shop now!",
     keywords:
-      "ayurvedic skincare, natural beauty products, chemical-free cosmetics, saundrya earth, organic skincare, face serum, night cream, day cream, lip balm, ubtan, radiance boost serum",
+      "ayurvedic skincare, natural beauty products, skincare products, chemical-free cosmetics, saundrya earth, organic skincare, face serum, night cream, day cream, lip balm, ubtan, radiance boost serum, best skincare products india",
     authors: [{ name: "Saundrya Earth" }],
     creator: "Saundrya Earth",
     publisher: "Saundrya Earth",
@@ -29,12 +29,12 @@ export async function generateMetadata({ searchParams }) {
     return {
       title: `${categoryName} - Premium Ayurvedic ${categoryName} | Saundrya Earth`,
       description: `Shop premium Ayurvedic ${categoryName} by Saundrya Earth. Natural, chemical-free formulas for ${categoryName.toLowerCase()} needs. Free shipping & authentic Ayurvedic solutions.`,
-      keywords: `ayurvedic ${categoryName}, ${categoryName} for skin, natural ${categoryName}, saundrya earth ${categoryName}, best ${categoryName} online, ${categoryName} price, buy ${categoryName}`,
+      keywords: `ayurvedic ${categoryName}, ${categoryName} for skin, natural ${categoryName}, saundrya earth ${categoryName}, best ${categoryName} online, ${categoryName} price, buy ${categoryName}, skincare products`,
       openGraph: {
         title: `${categoryName} - Premium Ayurvedic ${categoryName} | Saundrya Earth`,
         description: `Shop premium Ayurvedic ${categoryName} by Saundrya Earth. Natural formulas for radiant skin.`,
         type: "website",
-        url: `https://saundryaearth.com/products?category=${category}`,
+        url: `https://www.saundryaearth.com/products?category=${category}`,
         siteName: "Saundrya Earth",
         images: [
           {
@@ -72,13 +72,13 @@ export async function generateMetadata({ searchParams }) {
     return {
       title: `Search Results for "${search}" | Saundrya Earth Ayurvedic Skincare`,
       description: `Find the best Ayurvedic skincare products for "${search}" at Saundrya Earth. Natural, chemical-free solutions for your skincare needs. Free shipping available.`,
-      keywords: `${search}, ayurvedic ${search}, natural ${search}, saundrya earth ${search}, buy ${search} online`,
+      keywords: `${search}, ayurvedic ${search}, natural ${search}, saundrya earth ${search}, buy ${search} online, skincare products`,
       openGraph: {
         title: `Search Results for "${search}" | Saundrya Earth`,
         description: `Find Ayurvedic ${search} products at Saundrya Earth. Natural skincare solutions.`,
         type: "website",
-        url: `https://saundryaearth.com/products?search=${encodeURIComponent(
-          search
+        url: `https://www.saundryaearth.com/products?search=${encodeURIComponent(
+          search,
         )}`,
         siteName: "Saundrya Earth",
       },
@@ -96,7 +96,7 @@ export async function generateMetadata({ searchParams }) {
       title: baseMetadata.title,
       description: baseMetadata.description,
       type: "website",
-      url: "https://saundryaearth.com/products",
+      url: "https://www.saundryaearth.com/products",
       siteName: "Saundrya Earth",
       images: [
         {
@@ -127,7 +127,7 @@ export async function generateMetadata({ searchParams }) {
       },
     },
     alternates: {
-      canonical: "https://saundryaearth.com/products",
+      canonical: "https://www.saundryaearth.com/products",
     },
   };
 }

@@ -6,14 +6,14 @@ import {
   User,
   MapPin,
   Package,
-  Trash2,
   LogOut,
   MessageCircle,
-  Settings,
   Shield,
   CreditCard,
+  Heart,
   ChevronRight,
-  UserCircle,
+  Menu,
+  X,
 } from "lucide-react";
 import UserProfileTab from "@/components/UserProfileTab";
 import AddressesTab from "@/components/AddressesTab";
@@ -23,6 +23,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { clientFetch } from "@/services/clientfetch";
 import SupportTicketsTab from "@/components/SupportTicketsTab";
+import SecurityTab from "@/components/SecurityTab";
 
 // --- MAIN CLIENT COMPONENT ---
 const AccountPageClient = (data) => {
@@ -33,6 +34,7 @@ const AccountPageClient = (data) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const currentTab = searchParams.get("tab") || "profile";
   const [activeTab, setActiveTab] = useState(currentTab);
@@ -46,12 +48,11 @@ const AccountPageClient = (data) => {
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
+    setIsMobileMenuOpen(false);
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", tabId);
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
-
-  const [addresses, setAddresses] = useState(addressesData?.addresses || []);
 
   const handleLogout = async () => {
     try {
@@ -77,34 +78,32 @@ const AccountPageClient = (data) => {
     }
   };
 
-  const navItems = [
-    { id: "profile", label: "My Profile", icon: UserCircle },
-    { id: "addresses", label: "Addresses", icon: MapPin },
-    { id: "orders", label: "Order History", icon: Package },
-    { id: "support", label: "Support", icon: MessageCircle },
+  const navGroups = [
+    {
+      title: "Dashboard",
+      items: [
+        {
+          id: "orders",
+          label: "My Orders",
+          icon: Package,
+          badge: ordersData?.length || null,
+        },
+      ],
+    },
+    {
+      title: "Account Settings",
+      items: [
+        { id: "profile", label: "Profile Information", icon: User },
+        { id: "addresses", label: "Manage Addresses", icon: MapPin },
+        { id: "security", label: "Security", icon: Shield },
+      ],
+    },
+    {
+      title: "My Stuff",
+      items: [{ id: "support", label: "Support Tickets", icon: MessageCircle }],
+    },
   ];
 
-  const getPageTitle = () => {
-    const found = navItems.find((i) => i.id === activeTab);
-    return found ? found.label : "Settings";
-  };
-
-  const getPageDescription = () => {
-    switch (activeTab) {
-      case "profile":
-        return "Update your personal details securely.";
-      case "addresses":
-        return "Manage your delivery locations.";
-      case "orders":
-        return "Track and view your past orders.";
-      case "support":
-        return "Need help? View your support tickets.";
-      default:
-        return "";
-    }
-  };
-
-  /* Render Active Tab Content */
   const renderTabContent = () => {
     switch (activeTab) {
       case "profile":
@@ -115,123 +114,174 @@ const AccountPageClient = (data) => {
         return <OrdersTab ordersData={ordersData} />;
       case "support":
         return <SupportTicketsTab supportTicketsData={supportTickets} />;
+      case "security":
+        return <SecurityTab />;
+      case "wishlist":
+      case "payments":
+        return (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-gray-200">
+            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <Package size={32} className="text-gray-300" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900">Coming Soon</h3>
+            <p className="text-gray-500 mt-1">
+              This feature is currently under development.
+            </p>
+          </div>
+        );
       default:
         return <UserProfileTab user={user} setUser={setUser} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50/80 via-white to-emerald-50/20 font-[var(--font-poppins)] selection:bg-emerald-100 selection:text-emerald-900 border-t border-stone-200/50">
-      {/* Soft background decor */}
-      <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-stone-100/50 to-transparent pointer-events-none" />
-
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 relative">
-        {/* Header section with brand colors */}
-        <div className="mb-10 lg:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-stone-900 tracking-tight leading-tight">
-            Welcome back, <br className="sm:hidden" />
-            <span className="text-emerald-600 font-serif italic">
-              {user?.profile?.name?.split(" ")[0] || "User"}
-            </span>
-          </h1>
-          <p className="text-stone-500 mt-3 text-base sm:text-lg max-w-xl">
-            {getPageDescription()}
-          </p>
+    <div className="min-h-screen font-sans">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Mobile Header / Menu Toggle */}
+        <div className="lg:hidden flex items-center justify-between bg-white p-4 rounded-xl shadow-sm mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+              <img
+                src={
+                  user?.profile?.avatar ||
+                  `https://ui-avatars.com/api/?name=${user?.profile?.name || "U"}&background=f1f5f9&color=475569`
+                }
+                alt="User avatar"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 leading-none">Hello,</p>
+              <p className="text-sm font-semibold text-gray-800">
+                {user?.profile?.name || "User"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 text-gray-600 bg-gray-50 rounded-md"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 items-start">
-          {/* --- SIDEBAR NAVIGATION --- */}
-          <aside className="w-full lg:w-64 shrink-0 transition-all">
-            <nav className="flex flex-col gap-y-1.5 lg:sticky lg:top-8 bg-white/60 backdrop-blur-md p-2.5 rounded-2xl border border-stone-200/50 shadow-sm">
-              {navItems.map((tab) => {
-                const isActive = activeTab === tab.id;
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => handleTabChange(tab.id)}
-                    className={`group relative flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
-                      isActive
-                        ? "text-white shadow-md shadow-emerald-500/20"
-                        : "text-stone-600 hover:text-emerald-700 hover:bg-emerald-50/50"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="active-sidebar-tab"
-                        className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-xl"
-                        initial={false}
-                        transition={{
-                          type: "spring",
-                          stiffness: 350,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-
-                    <div className="relative z-10 flex items-center gap-3">
-                      <Icon
-                        size={18}
-                        className={`transition-colors duration-200 ${
-                          isActive
-                            ? "text-emerald-50"
-                            : "text-stone-400 group-hover:text-emerald-500"
-                        }`}
-                        strokeWidth={isActive ? 2.5 : 2}
-                      />
-                      <span
-                        className={`text-[15px] tracking-wide ${isActive ? "font-semibold" : "font-medium"}`}
-                      >
-                        {tab.label}
-                      </span>
-                    </div>
-
-                    {!isActive && (
-                      <ChevronRight
-                        size={16}
-                        className="text-stone-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-10"
-                      />
-                    )}
-                  </button>
-                );
-              })}
-
-              <div className="my-2 border-t border-stone-200/50 mx-2" />
-
-              <button
-                onClick={handleLogout}
-                className="group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer text-red-600 hover:bg-red-50"
-              >
-                <div className="flex items-center gap-3">
-                  <LogOut
-                    size={18}
-                    className="text-red-400 group-hover:text-red-500"
-                  />
-                  <span className="text-[15px] font-medium tracking-wide">
-                    Log Out
-                  </span>
+        <div className="flex flex-col lg:flex-row gap-6 relative items-start">
+          {/* SIDEBAR */}
+          <aside
+            className={`w-full lg:w-[280px] shrink-0 transition-all ${isMobileMenuOpen ? "block" : "hidden lg:block"} lg:sticky lg:top-8 z-10`}
+          >
+            {/* User Greeting Card (Flipkart/Amazon style) */}
+            <div className="bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.1)] p-4 hidden lg:flex items-center gap-4 mb-4 border border-gray-100">
+              <div className="relative group cursor-pointer w-[50px] h-[50px] rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0 bg-gray-100">
+                <img
+                  src={
+                    user?.profile?.avatar ||
+                    `https://ui-avatars.com/api/?name=${user?.profile?.name || "U"}&background=f1f5f9&color=475569`
+                  }
+                  alt="Avatar"
+                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${user?.profile?.name || "U"}&background=f1f5f9&color=475569`;
+                  }}
+                />
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-[11px] text-gray-500 font-medium">Hello,</p>
+                <div className="truncate font-semibold text-gray-800 text-base leading-tight mt-0.5">
+                  {user?.profile?.name || "User"}
                 </div>
-              </button>
+              </div>
+            </div>
+
+            {/* Navigation Menu */}
+            <nav className="bg-white rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden divide-y divide-gray-100/50">
+              {navGroups.map((group, idx) => (
+                <div key={idx} className="py-2">
+                  <div className="px-5 mb-1 mt-2">
+                    <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                      {group.title}
+                    </h4>
+                  </div>
+                  <div className="flex flex-col mt-1">
+                    {group.items.map((tab) => {
+                      const isActive = activeTab === tab.id;
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => handleTabChange(tab.id)}
+                          className={`group relative flex items-center justify-between px-5 py-3.5 transition-all duration-200 cursor-pointer ${
+                            isActive ? "bg-blue-50/50" : "hover:bg-gray-50"
+                          }`}
+                        >
+                          {isActive && (
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r-md" />
+                          )}
+                          <div className="flex items-center gap-4">
+                            <Icon
+                              size={20}
+                              className={`transition-colors duration-200 ${
+                                isActive
+                                  ? "text-blue-600 fill-blue-50"
+                                  : "text-gray-400 group-hover:text-blue-500"
+                              }`}
+                              strokeWidth={isActive ? 2.5 : 2}
+                            />
+                            <span
+                              className={`text-sm ${isActive ? "font-semibold text-blue-700" : "font-medium text-gray-700 group-hover:text-blue-600"}`}
+                            >
+                              {tab.label}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {tab.badge && (
+                              <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                {tab.badge}
+                              </span>
+                            )}
+                            <ChevronRight
+                              size={16}
+                              className={`transition-all duration-200 ${isActive ? "text-blue-500" : "text-gray-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}
+                            />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              <div className="py-2">
+                <button
+                  onClick={handleLogout}
+                  className="w-full group flex items-center justify-between px-5 py-3.5 transition-all duration-200 hover:bg-red-50 cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    <LogOut
+                      size={20}
+                      className="text-gray-400 group-hover:text-red-500 transition-colors"
+                    />
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-red-600 transition-colors">
+                      Log Out
+                    </span>
+                  </div>
+                </button>
+              </div>
             </nav>
           </aside>
 
-          {/* --- MAIN CONTENT AREA --- */}
-          <main className="flex-1 w-full max-w-[840px]">
+          {/* MAIN CONTENT AREA */}
+          <main className="flex-1 w-full min-w-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10, scale: 0.99 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.99 }}
-                transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="w-full"
               >
-                {/* Section Title */}
-                <div className="mb-8 hidden lg:block">
-                  <h2 className="text-2xl font-bold text-stone-800 tracking-tight">
-                    {getPageTitle()}
-                  </h2>
-                </div>
-
                 {renderTabContent()}
               </motion.div>
             </AnimatePresence>

@@ -5,6 +5,7 @@ import { MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
 import OrderPageSteps from "@/components/OrderPageSteps";
 import OrderCheckoutForm from "@/components/OrderCheckoutForm";
 import OrderData from "@/components/OrderData";
+import OrderPlacementOverlay from "@/components/OrderPlacementOverlay";
 import { clientFetch } from "@/services/clientfetch";
 import { setCookie } from "@/utils/cookies";
 import toast from "react-hot-toast";
@@ -13,6 +14,7 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [placementStatus, setPlacementStatus] = useState("idle");
   const [error, setError] = useState(null);
   const [addressesState, setAddressesState] = useState(addresses);
   const cartItems = sessionData?.items || [];
@@ -36,79 +38,86 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
 
   const handleOrderSuccess = async (orderData) => {
     try {
-      localStorage.setItem(
-        "currentOrderId",
-        orderData.data.order.id || orderData.data.order.id
-      );
+      const isOnline = formData.paymentMethod === "online";
 
-      setCookie(
-        "currentOrderId",
-        orderData.data.order.id || orderData.data.order.id,
-        1
-      );
-      // For online payment, redirect to payment gateway in same window
-      if (formData.paymentMethod === "online" && orderData.data.paymentLink) {
+      if (!isOnline) {
+        setPlacementStatus("success");
+      } else {
+        setPlacementStatus("redirecting");
+      }
+
+      const orderId = orderData.data.order._id || orderData.data.order.id;
+
+      localStorage.setItem("currentOrderId", orderId);
+      setCookie("currentOrderId", orderId, 1);
+
+      // For online payment, redirect to payment gateway
+      if (isOnline && orderData.data.paymentLink) {
         window.location.href = orderData.data.paymentLink;
       } else {
-        // For COD, redirect to order details page
-        router.push(`/order/${orderData.data.order.id}`);
+        // Wait for a short duration to show success message (for COD or fallback)
+        setTimeout(() => {
+          router.push(`/order/${orderId}`);
+        }, 1500);
       }
     } catch (error) {
       console.error("Order success handling error:", error);
-      setError("Failed to process order. Please contact support.");
+      setPlacementStatus("idle");
+      toast.error("An unexpected error occurred. Please contact support.");
     }
   };
 
-const handleApplyPromo = async () => {
-  if (!promoCode.trim()) {
-    toast.error("Please enter a promo code");
-    return;
-  }
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) {
+      toast.error("Please enter a promo code");
+      return;
+    }
 
-  setIsPromoLoading(true);
-  try {
-    const payload = {
-      code: promoCode,
-      sessionId: sessionId,
-    };
+    setIsPromoLoading(true);
+    try {
+      const payload = {
+        code: promoCode,
+        sessionId: sessionId,
+      };
 
-    const response = await clientFetch("promo/apply", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      throwError: true, // This ensures errors are thrown
-    });
+      const response = await clientFetch("promo/apply", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        throwError: true, // This ensures errors are thrown
+      });
 
-    if (response?.success) {
-      toast.success(response?.message || "Promo code applied successfully!");
+      if (response?.success) {
+        toast.success(response?.message || "Promo code applied successfully!");
 
-      // Re-fetch session to get the full updated state
-      const sessionResponse = await clientFetch(
-        `checkout/verify?sessionId=${sessionId}`
-      );
-      if (sessionResponse?.success) {
-        setSessionState(sessionResponse.data);
+        // Re-fetch session to get the full updated state
+        const sessionResponse = await clientFetch(
+          `checkout/verify?sessionId=${sessionId}`,
+        );
+        if (sessionResponse?.success) {
+          setSessionState(sessionResponse.data);
+        }
+
+        setPromoCode("");
       }
+    } catch (error) {
+      // Handle 404 and other errors properly
+      const errorMessage =
+        error.data?.message ||
+        error.message ||
+        "An error occurred while applying promo code";
 
-      setPromoCode("");
+      // Check if it's a 404 error (Invalid promo code)
+      if (error.status === 404) {
+        toast.error(errorMessage);
+      } else {
+        // Handle other types of errors
+        console.error("Promo code error:", error);
+        toast.error(errorMessage);
+      }
+    } finally {
+      setIsPromoLoading(false);
     }
-  } catch (error) {
-    // Handle 404 and other errors properly
-    const errorMessage = error.data?.message || 
-                        error.message || 
-                        "An error occurred while applying promo code";
-    
-    // Check if it's a 404 error (Invalid promo code)
-    if (error.status === 404) {
-      toast.error(errorMessage);
-    } else {
-      // Handle other types of errors
-      console.error("Promo code error:", error);
-      toast.error(errorMessage);
-    }
-  } finally {
-    setIsPromoLoading(false);
-  }
-};
+  };
 
   const handleRemovePromo = async () => {
     setIsPromoLoading(true);
@@ -128,7 +137,7 @@ const handleApplyPromo = async () => {
 
         // Re-fetch session to get the full updated state
         const sessionResponse = await clientFetch(
-          `checkout/verify?sessionId=${sessionId}`
+          `checkout/verify?sessionId=${sessionId}`,
         );
         if (sessionResponse?.success) {
           setSessionState(sessionResponse.data);
@@ -137,7 +146,7 @@ const handleApplyPromo = async () => {
     } catch (error) {
       console.error(error);
       toast.error(
-        error?.message || "An error occurred while removing promo code"
+        error?.message || "An error occurred while removing promo code",
       );
     } finally {
       setIsPromoLoading(false);
@@ -146,7 +155,10 @@ const handleApplyPromo = async () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent double clicks
+
     setIsSubmitting(true);
+    setPlacementStatus("processing");
     setError(null);
 
     try {
@@ -217,7 +229,7 @@ const handleApplyPromo = async () => {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           body: JSON.stringify(orderData),
-        }
+        },
       );
 
       const data = await response.json();
@@ -229,9 +241,16 @@ const handleApplyPromo = async () => {
       // Handle successful order creation
       await handleOrderSuccess(data);
     } catch (err) {
+      console.error("Order creation error:", err);
       setError(err.message || "Something went wrong. Please try again.");
-    } finally {
+      setPlacementStatus("idle");
       setIsSubmitting(false);
+
+      // Redirect with session ID to prevent loss of data
+      toast.error(err.message || "Order placement failed.");
+      router.push(`/checkout?sessionId=${sessionId}`);
+    } finally {
+      // isSubmitting will be set to false in handleOrderSuccess or here in error catch
     }
   };
 
@@ -356,8 +375,8 @@ const handleApplyPromo = async () => {
       if (missingFields.length > 0) {
         setError(
           `Please fill the following required fields: ${missingFields.join(
-            ", "
-          )}`
+            ", ",
+          )}`,
         );
         return false;
       }
@@ -427,6 +446,7 @@ const handleApplyPromo = async () => {
 
   return (
     <div className="bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <OrderPlacementOverlay status={placementStatus} />
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-200/40 via-sky-100/30 to-white"></div>
       <div className="max-w-6xl mx-auto">
         <OrderPageSteps steps={steps} currentStep={currentStep} />

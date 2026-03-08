@@ -4,9 +4,10 @@ import OrderDetailsPage from "@/pages/OrderDetailsPage";
 import { FetchData } from "@/services/useServerFetch";
 
 export default async function OrderDetails({ params }) {
+  const { id } = await params;
   try {
     await userAuthCheckOnServer();
-    const [order] = await Promise.all([FetchData(`order/${params.id}`)]);
+    const [order] = await Promise.all([FetchData(`order/${id}`)]);
 
     if (!order?.data) {
       throw new Error("Order not found");
@@ -42,8 +43,9 @@ export default async function OrderDetails({ params }) {
 }
 
 export async function generateMetadata({ params }) {
+  const { id } = await params;
   try {
-    const order = await FetchData(`order/${params.id}`);
+    const order = await FetchData(`order/${id}`);
 
     if (!order?.data) {
       return {
@@ -52,7 +54,7 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-      title: `Order #${order.data.order?.orderNumber || params.id}`,
+      title: `Order #${order.data.order?.orderNumber || id}`,
       description: "Order details",
     };
   } catch (error) {

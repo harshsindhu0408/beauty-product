@@ -1,30 +1,17 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import { useEffect, useState, useRef } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export default function VerificationResult({ status }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [countdown, setCountdown] = useState(5);
-  const containerRef = useRef(null);
   
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -55,46 +42,46 @@ export default function VerificationResult({ status }) {
         return {
           icon: "✨",
           title: "Email Verified Successfully!",
-          message: "Your journey with Saundrya Earth begins now. Welcome to conscious beauty.",
+          message:
+            "Your journey with Saundrya Earth begins now. Welcome to conscious beauty.",
           color: "text-green-600",
           bgColor: "bg-green-50",
           borderColor: "border-green-200",
           gradient: "from-green-100 to-emerald-100",
-          accentColor: "text-green-500",
-        };
+          accentColor: "text-green-500"};
       case "failed":
         return {
           icon: "❌",
           title: "Verification Failed",
-          message: "The verification link couldn't be processed. This might be due to an expired link or technical issue.",
+          message:
+            "The verification link couldn't be processed. This might be due to an expired link or technical issue.",
           color: "text-red-600",
           bgColor: "bg-red-50",
           borderColor: "border-red-200",
           gradient: "from-red-100 to-pink-100",
-          accentColor: "text-red-500",
-        };
+          accentColor: "text-red-500"};
       case "invalid":
         return {
           icon: "⚠️",
           title: "Invalid Verification Link",
-          message: "The verification link appears to be invalid or malformed. Please check and try again.",
+          message:
+            "The verification link appears to be invalid or malformed. Please check and try again.",
           color: "text-orange-600",
           bgColor: "bg-orange-50",
           borderColor: "border-orange-200",
           gradient: "from-orange-100 to-amber-100",
-          accentColor: "text-orange-500",
-        };
+          accentColor: "text-orange-500"};
       default:
         return {
           icon: "😔",
           title: "Something Went Wrong",
-          message: "We encountered an unexpected error. Please try again later or contact our support team.",
+          message:
+            "We encountered an unexpected error. Please try again later or contact our support team.",
           color: "text-gray-600",
           bgColor: "bg-gray-50",
           borderColor: "border-gray-200",
           gradient: "from-gray-100 to-slate-100",
-          accentColor: "text-gray-500",
-        };
+          accentColor: "text-gray-500"};
     }
   };
 
@@ -108,10 +95,7 @@ export default function VerificationResult({ status }) {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -119,10 +103,7 @@ export default function VerificationResult({ status }) {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const staggerChildren = {
     hidden: { opacity: 0 },
@@ -130,14 +111,11 @@ export default function VerificationResult({ status }) {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
-  };
+        delayChildren: 0.3}}};
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <AnimatePresence>
           {isLoading && (
             <motion.div
@@ -155,59 +133,50 @@ export default function VerificationResult({ status }) {
           )}
         </AnimatePresence>
 
-        <main
-          ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Floating gradient blobs */}
           <div className="fixed inset-0 -z-10 overflow-hidden">
             <motion.div
               className={`absolute w-[80vw] h-[60vh] ${content.gradient} rounded-full mix-blend-multiply filter blur-[120px] opacity-30 top-1/4 left-1/4`}
               animate={{
                 x: ["0%", "5%", "0%"],
-                y: ["0%", "10%", "0%"],
-              }}
+                y: ["0%", "10%", "0%"]}}
               transition={{
                 duration: 20,
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "easeInOut",
-              }}
+                ease: "easeInOut"}}
             />
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-purple-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 bottom-1/4 right-1/4"
               animate={{
                 x: ["0%", "-8%", "0%"],
-                y: ["0%", "-12%", "0%"],
-              }}
+                y: ["0%", "-12%", "0%"]}}
               transition={{
                 duration: 25,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 2,
-              }}
+                delay: 2}}
             />
             <motion.div
               className="absolute w-[60vw] h-[50vh] bg-blue-100 rounded-full mix-blend-multiply filter blur-[100px] opacity-20 top-1/3 right-1/3"
               animate={{
                 x: ["0%", "15%", "0%"],
-                y: ["0%", "-5%", "0%"],
-              }}
+                y: ["0%", "-5%", "0%"]}}
               transition={{
                 duration: 30,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 4,
-              }}
+                delay: 4}}
             />
           </div>
 
           {/* Hero Section */}
           <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -227,10 +196,7 @@ export default function VerificationResult({ status }) {
                       scale: 1,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="mb-8"
                 >
                   <div className="text-8xl mb-6">{content.icon}</div>
@@ -245,16 +211,13 @@ export default function VerificationResult({ status }) {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
-                  <span className="block">{content.title.split(' ')[0]}</span>
+                  <span className="block">{content.title.split(" ")[0]}</span>
                   <span className="relative inline-block">
                     <span className="relative z-10">
-                      {content.title.split(' ').slice(1).join(' ')}
+                      {content.title.split(" ").slice(1).join(" ")}
                     </span>
                     <motion.span
                       initial={{ scaleX: 0 }}
@@ -276,10 +239,7 @@ export default function VerificationResult({ status }) {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed"
                 >
                   {content.message}
@@ -300,7 +260,7 @@ export default function VerificationResult({ status }) {
                         {countdown}s
                       </div>
                     </div>
-                    
+
                     {/* Progress Bar */}
                     <div className="max-w-md mx-auto">
                       <div className="w-full bg-gray-200 rounded-full h-2">
@@ -385,7 +345,9 @@ export default function VerificationResult({ status }) {
                         <>
                           <p className="flex items-start">
                             <span className="text-green-500 mr-2">✓</span>
-                            <span>Access your personalized beauty dashboard</span>
+                            <span>
+                              Access your personalized beauty dashboard
+                            </span>
                           </p>
                           <p className="flex items-start">
                             <span className="text-green-500 mr-2">✓</span>
@@ -400,7 +362,9 @@ export default function VerificationResult({ status }) {
                         <>
                           <p className="flex items-start">
                             <span className="text-blue-500 mr-2">•</span>
-                            <span>Check your email for a new verification link</span>
+                            <span>
+                              Check your email for a new verification link
+                            </span>
                           </p>
                           <p className="flex items-start">
                             <span className="text-blue-500 mr-2">•</span>
@@ -447,7 +411,7 @@ export default function VerificationResult({ status }) {
             </motion.div>
           </section>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

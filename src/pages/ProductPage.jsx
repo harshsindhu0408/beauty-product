@@ -100,10 +100,6 @@ const ProductPage = ({ productData, similarProducts }) => {
         // toast.success(response.message);
         setTimeout(() => {
           setStatus("added");
-
-          setTimeout(() => {
-            router.push("/cart");
-          }, 700);
         }, 500);
       } else {
         toast.error(response.message);

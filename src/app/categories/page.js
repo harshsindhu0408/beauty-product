@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }) {
     title: baseTitle,
     description: baseDescription,
     keywords:
-      "skincare, beauty products, fragrances, natural cosmetics, body care, face masks, serums, SPF, sustainable beauty",
+      "skincare products, beauty products, fragrances, natural cosmetics, body care, face masks, serums, SPF, sustainable beauty, saundrya earth categories",
     robots:
       "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
     openGraph: {
@@ -44,7 +44,7 @@ export async function generateMetadata({ searchParams }) {
       description: baseDescription,
     },
     alternates: {
-      canonical: "https://saundryaearth.com/categories",
+      canonical: "https://www.saundryaearth.com/categories",
     },
   };
 }

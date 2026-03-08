@@ -35,7 +35,7 @@ const BackgroundSlider = ({
   // Memoize image URLs to prevent unnecessary re-renders
   const memoizedImages = useMemo(
     () => banners.map((b) => b.image.url),
-    [banners]
+    [banners],
   );
 
   // Load GSAP once
@@ -105,7 +105,7 @@ const BackgroundSlider = ({
       gsap.fromTo(
         currentImgElement,
         { scale: 1 },
-        { scale: 1.05, duration: 10, ease: "power1.out" }
+        { scale: 1.05, duration: 10, ease: "power1.out" },
       );
     }
 
@@ -285,7 +285,7 @@ const BeaucareHero = ({ banners = [] }) => {
       {
         threshold: 0.1,
         rootMargin: "50px",
-      }
+      },
     );
 
     if (heroRef.current) {
@@ -358,13 +358,6 @@ const BeaucareHero = ({ banners = [] }) => {
       });
     }
 
-    if (navRef.current) {
-      gsapRef.current.set(navRef.current, {
-        opacity: 0,
-        y: -20,
-      });
-    }
-
     if (reviewsRef.current) {
       gsapRef.current.set(reviewsRef.current, {
         opacity: 0,
@@ -393,18 +386,6 @@ const BeaucareHero = ({ banners = [] }) => {
       });
     }
 
-    if (navRef.current) {
-      tl.to(
-        navRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-        },
-        "-=0.8"
-      );
-    }
-
     if (titleRef.current) {
       tl.to(
         titleRef.current,
@@ -413,7 +394,7 @@ const BeaucareHero = ({ banners = [] }) => {
           y: 0,
           duration: 0.8,
         },
-        "-=0.4"
+        "-=0.4",
       );
     }
 
@@ -425,7 +406,7 @@ const BeaucareHero = ({ banners = [] }) => {
           y: 0,
           duration: 0.6,
         },
-        "-=0.2"
+        "-=0.2",
       );
     }
 
@@ -437,7 +418,7 @@ const BeaucareHero = ({ banners = [] }) => {
           y: 0,
           duration: 0.5,
         },
-        "-=0.1"
+        "-=0.1",
       );
     }
 
@@ -450,7 +431,7 @@ const BeaucareHero = ({ banners = [] }) => {
           duration: 0.7,
           ease: "back.out(1.4)",
         },
-        "-=0.3"
+        "-=0.3",
       );
     }
   }, [isVisible]);
@@ -468,7 +449,7 @@ const BeaucareHero = ({ banners = [] }) => {
     const gsap = gsapRef.current;
 
     const elementsToAnimate = [titleRef.current, subtitleRef.current].filter(
-      Boolean
+      Boolean,
     );
 
     if (elementsToAnimate.length > 0) {
@@ -476,7 +457,7 @@ const BeaucareHero = ({ banners = [] }) => {
       tl.fromTo(
         elementsToAnimate,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
       );
     }
   }, [currentIndex]);

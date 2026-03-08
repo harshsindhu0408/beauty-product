@@ -2,74 +2,50 @@
 
 import dynamic from "next/dynamic";
 
-const ReactLenis = dynamic(
-  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
-  { ssr: false }
-);
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import { useState, useRef } from "react";
 import { ChevronDown, ChevronUp, HelpCircle, Leaf } from "lucide-react";
 
 const FAQPage = () => {
   const [activeIndex, setActiveIndex] = useState(null);
-  const containerRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   const faqs = [
     {
       question: "What makes Saundrya Earth products different?",
       answer:
-        "Our products are crafted with 100% natural ingredients, sustainably sourced and free from harsh chemicals. Each formulation is designed to work in harmony with your skin's natural biology while respecting the environment.",
-    },
+        "Our products are crafted with 100% natural ingredients, sustainably sourced and free from harsh chemicals. Each formulation is designed to work in harmony with your skin's natural biology while respecting the environment."},
     {
       question: "Are your products cruelty-free?",
       answer:
-        "Absolutely! We're proud to be Leaping Bunny certified. We never test on animals at any stage of product development, and all our suppliers adhere to strict cruelty-free standards.",
-    },
+        "Absolutely! We're proud to be Leaping Bunny certified. We never test on animals at any stage of product development, and all our suppliers adhere to strict cruelty-free standards."},
     {
       question: "How should I store my products?",
       answer:
-        "For optimal shelf life, store in a cool, dry place away from direct sunlight. Our preservative-free products should be used within 6 months of opening. The expiration date is printed on each package.",
-    },
+        "For optimal shelf life, store in a cool, dry place away from direct sunlight. Our preservative-free products should be used within 6 months of opening. The expiration date is printed on each package."},
     {
       question: "Can I use your products if I have sensitive skin?",
       answer:
-        "Yes! Our formulations are designed for all skin types, including sensitive skin. We recommend doing a patch test before full application. If you have specific concerns, our Skin Harmony line is specially formulated for reactive skin.",
-    },
+        "Yes! Our formulations are designed for all skin types, including sensitive skin. We recommend doing a patch test before full application. If you have specific concerns, our Skin Harmony line is specially formulated for reactive skin."},
     {
       question: "Do you offer international shipping?",
       answer:
-        "We currently ship to over 50 countries worldwide. Shipping costs and delivery times vary by destination. You'll see all available options at checkout based on your location.",
-    },
+        "We currently ship to over 50 countries worldwide. Shipping costs and delivery times vary by destination. You'll see all available options at checkout based on your location."},
     {
       question: "What's your return policy?",
       answer:
-        "We offer a 30-day satisfaction guarantee. If you're not completely happy with your purchase, you can return unopened products for a full refund or opened products for store credit. See our Returns page for details.",
-    },
+        "We offer a 30-day satisfaction guarantee. If you're not completely happy with your purchase, you can return unopened products for a full refund or opened products for store credit. See our Returns page for details."},
     {
       question: "Are your packaging materials sustainable?",
       answer:
-        "We use 100% recyclable and biodegradable materials whenever possible. Our glass bottles are designed for reuse, and we offer a recycling program where you can return empty containers for proper processing.",
-    },
+        "We use 100% recyclable and biodegradable materials whenever possible. Our glass bottles are designed for reuse, and we offer a recycling program where you can return empty containers for proper processing."},
     {
       question: "How often are new products released?",
       answer:
-        "We launch 2-3 carefully developed products per year. Each formulation undergoes at least 12 months of testing to ensure efficacy and safety. Subscribe to our newsletter for exclusive previews of upcoming releases.",
-    },
+        "We launch 2-3 carefully developed products per year. Each formulation undergoes at least 12 months of testing to ensure efficacy and safety. Subscribe to our newsletter for exclusive previews of upcoming releases."},
   ];
 
   const toggleFAQ = (index) => {
@@ -77,15 +53,12 @@ const FAQPage = () => {
   };
 
   return (
-    <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-      <div
-        ref={containerRef}
-        className="min-h-screen bg-gradient-to-b from-emerald-50 to-white"
-      >
+    
+      <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
         {/* Hero Section */}
         <section className="relative pt-10 px-6">
           <motion.div
-            style={{ y: y1, opacity }}
+            
             className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
           />
 
@@ -140,8 +113,7 @@ const FAQPage = () => {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={{
-                visible: { transition: { staggerChildren: 0.1 } },
-              }}
+                visible: { transition: { staggerChildren: 0.1 } }}}
             >
               {faqs.map((faq, index) => (
                 <motion.div
@@ -153,10 +125,7 @@ const FAQPage = () => {
                       y: 0,
                       transition: {
                         duration: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                 >
                   <motion.div
                     className={`bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${
@@ -192,17 +161,13 @@ const FAQPage = () => {
                             opacity: 1,
                             transition: {
                               height: { duration: 0.3 },
-                              opacity: { duration: 0.2, delay: 0.1 },
-                            },
-                          }}
+                              opacity: { duration: 0.2, delay: 0.1 }}}}
                           exit={{
                             height: 0,
                             opacity: 0,
                             transition: {
                               height: { duration: 0.3 },
-                              opacity: { duration: 0.2 },
-                            },
-                          }}
+                              opacity: { duration: 0.2 }}}}
                           className="overflow-hidden"
                         >
                           <div className="px-6 pb-6 md:px-8 md:pb-8 ml-16 text-gray-600">
@@ -272,7 +237,7 @@ const FAQPage = () => {
           </div>
         </section>
       </div>
-    </ReactLenis>
+    
   );
 };
 

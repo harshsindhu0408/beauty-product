@@ -1,5 +1,5 @@
 "use client";
-
+import ReactLenis from "@studio-freight/react-lenis";
 import React, { useEffect, useState } from "react";
 import {
   TruckIcon,
@@ -17,11 +17,11 @@ import {
 import { ShoppingBag, LayoutGrid } from "lucide-react";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { ReactLenis } from "@studio-freight/react-lenis";
+import { useRouter, useSearchParams } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
 import toast from "react-hot-toast";
 import CancelOrderModal from "@/components/CancelOrderModal";
+import OrderPlacementOverlay from "@/components/OrderPlacementOverlay";
 
 // --- HELPERS (Modified for INR) ---
 
@@ -305,7 +305,7 @@ const ReviewModal = ({
     } catch (error) {
       console.error("Failed to submit review:", error);
       toast.error(
-        "There was an error submitting your review. Please try again."
+        "There was an error submitting your review. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -393,14 +393,14 @@ const ReviewModal = ({
               {reviewData.rating === 0
                 ? "Select your rating"
                 : reviewData.rating === 1
-                ? "Poor"
-                : reviewData.rating === 2
-                ? "Fair"
-                : reviewData.rating === 3
-                ? "Good"
-                : reviewData.rating === 4
-                ? "Very Good"
-                : "Excellent"}
+                  ? "Poor"
+                  : reviewData.rating === 2
+                    ? "Fair"
+                    : reviewData.rating === 3
+                      ? "Good"
+                      : reviewData.rating === 4
+                        ? "Very Good"
+                        : "Excellent"}
             </p>
           </div>
 
@@ -445,7 +445,10 @@ const ReviewModal = ({
 const OrderDetailsPage = ({ orderData }) => {
   const { order } = orderData || {};
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+
   const [reviewModal, setReviewModal] = useState({
     isOpen: false,
     product: null,
@@ -467,11 +470,21 @@ const OrderDetailsPage = ({ orderData }) => {
   });
 
   useEffect(() => {
+    // Check for payment success parameter
+    if (searchParams.get("payment_success") === "true") {
+      setShowSuccessOverlay(true);
+      // Automatically hide after 4 seconds
+      const overlayTimer = setTimeout(() => {
+        setShowSuccessOverlay(false);
+      }, 4000);
+      return () => clearTimeout(overlayTimer);
+    }
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
   const handleCancelOrder = async () => {
     if (!cancelReason.selectedReason) return;
@@ -500,7 +513,7 @@ const OrderDetailsPage = ({ orderData }) => {
       console.error("Failed to cancel order:", error);
       toast.error(
         error.message ||
-          "There was an error cancelling your order. Please try again."
+          "There was an error cancelling your order. Please try again.",
       );
     }
   };
@@ -519,6 +532,7 @@ const OrderDetailsPage = ({ orderData }) => {
 
   return (
     <>
+      <OrderPlacementOverlay status={showSuccessOverlay ? "success" : "idle"} />
       <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
         <AnimatePresence>
           {isLoading && (
@@ -632,7 +646,32 @@ const OrderDetailsPage = ({ orderData }) => {
             variants={fadeIn}
             className="container mx-auto px-6 mb-8"
           >
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">
+                    Track Progress
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Real-time updates on your shipment
+                  </p>
+                </div>
+                {order.status !== "cancelled" &&
+                  order.status !== "delivered" && (
+                    <div className="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
+                      <TruckIcon className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm font-semibold text-blue-800">
+                        Estimated Delivery:{" "}
+                        {(() => {
+                          const date = new Date(order.createdAt);
+                          date.setDate(date.getDate() + 5);
+                          return formatDate(date.toISOString());
+                        })()}
+                      </span>
+                    </div>
+                  )}
+              </div>
+
               <OrderTimeline status={order.status} />
 
               {/* Action Buttons */}
@@ -640,20 +679,18 @@ const OrderDetailsPage = ({ orderData }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mt-6 flex flex-col sm:flex-row justify-center gap-4"
+                className="mt-12 flex flex-col sm:flex-row justify-center gap-4"
               >
-                {/* Track Order Button - Always show if order is not cancelled/refunded */}
                 {!["cancelled", "refunded"].includes(order.status) && (
                   <button
                     onClick={() => router.push(`/track/${order._id}`)}
-                    className="cursor-pointer px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2 flex-1 sm:flex-none"
+                    className="cursor-pointer px-8 py-3.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all flex items-center justify-center space-x-2 shadow-lg shadow-gray-200"
                   >
                     <TruckIcon className="w-5 h-5" />
-                    <span>Track Order</span>
+                    <span>Track Shipment</span>
                   </button>
                 )}
 
-                {/* Cancel Button - Only show for cancellable orders */}
                 {(order.status === "pending" ||
                   order.status === "processing") && (
                   <button
@@ -663,7 +700,7 @@ const OrderDetailsPage = ({ orderData }) => {
                         orderNumber: order?.orderNumber,
                       })
                     }
-                    className="cursor-pointer px-6 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors flex items-center justify-center space-x-2 flex-1 sm:flex-none"
+                    className="cursor-pointer px-8 py-3.5 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-all flex items-center justify-center space-x-2 border border-red-100"
                   >
                     <XCircleIcon className="w-5 h-5" />
                     <span>Cancel Order</span>

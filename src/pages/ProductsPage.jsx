@@ -1,12 +1,8 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
@@ -14,8 +10,7 @@ import { Filter, FilterIcon } from "lucide-react";
 
 export async function getServerSideProps() {
   return {
-    props: {},
-  };
+    props: {}};
 }
 
 export default function ProductsPage({
@@ -23,11 +18,9 @@ export default function ProductsPage({
   initialPage = 1,
   initialLimit = 12,
   categories,
-  initialFilters = {},
-}) {
+  initialFilters = {}}) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
 
   // State management
   const [isLoading, setIsLoading] = useState(true);
@@ -50,8 +43,7 @@ export default function ProductsPage({
     isDigital: initialFilters.isDigital || "",
     tags: initialFilters.tags || "",
     topSelling: initialFilters.topSelling || "",
-    search: initialFilters.search || "",
-  });
+    search: initialFilters.search || ""});
 
   useEffect(() => {
     setCurrentPage(initialPage);
@@ -61,16 +53,10 @@ export default function ProductsPage({
     setFilters((prev) => ({
       ...prev,
       ...initialFilters,
-      category: initialFilters.category || "all",
-    }));
+      category: initialFilters.category || "all"}));
   }, [initialPage, initialLimit, apiResponse, initialFilters]);
 
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Extract products from API response
   const products = productsData?.products || [];
   const paginationInfo = productsData?.pagination || {
@@ -78,8 +64,7 @@ export default function ProductsPage({
     totalPages: 1,
     totalProducts: products.length,
     hasNext: currentPage,
-    hasPrev: false,
-  };
+    hasPrev: false};
 
   // Update URL with all filters
   const updateUrlWithFilters = (newFilters, newPage = 1) => {
@@ -138,8 +123,7 @@ export default function ProductsPage({
       isDigital: "",
       tags: "",
       topSelling: "",
-      search: "",
-    };
+      search: ""};
     setFilters(resetFiltersState);
     setIsNavigating(true);
     setCurrentPage(1);
@@ -147,10 +131,7 @@ export default function ProductsPage({
   };
 
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -166,10 +147,7 @@ export default function ProductsPage({
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -177,10 +155,7 @@ export default function ProductsPage({
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -188,10 +163,7 @@ export default function ProductsPage({
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3,
-      },
-    },
-  };
+        delayChildren: 0.3}}};
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -200,18 +172,13 @@ export default function ProductsPage({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
-      },
-    },
+        ease: "easeOut"}},
     exit: {
       opacity: 0,
       y: -20,
       transition: {
         duration: 0.3,
-        ease: "easeIn",
-      },
-    },
-  };
+        ease: "easeIn"}}};
 
   // Helper function to get primary image
   const getProductImage = (product) => {
@@ -235,22 +202,19 @@ export default function ProductsPage({
       const defaultQuantity = 1;
       let payload = {
         productId: product._id,
-        quantity: defaultQuantity,
-      };
+        quantity: defaultQuantity};
 
-      if (product.variants && product.variants.length > 0) {
+      if (product?.variants && product?.variants?.length > 0) {
         const variant = product.variants[0];
         const option = variant.options[0];
         payload.variant = {
           variantName: variant.name,
-          optionName: option.name,
-        };
+          optionName: option.name};
       }
 
       const response = await clientFetch("cart", {
         method: "POST",
-        body: JSON.stringify(payload),
-      });
+        body: JSON.stringify(payload)});
 
       if (response) {
         if (
@@ -272,15 +236,12 @@ export default function ProductsPage({
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-        <main
-          ref={containerRef}
-          className="min-h-screen pt-10 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+      
+        <main className="min-h-screen pt-10 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Hero Section */}
           <section className="relative pt-10 flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -294,10 +255,7 @@ export default function ProductsPage({
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -308,10 +266,7 @@ export default function ProductsPage({
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block">Conscious</span>
@@ -336,10 +291,7 @@ export default function ProductsPage({
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   Formulated with intention, designed for impact
@@ -366,15 +318,15 @@ export default function ProductsPage({
 
                 {/* Filter Toggle Button */}
                 <div className="flex items-center gap-4">
-                <motion.button
-                  onClick={() => setShowFilters(!showFilters)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex cursor-pointer items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  <FilterIcon/> 
-                  <span>Filters</span>
-                </motion.button>
+                  <motion.button
+                    onClick={() => setShowFilters(!showFilters)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex cursor-pointer items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    <FilterIcon />
+                    <span>Filters</span>
+                  </motion.button>
                   {(filters.category !== "all" ||
                     filters.minPrice ||
                     filters.maxPrice ||
@@ -707,12 +659,12 @@ export default function ProductsPage({
                       if (totalPages <= 7) {
                         pages = Array.from(
                           { length: totalPages },
-                          (_, i) => i + 1
+                          (_, i) => i + 1,
                         );
                       } else {
                         if (currentPage <= maxVisible) {
                           pages = [...Array(maxVisible).keys()].map(
-                            (i) => i + 1
+                            (i) => i + 1,
                           );
                           pages.push("...", totalPages);
                         } else if (currentPage > totalPages - maxVisible) {
@@ -720,8 +672,8 @@ export default function ProductsPage({
                           pages.push(
                             ...Array.from(
                               { length: maxVisible },
-                              (_, i) => totalPages - maxVisible + i + 1
-                            )
+                              (_, i) => totalPages - maxVisible + i + 1,
+                            ),
                           );
                         } else {
                           pages = [
@@ -757,7 +709,7 @@ export default function ProductsPage({
                           >
                             {page}
                           </button>
-                        )
+                        ),
                       );
                     })()}
 
@@ -782,8 +734,7 @@ export default function ProductsPage({
                     transition={{
                       repeat: Infinity,
                       duration: 1,
-                      ease: "linear",
-                    }}
+                      ease: "linear"}}
                     className="w-6 h-6 border-2 border-t-transparent border-pink-600 rounded-full"
                   />
                 </div>
@@ -833,8 +784,7 @@ export default function ProductsPage({
                     ),
                     title: "Clean Science",
                     description:
-                      "We combine cutting-edge dermatology with time-tested botanicals for formulas that deliver visible results.",
-                  },
+                      "We combine cutting-edge dermatology with time-tested botanicals for formulas that deliver visible results."},
                   {
                     icon: (
                       <svg
@@ -853,8 +803,7 @@ export default function ProductsPage({
                     ),
                     title: "Ethical Sourcing",
                     description:
-                      "Our ingredients are sustainably harvested through fair-trade partnerships with farming communities.",
-                  },
+                      "Our ingredients are sustainably harvested through fair-trade partnerships with farming communities."},
                   {
                     icon: (
                       <svg
@@ -873,8 +822,7 @@ export default function ProductsPage({
                     ),
                     title: "Zero Compromise",
                     description:
-                      "No synthetic fragrances, parabens, sulfates, or other questionable ingredients—ever.",
-                  },
+                      "No synthetic fragrances, parabens, sulfates, or other questionable ingredients—ever."},
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -952,8 +900,7 @@ export default function ProductsPage({
                     onClick={() => router.push("/products")}
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)",
-                    }}
+                      boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)"}}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     className="bg-gradient-to-r from-pink-600 to-purple-600 text-white px-10 py-4 rounded-full font-medium text-lg hover:shadow-lg"
@@ -965,8 +912,7 @@ export default function ProductsPage({
                     onClick={() => router.push("/about")}
                     whileHover={{
                       scale: 1.05,
-                      backgroundColor: "#f8fafc",
-                    }}
+                      backgroundColor: "#f8fafc"}}
                     whileTap={{ scale: 0.98 }}
                     className="border-2 border-gray-300 text-gray-700 px-10 py-4 rounded-full font-medium text-lg bg-white bg-opacity-50 hover:bg-opacity-100"
                   >
@@ -977,7 +923,7 @@ export default function ProductsPage({
             </div>
           </motion.section>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

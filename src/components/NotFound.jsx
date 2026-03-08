@@ -1,27 +1,15 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import Link from "next/link";
 
 export default function NotFoundPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -37,10 +25,7 @@ export default function NotFoundPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -48,14 +33,11 @@ export default function NotFoundPage() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <AnimatePresence>
           {isLoading && (
             <motion.div
@@ -73,45 +55,38 @@ export default function NotFoundPage() {
           )}
         </AnimatePresence>
 
-        <main
-          ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Floating gradient blobs */}
           <div className="fixed inset-0 -z-10 overflow-hidden">
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-pink-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 top-1/4 left-1/4"
               animate={{
                 x: ["0%", "5%", "0%"],
-                y: ["0%", "10%", "0%"],
-              }}
+                y: ["0%", "10%", "0%"]}}
               transition={{
                 duration: 20,
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "easeInOut",
-              }}
+                ease: "easeInOut"}}
             />
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-purple-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 bottom-1/4 right-1/4"
               animate={{
                 x: ["0%", "-8%", "0%"],
-                y: ["0%", "-12%", "0%"],
-              }}
+                y: ["0%", "-12%", "0%"]}}
               transition={{
                 duration: 25,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 2,
-              }}
+                delay: 2}}
             />
           </div>
 
           {/* Hero Section */}
           <section className="relative h-screen flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -125,10 +100,7 @@ export default function NotFoundPage() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.div
@@ -146,10 +118,7 @@ export default function NotFoundPage() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-4xl md:text-6xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="relative inline-block">
@@ -173,10 +142,7 @@ export default function NotFoundPage() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   The page you're looking for doesn't exist or has been moved.
@@ -216,7 +182,7 @@ export default function NotFoundPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       You Might Like
                     </motion.h2>
@@ -234,10 +200,7 @@ export default function NotFoundPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.div
@@ -250,27 +213,23 @@ export default function NotFoundPage() {
                             description:
                               "Discover our conscious beauty collection",
                             link: "/products",
-                            color: "bg-pink-100",
-                          },
+                            color: "bg-pink-100"},
                           {
                             title: "Our Story",
                             description:
                               "Learn about our philosophy and mission",
                             link: "/about",
-                            color: "bg-purple-100",
-                          },
+                            color: "bg-purple-100"},
                           {
                             title: "Testimonials",
                             description: "See our customer reviews",
                             link: "/testimonials",
-                            color: "bg-blue-100",
-                          },
+                            color: "bg-blue-100"},
                           {
                             title: "FAQ",
                             description: "Read frequently asked questions",
                             link: "/faq",
-                            color: "bg-green-100",
-                          },
+                            color: "bg-green-100"},
                         ].map((item, index) => (
                           <Link key={index} href={item.link}>
                             <motion.div
@@ -319,7 +278,7 @@ export default function NotFoundPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Need Help?
                     </motion.h2>
@@ -337,10 +296,7 @@ export default function NotFoundPage() {
                           opacity: 1,
                           transition: {
                             staggerChildren: 0.1,
-                            delayChildren: 0.3,
-                          },
-                        },
-                      }}
+                            delayChildren: 0.3}}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -389,7 +345,7 @@ export default function NotFoundPage() {
                                   >
                                     {social}
                                   </a>
-                                )
+                                ),
                               )}
                             </div>
                           </div>
@@ -432,7 +388,7 @@ export default function NotFoundPage() {
             </div>
           </div>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

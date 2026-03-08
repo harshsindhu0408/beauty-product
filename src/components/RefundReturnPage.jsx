@@ -2,10 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import dynamic from "next/dynamic";
 import {
   ShieldCheck,
@@ -15,26 +12,17 @@ import {
   CreditCard,
   CheckCircle,
   AlertTriangle,
-  Banknote,
-} from "lucide-react";
+  Banknote} from "lucide-react";
 
-const ReactLenis = dynamic(
-  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
-  { ssr: false }
-);
 
 export default function RefundReturnPage() {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
 
   // Use window scroll instead of target ref to avoid hydration mismatch
-  const { scrollYProgress } = useScroll();
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -50,10 +38,7 @@ export default function RefundReturnPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -61,14 +46,11 @@ export default function RefundReturnPage() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <main
           ref={containerRef}
           className="min-h-screen bg-gradient-to-br from-emerald-50/30 to-white relative overflow-hidden"
@@ -76,7 +58,7 @@ export default function RefundReturnPage() {
           {/* Hero Section */}
           <section className="relative pb-10 flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -90,10 +72,7 @@ export default function RefundReturnPage() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -104,10 +83,7 @@ export default function RefundReturnPage() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block">Conscious</span>
@@ -131,10 +107,7 @@ export default function RefundReturnPage() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 font-light"
                 >
                   Transparent and ethical financial practices allowing us to
@@ -159,7 +132,7 @@ export default function RefundReturnPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Return Policy
                     </motion.h2>
@@ -172,9 +145,7 @@ export default function RefundReturnPage() {
                         hidden: { opacity: 0 },
                         visible: {
                           opacity: 1,
-                          transition: { staggerChildren: 0.1 },
-                        },
-                      }}
+                          transition: { staggerChildren: 0.1 }}}}
                       className="space-y-8"
                     >
                       <motion.div
@@ -230,7 +201,7 @@ export default function RefundReturnPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Cancellations
                     </motion.h2>
@@ -243,9 +214,7 @@ export default function RefundReturnPage() {
                         hidden: { opacity: 0 },
                         visible: {
                           opacity: 1,
-                          transition: { staggerChildren: 0.1 },
-                        },
-                      }}
+                          transition: { staggerChildren: 0.1 }}}}
                       className="space-y-6"
                     >
                       <motion.div
@@ -362,7 +331,7 @@ export default function RefundReturnPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Refund Process
                     </motion.h2>
@@ -375,9 +344,7 @@ export default function RefundReturnPage() {
                         hidden: { opacity: 0 },
                         visible: {
                           opacity: 1,
-                          transition: { staggerChildren: 0.1 },
-                        },
-                      }}
+                          transition: { staggerChildren: 0.1 }}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -397,22 +364,19 @@ export default function RefundReturnPage() {
                             title: "Request",
                             desc: "Cancellation initiated with valid reason",
                             color: "emerald",
-                            icon: RefreshCcw,
-                          },
+                            icon: RefreshCcw},
                           {
                             step: "02",
                             title: "Processing",
                             desc: "Automatic Razorpay refund initiation",
                             color: "teal",
-                            icon: CreditCard,
-                          },
+                            icon: CreditCard},
                           {
                             step: "03",
                             title: "Credit",
                             desc: "Amount reflects in 5-10 business days",
                             color: "cyan",
-                            icon: Banknote,
-                          },
+                            icon: Banknote},
                         ].map((item, index) => (
                           <motion.div
                             key={index}
@@ -481,7 +445,7 @@ export default function RefundReturnPage() {
                   <div className="md:w-1/3 sticky top-32">
                     <motion.h2
                       className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                      style={{ y: y2 }}
+                      
                     >
                       Exceptions
                     </motion.h2>
@@ -494,9 +458,7 @@ export default function RefundReturnPage() {
                         hidden: { opacity: 0 },
                         visible: {
                           opacity: 1,
-                          transition: { staggerChildren: 0.1 },
-                        },
-                      }}
+                          transition: { staggerChildren: 0.1 }}}}
                       className="space-y-8"
                     >
                       <motion.p
@@ -515,29 +477,25 @@ export default function RefundReturnPage() {
                             desc: "Shipping damage requires photo evidence within 48 hours.",
                             bg: "bg-rose-50",
                             border: "border-rose-100",
-                            text: "text-rose-800",
-                          },
+                            text: "text-rose-800"},
                           {
                             title: "Incorrect",
                             desc: "Wrong items must be reported within 24 hours with video.",
                             bg: "bg-amber-50",
                             border: "border-amber-100",
-                            text: "text-amber-800",
-                          },
+                            text: "text-amber-800"},
                           {
                             title: "Defects",
                             desc: "Manufacturing defects affecting safety/performance.",
                             bg: "bg-red-50",
                             border: "border-red-100",
-                            text: "text-red-800",
-                          },
+                            text: "text-red-800"},
                           {
                             title: "Expired",
                             desc: "Products near/past expiration. Batch code required.",
                             bg: "bg-purple-50",
                             border: "border-purple-100",
-                            text: "text-purple-800",
-                          },
+                            text: "text-purple-800"},
                         ].map((item, index) => (
                           <motion.div
                             key={index}
@@ -649,7 +607,7 @@ export default function RefundReturnPage() {
             </div>
           </div>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

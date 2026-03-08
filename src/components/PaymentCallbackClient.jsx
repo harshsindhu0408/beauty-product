@@ -1,12 +1,8 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import { useRef, useState, useEffect, Suspense } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
@@ -20,27 +16,19 @@ export default function PaymentCallbackClient() {
   const [paymentStatus, setPaymentStatus] = useState("verifying");
   const [message, setMessage] = useState("Verifying your payment...");
 
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const verifyPayment = async () => {
       try {
         // Get all parameters from URL
         const razorpay_payment_id = searchParams.get("razorpay_payment_id");
         const razorpay_payment_link_id = searchParams.get(
-          "razorpay_payment_link_id"
+          "razorpay_payment_link_id",
         );
         const razorpay_payment_link_status = searchParams.get(
-          "razorpay_payment_link_status"
+          "razorpay_payment_link_status",
         );
         const razorpay_signature = searchParams.get("razorpay_signature");
         const orderId = searchParams.get("order_id");
@@ -65,19 +53,17 @@ export default function PaymentCallbackClient() {
           razorpay_payment_id,
           razorpay_payment_link_id,
           razorpay_payment_link_status,
-          razorpay_signature,
-        };
+          razorpay_signature};
 
         // Call your backend API to verify payment using clientFetch
         const result = await clientFetch(`order/${orderId}/verify-payment`, {
           method: "POST",
-          body: JSON.stringify(paymentData),
-        });
+          body: JSON.stringify(paymentData)});
 
         if (result.success) {
           setPaymentStatus("success");
           setMessage(
-            "Payment verified successfully! Redirecting to your order details..."
+            "Payment verified successfully! Redirecting to your order details...",
           );
 
           // Clear the order ID from localStorage
@@ -92,14 +78,14 @@ export default function PaymentCallbackClient() {
           setPaymentStatus("error");
           setMessage(
             result?.message ||
-              "Payment verification failed. Please try again or contact support."
+              "Payment verification failed. Please try again or contact support.",
           );
         }
       } catch (error) {
         console.error("Payment verification error:", error);
         setPaymentStatus("error");
         setMessage(
-          "An error occurred while verifying payment. Please contact support."
+          "An error occurred while verifying payment. Please contact support.",
         );
       } finally {
         setIsLoading(false);
@@ -117,10 +103,7 @@ export default function PaymentCallbackClient() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -128,10 +111,7 @@ export default function PaymentCallbackClient() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const getStatusContent = () => {
     switch (paymentStatus) {
@@ -148,8 +128,7 @@ export default function PaymentCallbackClient() {
           ),
           title: "Processing Payment",
           subtitle: message,
-          color: "blue",
-        };
+          color: "blue"};
       case "success":
         return {
           icon: (
@@ -164,8 +143,7 @@ export default function PaymentCallbackClient() {
           ),
           title: "Payment Successful",
           subtitle: message,
-          color: "green",
-        };
+          color: "green"};
       case "error":
         return {
           icon: (
@@ -180,8 +158,7 @@ export default function PaymentCallbackClient() {
           ),
           title: "Payment Failed",
           subtitle: message,
-          color: "red",
-        };
+          color: "red"};
       default:
         return {
           icon: (
@@ -191,8 +168,7 @@ export default function PaymentCallbackClient() {
           ),
           title: "Unknown Status",
           subtitle: "Please contact support",
-          color: "gray",
-        };
+          color: "gray"};
     }
   };
 
@@ -200,7 +176,7 @@ export default function PaymentCallbackClient() {
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <AnimatePresence>
           {isLoading && (
             <motion.div
@@ -220,45 +196,38 @@ export default function PaymentCallbackClient() {
           )}
         </AnimatePresence>
 
-        <main
-          ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Floating gradient blobs */}
           <div className="fixed inset-0 -z-10 overflow-hidden">
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-pink-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 top-1/4 left-1/4"
               animate={{
                 x: ["0%", "5%", "0%"],
-                y: ["0%", "10%", "0%"],
-              }}
+                y: ["0%", "10%", "0%"]}}
               transition={{
                 duration: 20,
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "easeInOut",
-              }}
+                ease: "easeInOut"}}
             />
             <motion.div
               className="absolute w-[80vw] h-[60vh] bg-purple-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 bottom-1/4 right-1/4"
               animate={{
                 x: ["0%", "-8%", "0%"],
-                y: ["0%", "-12%", "0%"],
-              }}
+                y: ["0%", "-12%", "0%"]}}
               transition={{
                 duration: 25,
                 repeat: Infinity,
                 repeatType: "reverse",
                 ease: "easeInOut",
-                delay: 2,
-              }}
+                delay: 2}}
             />
           </div>
 
           {/* Hero Section */}
           <section className="relative h-screen flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -272,10 +241,7 @@ export default function PaymentCallbackClient() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.div
@@ -293,16 +259,13 @@ export default function PaymentCallbackClient() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className={`text-4xl md:text-6xl font-bold mb-8 leading-tight font-serif ${
                     statusContent.color === "green"
                       ? "text-green-600"
                       : statusContent.color === "red"
-                      ? "text-red-600"
-                      : "text-blue-600"
+                        ? "text-red-600"
+                        : "text-blue-600"
                   }`}
                 >
                   <span className="relative inline-block">
@@ -315,8 +278,8 @@ export default function PaymentCallbackClient() {
                         statusContent.color === "green"
                           ? "bg-green-200/60"
                           : statusContent.color === "red"
-                          ? "bg-red-200/60"
-                          : "bg-blue-200/60"
+                            ? "bg-red-200/60"
+                            : "bg-blue-200/60"
                       }`}
                       style={{ bottom: "15%" }}
                     />
@@ -332,10 +295,7 @@ export default function PaymentCallbackClient() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   {statusContent.subtitle}
@@ -404,7 +364,7 @@ export default function PaymentCallbackClient() {
                     <div className="md:w-1/3 sticky top-32">
                       <motion.h2
                         className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-serif"
-                        style={{ y: y2 }}
+                        
                       >
                         Need Help?
                       </motion.h2>
@@ -424,10 +384,7 @@ export default function PaymentCallbackClient() {
                             opacity: 1,
                             transition: {
                               staggerChildren: 0.1,
-                              delayChildren: 0.3,
-                            },
-                          },
-                        }}
+                              delayChildren: 0.3}}}}
                         className="space-y-8"
                       >
                         <motion.div
@@ -467,7 +424,7 @@ export default function PaymentCallbackClient() {
             </div>
           )}
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

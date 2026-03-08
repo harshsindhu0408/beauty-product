@@ -1,31 +1,16 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const ReactLenis = dynamic(
-  () => import("@studio-freight/react-lenis").then((mod) => mod.ReactLenis),
-  { ssr: false }
-);
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 
 export default function TermsPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -41,10 +26,7 @@ export default function TermsPage() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
+        ease: [0.16, 1, 0.3, 1]}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -52,10 +34,7 @@ export default function TermsPage() {
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   // Terms sections data
   const termsSections = [
@@ -66,8 +45,7 @@ export default function TermsPage() {
       content: [
         "By accessing or using Saundrya Earth's services, you agree to be bound by these Terms. If you disagree with any part, you may not access our services.",
         "We reserve the right to modify these terms at any time. Continued use after changes constitutes acceptance.",
-      ],
-    },
+      ]},
     {
       id: 2,
       title: "Product Use & Safety",
@@ -77,8 +55,7 @@ export default function TermsPage() {
         "Discontinue use if irritation occurs and consult a dermatologist.",
         "Not intended to diagnose, treat, cure, or prevent any disease.",
         "Keep out of reach of children. Store in cool, dry conditions.",
-      ],
-    },
+      ]},
     {
       id: 3,
       title: "Intellectual Property",
@@ -87,8 +64,7 @@ export default function TermsPage() {
         "All content on our platforms (logos, formulations, packaging designs) is our exclusive property.",
         "Unauthorized use of any trademarks, patents, or trade secrets is prohibited.",
         "You may share product images for personal, non-commercial purposes with proper attribution.",
-      ],
-    },
+      ]},
     {
       id: 4,
       title: "Purchases & Returns",
@@ -97,8 +73,7 @@ export default function TermsPage() {
         "Full payment is required before order processing. We accept major credit cards and select digital wallets.",
         "Return unopened products within 30 days for full refund. Opened products may be eligible for store credit.",
         "Custom or personalized items are final sale. Damaged shipments must be reported within 7 days of delivery.",
-      ],
-    },
+      ]},
     {
       id: 5,
       title: "User Conduct",
@@ -110,8 +85,7 @@ export default function TermsPage() {
         "- Attempt to reverse engineer our formulations",
         "- Harass other community members",
         "- Automatically scrape or mine data",
-      ],
-    },
+      ]},
     {
       id: 6,
       title: "Limitation of Liability",
@@ -123,21 +97,17 @@ export default function TermsPage() {
         "- Third-party actions or service interruptions",
         "- Errors in product descriptions or pricing",
         "Our maximum liability shall not exceed the purchase price paid.",
-      ],
-    },
+      ]},
   ];
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-        <main
-          ref={containerRef}
-          className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
-        >
+      
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
           {/* Hero Section */}
           <section className="relative flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 bg-gradient-to-b from-white/80 to-transparent z-10 pointer-events-none"
             />
 
@@ -151,10 +121,7 @@ export default function TermsPage() {
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -165,10 +132,7 @@ export default function TermsPage() {
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: [0.16, 1, 0.3, 1],
-                      },
-                    },
-                  }}
+                        ease: [0.16, 1, 0.3, 1]}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block pt-10">Conscious</span>
@@ -180,8 +144,7 @@ export default function TermsPage() {
                       transition={{
                         delay: 0.8,
                         duration: 1,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
+                        ease: [0.22, 1, 0.36, 1]}}
                       className="absolute bottom-0 left-0 w-full h-4 bg-green-200/60 z-0 transform origin-left"
                       style={{ bottom: "15%" }}
                     />
@@ -197,10 +160,7 @@ export default function TermsPage() {
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12"
                 >
                   Our terms reflect the same intentionality we bring to our
@@ -233,7 +193,7 @@ export default function TermsPage() {
                     <div className="md:w-1/3">
                       <motion.h2
                         className="text-3xl font-bold text-gray-900 mb-6 font-serif"
-                        style={{ y: y2 }}
+                        
                       >
                         Terms Overview
                       </motion.h2>
@@ -243,8 +203,7 @@ export default function TermsPage() {
                         {new Date().toLocaleDateString("en-US", {
                           month: "long",
                           day: "numeric",
-                          year: "numeric",
-                        })}
+                          year: "numeric"})}
                       </p>
                     </div>
                     <div className="md:w-2/3">
@@ -310,8 +269,8 @@ export default function TermsPage() {
                         index % 3 === 0
                           ? "border-green-300"
                           : index % 3 === 1
-                          ? "border-amber-300"
-                          : "border-teal-300"
+                            ? "border-amber-300"
+                            : "border-teal-300"
                       } ${
                         index % 2 === 0 ? "border-l-2" : "border-r-2"
                       } rounded-${
@@ -351,8 +310,8 @@ export default function TermsPage() {
                                 index % 3 === 0
                                   ? "from-green-200 to-teal-200"
                                   : index % 3 === 1
-                                  ? "from-amber-200 to-orange-200"
-                                  : "from-teal-200 to-blue-200"
+                                    ? "from-amber-200 to-orange-200"
+                                    : "from-teal-200 to-blue-200"
                               } w-3/4`}
                               initial={{ scaleX: 0 }}
                               whileInView={{ scaleX: 1 }}
@@ -371,13 +330,11 @@ export default function TermsPage() {
                             key={pIndex}
                             initial={{
                               opacity: 0,
-                              x: pIndex % 2 === 0 ? -20 : 20,
-                            }}
+                              x: pIndex % 2 === 0 ? -20 : 20}}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{
                               delay: 0.1 * pIndex + 0.3,
-                              ease: "easeOut",
-                            }}
+                              ease: "easeOut"}}
                             viewport={{ once: true }}
                             className="flex items-start"
                           >
@@ -386,8 +343,8 @@ export default function TermsPage() {
                                 index % 3 === 0
                                   ? "bg-green-300"
                                   : index % 3 === 1
-                                  ? "bg-amber-300"
-                                  : "bg-teal-300"
+                                    ? "bg-amber-300"
+                                    : "bg-teal-300"
                               }`}
                             ></div>
                             <p className="text-gray-600 leading-relaxed">
@@ -405,8 +362,8 @@ export default function TermsPage() {
                           index % 3 === 0
                             ? "text-green-200"
                             : index % 3 === 1
-                            ? "text-amber-200"
-                            : "text-teal-200"
+                              ? "text-amber-200"
+                              : "text-teal-200"
                         }`}
                         initial={{ rotate: -10, scale: 0.8, opacity: 0 }}
                         whileInView={{ rotate: 0, scale: 1, opacity: 0.05 }}
@@ -433,8 +390,7 @@ export default function TermsPage() {
                     className="absolute inset-0 opacity-10 bg-repeat"
                     style={{
                       backgroundImage:
-                        "url('https://t3.ftcdn.net/jpg/06/11/24/66/360_F_611246646_AG50BIrYvobgrcTGHLOOnRRRzypsLBId.jpg')",
-                    }}
+                        "url('https://t3.ftcdn.net/jpg/06/11/24/66/360_F_611246646_AG50BIrYvobgrcTGHLOOnRRRzypsLBId.jpg')"}}
                   ></div>
                   <div className="relative z-10">
                     <div className="flex flex-col md:flex-row gap-10 items-center">
@@ -533,7 +489,7 @@ export default function TermsPage() {
             </div>
           </div>
         </main>
-      </ReactLenis>
+      
     </>
   );
 }

@@ -1,12 +1,8 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import { useRef, useState, useEffect, useCallback } from "react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+  AnimatePresence} from "framer-motion";
 import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
 
@@ -16,8 +12,7 @@ const CategoriesPage = ({
   initialLimit = 12,
   initialSearch = "",
   initialSort = "-createdAt",
-  initialIsActive = "",
-}) => {
+  initialIsActive = ""}) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -27,20 +22,14 @@ const CategoriesPage = ({
   const [isActiveFilter, setIsActiveFilter] = useState(initialIsActive);
   const [searchPlaceholderIndex, setSearchPlaceholderIndex] = useState(0);
 
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
+  
   // Extract categories and pagination from the data
   const categories = categoriesData?.data?.category || [];
   const pagination = categoriesData?.data?.pagination || {
     total: 0,
     page: 1,
     limit: 12,
-    totalPages: 1,
-  };
+    totalPages: 1};
 
   const totalPages = pagination.totalPages || 1;
   const limit = pagination.limit || 12;
@@ -56,7 +45,7 @@ const CategoriesPage = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setSearchPlaceholderIndex((prev) =>
-        prev === searchPlaceholders.length - 1 ? 0 : prev + 1
+        prev === searchPlaceholders.length - 1 ? 0 : prev + 1,
       );
     }, 3000);
 
@@ -68,7 +57,7 @@ const CategoriesPage = ({
     newPage = 1,
     newSearch = searchQuery,
     newSort = sortOption,
-    newIsActive = isActiveFilter
+    newIsActive = isActiveFilter,
   ) => {
     const params = new URLSearchParams();
 
@@ -92,7 +81,7 @@ const CategoriesPage = ({
       updateUrlWithFilters(1, query, sortOption, isActiveFilter);
       setTimeout(() => setIsLoading(false), 500);
     }, 300),
-    [sortOption, isActiveFilter]
+    [sortOption, isActiveFilter],
   );
 
   const handleSearchChange = (e) => {
@@ -135,10 +124,7 @@ const CategoriesPage = ({
   };
 
   // Parallax effects
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-
+      
   // Animation variants
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -147,10 +133,7 @@ const CategoriesPage = ({
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const fadeIn = {
     hidden: { opacity: 0 },
@@ -158,10 +141,7 @@ const CategoriesPage = ({
       opacity: 1,
       transition: {
         duration: 1.2,
-        ease: "easeOut",
-      },
-    },
-  };
+        ease: "easeOut"}}};
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -169,10 +149,7 @@ const CategoriesPage = ({
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3,
-      },
-    },
-  };
+        delayChildren: 0.3}}};
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -181,22 +158,17 @@ const CategoriesPage = ({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
-      },
-    },
+        ease: "easeOut"}},
     exit: {
       opacity: 0,
       y: -20,
       transition: {
         duration: 0.3,
-        ease: "easeIn",
-      },
-    },
-  };
+        ease: "easeIn"}}};
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
+      
         <AnimatePresence>
           {isLoading && (
             <motion.div
@@ -214,14 +186,11 @@ const CategoriesPage = ({
           )}
         </AnimatePresence>
 
-        <main
-          ref={containerRef}
-          className="min-h-screen relative overflow-hidden"
-        >
+        <main className="min-h-screen relative overflow-hidden">
           {/* Hero Section */}
           <section className="relative flex items-center justify-center overflow-hidden">
             <motion.div
-              style={{ y: y1, opacity }}
+              
               className="absolute inset-0 z-10 pointer-events-none"
             />
 
@@ -235,10 +204,7 @@ const CategoriesPage = ({
                     opacity: 1,
                     transition: {
                       staggerChildren: 0.2,
-                      delayChildren: 0.3,
-                    },
-                  },
-                }}
+                      delayChildren: 0.3}}}}
                 className="text-center"
               >
                 <motion.h1
@@ -249,10 +215,7 @@ const CategoriesPage = ({
                       y: 0,
                       transition: {
                         duration: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight font-serif"
                 >
                   <span className="block">Explore Our</span>
@@ -277,10 +240,7 @@ const CategoriesPage = ({
                       transition: {
                         duration: 0.8,
                         delay: 0.6,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-6"
                 >
                   Discover our wide range of carefully curated categories, each
@@ -297,10 +257,7 @@ const CategoriesPage = ({
                       transition: {
                         duration: 0.8,
                         delay: 0.8,
-                        ease: "easeOut",
-                      },
-                    },
-                  }}
+                        ease: "easeOut"}}}}
                   className="max-w-2xl mx-auto mt-8 mb-8"
                 >
                   <div className="relative">
@@ -449,7 +406,7 @@ const CategoriesPage = ({
                             </span>
                             <span className="text-xs text-gray-500">
                               {new Date(
-                                category.createdAt
+                                category.createdAt,
                               ).toLocaleDateString()}
                             </span>
                           </div>
@@ -506,7 +463,7 @@ const CategoriesPage = ({
                         >
                           {page}
                         </button>
-                      )
+                      ),
                     )}
 
                     {/* Next Button */}
@@ -585,8 +542,7 @@ const CategoriesPage = ({
                     ),
                     title: "Easy Navigation",
                     description:
-                      "Quickly find products that match your specific needs and preferences.",
-                  },
+                      "Quickly find products that match your specific needs and preferences."},
                   {
                     icon: (
                       <svg
@@ -607,8 +563,7 @@ const CategoriesPage = ({
                     ),
                     title: "Curated Selection",
                     description:
-                      "Each category contains hand-picked items that meet our quality standards.",
-                  },
+                      "Each category contains hand-picked items that meet our quality standards."},
                   {
                     icon: (
                       <svg
@@ -629,8 +584,7 @@ const CategoriesPage = ({
                     ),
                     title: "Organized Shopping",
                     description:
-                      "Save time by browsing through logically grouped products.",
-                  },
+                      "Save time by browsing through logically grouped products."},
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -746,8 +700,7 @@ const CategoriesPage = ({
                     onClick={() => router.push("/products")}
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)",
-                    }}
+                      boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)"}}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     className="bg-gradient-to-r cursor-pointer from-pink-600 to-purple-600 text-white px-10 py-4 rounded-full font-medium text-lg hover:shadow-lg"
@@ -759,15 +712,14 @@ const CategoriesPage = ({
             </div>
           </motion.section>
         </main>
-      </ReactLenis>
+      
     </>
   );
 };
 
 export async function getServerSideProps() {
   return {
-    props: {},
-  };
+    props: {}};
 }
 
 export default CategoriesPage;
