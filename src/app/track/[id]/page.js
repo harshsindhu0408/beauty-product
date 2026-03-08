@@ -33,7 +33,7 @@ export default async function OrderTrackingDetails({ params }) {
             Unable to load the tracking data. Please try again later.
           </p>
           <a
-            href="/orders"
+            href="/account?tab=orders"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block"
           >
             Back to Orders

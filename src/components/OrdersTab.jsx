@@ -128,12 +128,6 @@ const OrdersTab = ({ ordersData }) => {
       animate="show"
       className="space-y-6"
     >
-      <motion.h3
-        variants={itemVariants}
-        className="text-2xl font-bold text-gray-800"
-      >
-        My Orders
-      </motion.h3>
 
       {hasOrders ? (
         <>

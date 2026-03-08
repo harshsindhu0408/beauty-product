@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import Footer from "@/components/Footer";
+import GoogleAuthProvider from "@/components/GoogleAuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -151,9 +152,11 @@ export default function RootLayout({ children }) {
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
-        <NavigationWrapper />
-        {children}
-        <Footer />
+        <GoogleAuthProvider>
+          <NavigationWrapper />
+          {children}
+          <Footer />
+        </GoogleAuthProvider>
         <Toaster
           position="top-right"
           toastOptions={{

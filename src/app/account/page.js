@@ -1,3 +1,4 @@
+import React from "react";
 import { redirect } from "next/navigation";
 import AccountPageClient from "@/pages/AccountPageClient";
 import { FetchData } from "@/services/useServerFetch";
@@ -29,12 +30,20 @@ export default async function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-10">
-      <AccountPageClient
-        userData={user.data}
-        orders={userOrders.data}
-        addresses={userAddresses.data}
-        support={support}
-      />
+      <React.Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <AccountPageClient
+          userData={user.data}
+          orders={userOrders.data}
+          addresses={userAddresses.data}
+          support={support}
+        />
+      </React.Suspense>
     </div>
   );
 }

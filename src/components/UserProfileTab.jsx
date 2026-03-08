@@ -1,78 +1,121 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Clock, Pencil, X, LoaderCircle } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Shield,
+  CheckCircle,
+  Pencil,
+  X,
+  LoaderCircle,
+  Fingerprint,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { clientFetch } from "@/services/clientfetch";
 
-// --- Helper function to format dates ---
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
+/* ─── Date formatter ─── */
+const formatDateShort = (dateString) => {
+  if (!dateString) return "—";
   return new Date(dateString).toLocaleString("en-IN", {
     day: "numeric",
     month: "long",
     year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
   });
 };
 
-// --- A component to display status/role badges ---
-const StatusBadge = ({ status }) => {
-  const styles = {
-    active: "bg-green-100 text-green-800",
-    superadmin: "bg-purple-100 text-purple-800",
-    verified: "bg-blue-100 text-blue-800",
-    default: "bg-gray-100 text-gray-800",
+/* ─── Shared Components ─── */
+const SectionBlock = ({
+  title,
+  description,
+  children,
+  customAction,
+  icon: Icon,
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, ease: "easeOut" }}
+    className="bg-white rounded-2xl border border-emerald-100/50 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8"
+  >
+    <div className="px-6 py-5 border-b border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-emerald-50/50 to-white">
+      <div className="flex items-start gap-3">
+        {Icon && (
+          <div className="w-10 h-10 rounded-xl bg-emerald-100/50 border border-emerald-200/50 flex items-center justify-center flex-shrink-0">
+            <Icon size={18} className="text-emerald-600" />
+          </div>
+        )}
+        <div>
+          <h3 className="text-base font-semibold text-stone-900 tracking-tight">
+            {title}
+          </h3>
+          {description && (
+            <p className="text-sm text-stone-500 mt-0.5">{description}</p>
+          )}
+        </div>
+      </div>
+      {customAction && <div>{customAction()}</div>}
+    </div>
+    <div className="p-0 sm:p-6 flex flex-col gap-0 sm:gap-4">{children}</div>
+  </motion.div>
+);
+
+const FieldRow = ({
+  label,
+  value,
+  description,
+  isProtected = false,
+  copyable = false,
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (!value) return;
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
-  const styleKey = status?.toString().toLowerCase();
+
   return (
-    <span
-      className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${
-        styles[styleKey] || styles.default
-      }`}
-    >
-      {status?.toString()}
-    </span>
+    <div className="flex flex-col sm:flex-row sm:items-center py-4 px-6 sm:px-4 border-b border-stone-50 last:border-0 hover:bg-emerald-50/30 transition-colors rounded-lg">
+      <div className="w-full sm:w-1/3 mb-1.5 sm:mb-0">
+        <span className="text-sm font-medium text-stone-600">{label}</span>
+      </div>
+      <div className="w-full sm:w-2/3 flex items-center justify-between">
+        <div className="flex flex-col">
+          <span
+            className={`text-sm ${isProtected ? "font-mono text-stone-500" : "text-stone-900 font-medium"} ${copyable ? "cursor-pointer hover:text-emerald-600 transition-colors" : ""}`}
+            onClick={copyable ? handleCopy : undefined}
+          >
+            {value || "—"}
+          </span>
+          {description && (
+            <span className="text-[13px] text-stone-400 mt-0.5">
+              {description}
+            </span>
+          )}
+        </div>
+        {copyable && (
+          <button
+            onClick={handleCopy}
+            className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-md transition-colors"
+          >
+            {copied ? "Copied!" : "Copy"}
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
-// --- Animation Variants ---
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 14 },
-  },
-};
-const modalBackdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-const modalContentVariants = {
-  hidden: { scale: 0.9, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 300, damping: 25 },
-  },
-};
-
-// --- Edit Profile Modal Component ---
+/* ─── Edit Profile Modal ─── */
 const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
   const [formData, setFormData] = useState({ name: "", phone: "", bio: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [focused, setFocused] = useState(null);
 
   useEffect(() => {
-    // Pre-fill form when modal opens or user data changes
     if (user?.profile) {
       setFormData({
         name: user.profile.name || "",
@@ -90,11 +133,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Pass data to parent, which will handle the "API call"
-    onUpdate(formData, () => {
-      setIsSubmitting(false);
-    });
+    onUpdate(formData, () => setIsSubmitting(false));
   };
 
   if (!isOpen) return null;
@@ -102,88 +141,130 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
   return (
     <AnimatePresence>
       <motion.div
-        variants={modalBackdropVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
-          variants={modalContentVariants}
-          className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative"
-          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+          initial={{ scale: 0.95, opacity: 0, y: 15 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0, y: 15 }}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-[480px] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bol text-gray-800">Edit Profile</h3>
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-5 border-b border-stone-100 bg-gradient-to-r from-emerald-50/50 to-white">
+            <div>
+              <h3 className="text-lg font-bold text-stone-900 tracking-tight">
+                Edit Profile
+              </h3>
+              <p className="text-sm text-stone-500 mt-0.5">
+                Update your personal details.
+              </p>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-700 transition-colors"
-              aria-label="Close modal"
+              className="text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+
+          {/* Body */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            <div className="space-y-1.5">
               <label
-                htmlFor="name"
-                className="text-sm font-medium text-gray-600"
+                htmlFor="edit-name"
+                className="text-sm font-semibold text-stone-700"
               >
                 Full Name
               </label>
               <input
                 type="text"
-                id="name"
+                id="edit-name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
+                onFocus={() => setFocused("name")}
+                onBlur={() => setFocused(null)}
+                placeholder="Jane Doe"
+                className={`w-full px-4 py-3 bg-stone-50/50 text-stone-900 rounded-xl border transition-all text-sm outline-none ${
+                  focused === "name"
+                    ? "border-emerald-400 ring-4 ring-emerald-50"
+                    : "border-stone-200"
+                }`}
               />
             </div>
-            <div>
+
+            <div className="space-y-1.5">
               <label
-                htmlFor="phone"
-                className="text-sm font-medium text-gray-600"
+                htmlFor="edit-phone"
+                className="text-sm font-semibold text-stone-700"
               >
                 Phone Number
               </label>
               <input
                 type="text"
-                id="phone"
+                id="edit-phone"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
+                onFocus={() => setFocused("phone")}
+                onBlur={() => setFocused(null)}
+                placeholder="+1 (555) 000-0000"
+                className={`w-full px-4 py-3 bg-stone-50/50 text-stone-900 rounded-xl border transition-all text-sm outline-none ${
+                  focused === "phone"
+                    ? "border-emerald-400 ring-4 ring-emerald-50"
+                    : "border-stone-200"
+                }`}
               />
             </div>
-            <div>
+
+            <div className="space-y-1.5">
               <label
-                htmlFor="bio"
-                className="text-sm font-medium text-gray-600"
+                htmlFor="edit-bio"
+                className="text-sm font-semibold text-stone-700"
               >
-                Bio
+                Biography
               </label>
               <textarea
-                id="bio"
+                id="edit-bio"
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
-                rows={4}
-                className="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
+                onFocus={() => setFocused("bio")}
+                onBlur={() => setFocused(null)}
+                rows={3}
+                placeholder="Briefly describe yourself..."
+                className={`w-full px-4 py-3 bg-stone-50/50 text-stone-900 rounded-xl border transition-all text-sm outline-none resize-none ${
+                  focused === "bio"
+                    ? "border-emerald-400 ring-4 ring-emerald-50"
+                    : "border-stone-200"
+                }`}
               />
             </div>
-            <div className="flex justify-end pt-4">
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-[0.8] py-3 text-sm font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-xl transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex cursor-pointer items-center justify-center w-full px-4 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:bg-pink-300 disabled:cursor-not-allowed"
+                className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 rounded-xl shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? (
-                  <LoaderCircle size={20} className="animate-spin" />
-                ) : (
-                  "Save Changes"
+                {isSubmitting && (
+                  <LoaderCircle size={18} className="animate-spin" />
                 )}
+                Save Changes
               </button>
             </div>
           </form>
@@ -193,7 +274,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onUpdate }) => {
   );
 };
 
-// --- Main Profile Tab Component ---
+/* ─── Main Profile Tab ─── */
 const UserProfileTab = ({ user, setUser }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -211,144 +292,115 @@ const UserProfileTab = ({ user, setUser }) => {
       });
 
       if (response?.success) {
-        // Call the parent's update function with the new user data
         setUser(response?.data);
-        toast.success("Profile update success");
+        toast.success("Profile updated seamlessly.");
       }
       setIsModalOpen(false);
-
-      if (callback) {
-        callback();
-      }
+      if (callback) callback();
     } catch (error) {
-      if (callback) {
-        callback();
-      }
-      console.error("❌ Failed to update profile:", error);
+      if (callback) callback();
+      console.error("Failed to update profile:", error);
       if (error.message === "Unauthorized") {
-        toast.error("Please log in again to update your profile.");
+        toast.error("Session expired. Please log in again.");
       } else {
-        toast.error("Failed to update profile. Please try again.");
+        toast.error("Failed to update profile. Try again.");
       }
-      throw error;
     }
   };
 
   return (
-    <>
+    <div className="w-full animate-in fade-in duration-500 slide-in-from-bottom-2">
       <EditProfileModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         user={user}
         onUpdate={handleProfileUpdate}
       />
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="show"
-        className="space-y-8"
-      >
-        {/* --- Account & Security Card --- */}
-        <motion.div
-          variants={itemVariants}
-          className="relative bg-white/70 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-gray-200/80"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-              <ShieldCheck size={22} className="text-pink-500" />
-              Profile & Account
-            </h3>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 text-sm font-semibold text-pink-600 hover:text-pink-700 transition-colors p-2 rounded-md bg-pink-100 hover:bg-pink-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500"
-            >
-              <Pencil size={14} /> Edit Profile
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8 text-sm">
-            <div>
-              <label className="text-gray-500">User ID</label>
-              <p className="font-mono text-gray-700 text-xs mt-1 break-all">
-                {user && <span>{user?._id}</span>}
-              </p>
-            </div>
-            <div>
-              <label className="text-gray-500">Role</label>
-              <div className="mt-1">
-                <StatusBadge status={user?.role} />
-              </div>
-            </div>
-            <div>
-              <label className="text-gray-500">Status</label>
-              <div className="mt-1">
-                <StatusBadge status={user?.status} />
-              </div>
-            </div>
-            <div>
-              <label className="text-gray-500">Email Verified</label>
-              <div className="mt-1">
-                <StatusBadge
-                  status={user?.emailVerified ? "Verified" : "Not Verified"}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-gray-500">Phone Number</label>
-              <p className="font-semibold text-gray-800 text-base mt-1">
-                {user?.profile?.phone}
-              </p>
-            </div>
-            <div>
-              <label className="text-gray-500">Token Version</label>
-              <p className="font-semibold text-gray-800 text-base mt-1">
-                {user?.tokenVersion}
-              </p>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* --- Activity & Session Card --- */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white/70 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-gray-200/80"
-        >
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3 mb-6">
-            <Clock size={22} className="text-pink-500" />
-            Activity & Session
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 text-sm">
-            <div>
-              <label className="text-gray-500">Last Login</label>
-              <p className="font-semibold text-gray-800 mt-1">
-                {formatDate(user?.lastLogin)}
-              </p>
+      <SectionBlock
+        title="Personal Information"
+        description="Update your contact info and personal details here."
+        icon={User}
+        customAction={() => (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 text-sm font-semibold bg-emerald-50 border border-emerald-100 text-emerald-700 hover:text-emerald-800 hover:bg-emerald-100 transition-colors px-4 py-2 rounded-lg"
+          >
+            <Pencil size={14} />
+            Edit Profile
+          </button>
+        )}
+      >
+        <FieldRow
+          label="Display Name"
+          value={user?.profile?.name}
+          description="This name will be displayed on your invoices and dashboard."
+        />
+        <FieldRow
+          label="Email Address"
+          value={user?.email}
+          description="Your verified email address used for login."
+        />
+        <FieldRow
+          label="Phone Number"
+          value={user?.profile?.phone}
+          description="We'll only use this for important delivery updates."
+        />
+        <FieldRow
+          label="Biography"
+          value={user?.profile?.bio}
+          description="Your personal summary shown on your public profile."
+        />
+      </SectionBlock>
+
+      <SectionBlock
+        title="Security & Account"
+        description="Permanent details about your account that cannot be changed directly."
+        icon={Shield}
+      >
+        <FieldRow
+          label="Verification Status"
+          value={
+            <div className="flex items-center gap-1.5">
+              <CheckCircle
+                size={16}
+                className={
+                  user?.emailVerified ? "text-emerald-500" : "text-amber-500"
+                }
+              />
+              <span
+                className={
+                  user?.emailVerified ? "text-emerald-700" : "text-amber-700"
+                }
+              >
+                {user?.emailVerified ? "Verified Account" : "Unverified"}
+              </span>
             </div>
-            <div>
-              <label className="text-gray-500">Login IP</label>
-              <p className="font-mono text-gray-700 mt-1">{user?.loginIp}</p>
-            </div>
-            <div className="md:col-span-2">
-              <label className="text-gray-500">Login User Agent</label>
-              <p className="font-mono text-gray-700 text-xs mt-1">
-                {user?.loginUserAgent}
-              </p>
-            </div>
-            <div>
-              <label className="text-gray-500">Account Created</label>
-              <p className="font-semibold text-gray-800 mt-1">
-                {formatDate(user?.createdAt)}
-              </p>
-            </div>
-            <div>
-              <label className="text-gray-500">Last Updated</label>
-              <p className="font-semibold text-gray-800 mt-1">
-                {formatDate(user?.updatedAt)}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </>
+          }
+          isProtected
+        />
+        <FieldRow
+          label="Account Created"
+          value={formatDateShort(user?.createdAt)}
+          isProtected
+        />
+        <FieldRow
+          label="Account Role"
+          value={
+            <span className="inline-flex py-1 px-3 bg-teal-50 text-teal-700 border border-teal-100 rounded-full text-xs capitalize font-bold tracking-wide">
+              {user?.role || "User"}
+            </span>
+          }
+        />
+        <FieldRow
+          label="User ID"
+          value={user?._id}
+          isProtected
+          copyable
+          description="Your unique internal identifier."
+        />
+      </SectionBlock>
+    </div>
   );
 };
 

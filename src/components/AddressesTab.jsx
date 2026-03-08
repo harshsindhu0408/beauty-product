@@ -175,12 +175,6 @@ const AddressesTab = ({ addressesData }) => {
         animate="show"
         className="space-y-6"
       >
-        <motion.div
-          variants={itemVariants}
-          className="flex justify-between items-center"
-        >
-          <h3 className="text-xl font-bold text-gray-800">My Addresses</h3>
-        </motion.div>
 
         {addresses?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -9,337 +9,236 @@ import {
   Trash2,
   LogOut,
   MessageCircle,
+  Settings,
+  Shield,
+  CreditCard,
+  ChevronRight,
+  UserCircle,
 } from "lucide-react";
 import UserProfileTab from "@/components/UserProfileTab";
 import AddressesTab from "@/components/AddressesTab";
 import OrdersTab from "@/components/OrdersTab";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { clientFetch } from "@/services/clientfetch";
 import SupportTicketsTab from "@/components/SupportTicketsTab";
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
-};
-
-const modalBackdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
-const modalPanelVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 50 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 30 },
-  },
-  exit: { opacity: 0, scale: 0.9, y: 50, transition: { duration: 0.2 } },
-};
-
-// Modal for Deletion Confirmation
-const ConfirmationModal = ({ isOpen, onClose, onConfirm, addressTitle }) => {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          variants={modalBackdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          onClick={onClose}
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-        >
-          <motion.div
-            variants={modalPanelVariants}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-sm"
-          >
-            <div className="p-6 text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <Trash2 className="h-6 w-6 text-red-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mt-4">
-                Confirm Deletion
-              </h3>
-              <p className="text-sm text-gray-500 mt-2">
-                Are you sure you want to delete the address titled "
-                <b>{addressTitle}</b>"? This action cannot be undone.
-              </p>
-            </div>
-            <footer className="flex justify-center gap-3 p-4 bg-gray-50 rounded-b-2xl">
-              <motion.button
-                type="button"
-                onClick={onClose}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-4 py-2 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
-              >
-                Cancel
-              </motion.button>
-              <motion.button
-                type="button"
-                onClick={onConfirm}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-5 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg shadow-sm hover:bg-red-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
-              >
-                Delete
-              </motion.button>
-            </footer>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
 // --- MAIN CLIENT COMPONENT ---
 const AccountPageClient = (data) => {
-  // CORRECTLY destructure props with null checks
   const [user, setUser] = useState(data?.userData);
   const [supportTickets, setSupportTickets] = useState(data?.support);
   const ordersData = data?.orders;
   const addressesData = data?.addresses;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  const [activeTab, setActiveTab] = useState("profile");
+  const currentTab = searchParams.get("tab") || "profile";
+  const [activeTab, setActiveTab] = useState(currentTab);
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && tab !== activeTab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tabId);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const [addresses, setAddresses] = useState(addressesData?.addresses || []);
-  const [modalState, setModalState] = useState({ type: null, data: null });
 
   const handleLogout = async () => {
     try {
-      // Call logout API first
       const res = await clientFetch("auth/logout", {
         method: "POST",
       });
 
-      if (res?.success) {
-        toast.success("Logged out successfully!!");
-      }
+      if (res?.success) toast.success("Logged out successfully!!");
 
-      // Clear localStorage after successful API call
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userData");
-
-      // Clear cookies
-      Cookies.remove("accessToken", { path: "/" });
-
-      // Navigate to auth page
-      router.push("/auth");
+      Cookies.remove("accessToken");
+      Cookies.remove("userData");
+      window.location.href = "/";
     } catch (error) {
-      console.error("Logout API call failed:", error);
-      // Still clear local storage and redirect even if API call fails
+      console.error("Logout error", error);
+      toast.error("Logout failed. Proceeding locally.");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userData");
-      Cookies.remove("accessToken", { path: "/" });
-      router.push("/auth");
+      Cookies.remove("accessToken");
+      window.location.href = "/";
     }
   };
 
-  const handleCloseModal = () => setModalState({ type: null, data: null });
-  const handleDeleteAddress = () => {
-    if (modalState.type === "delete" && modalState.data) {
-      setAddresses((prev) =>
-        prev.filter((addr) => addr._id !== modalState.data._id)
-      );
-      handleCloseModal();
+  const navItems = [
+    { id: "profile", label: "My Profile", icon: UserCircle },
+    { id: "addresses", label: "Addresses", icon: MapPin },
+    { id: "orders", label: "Order History", icon: Package },
+    { id: "support", label: "Support", icon: MessageCircle },
+  ];
+
+  const getPageTitle = () => {
+    const found = navItems.find((i) => i.id === activeTab);
+    return found ? found.label : "Settings";
+  };
+
+  const getPageDescription = () => {
+    switch (activeTab) {
+      case "profile":
+        return "Update your personal details securely.";
+      case "addresses":
+        return "Manage your delivery locations.";
+      case "orders":
+        return "Track and view your past orders.";
+      case "support":
+        return "Need help? View your support tickets.";
+      default:
+        return "";
     }
   };
 
-  const handleUserUpdate = (updatedUserData) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      profile: {
-        ...prevUser.profile,
-        ...updatedUserData.profile,
-      },
-    }));
-  };
-
-  const renderContent = () => {
-    return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={staggerContainer}
-        >
-          {/* --- PROFILE TAB --- */}
-          {activeTab === "profile" && (
-            <UserProfileTab user={user} setUser={setUser} />
-          )}
-
-          {/* --- ADDRESSES TAB --- */}
-          {activeTab === "addresses" && (
-            <AddressesTab addressesData={addressesData} />
-          )}
-
-          {/* --- ORDERS TAB --- */}
-          {activeTab === "orders" && <OrdersTab ordersData={ordersData} />}
-
-          {/* --- SUPPORT TAB --- */}
-          {activeTab === "support" && (
-            <SupportTicketsTab supportTicketsData={supportTickets} />
-          )}
-        </motion.div>
-      </AnimatePresence>
-    );
+  /* Render Active Tab Content */
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "profile":
+        return <UserProfileTab user={user} setUser={setUser} />;
+      case "addresses":
+        return <AddressesTab addressesData={addressesData} />;
+      case "orders":
+        return <OrdersTab ordersData={ordersData} />;
+      case "support":
+        return <SupportTicketsTab supportTicketsData={supportTickets} />;
+      default:
+        return <UserProfileTab user={user} setUser={setUser} />;
+    }
   };
 
   return (
-    <>
-      <main className="min-h-screen bg-gray-50 font-sans relative overflow-hidden">
-        {/* Floating gradient blobs */}
-        <div className="fixed inset-0 -z-10 overflow-hidden">
-          <motion.div
-            className="absolute w-[60vw] h-[60vh] bg-pink-100/50 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 top-1/4 left-1/4"
-            animate={{ x: ["0%", "5%", "0%"], y: ["0%", "10%", "0%"] }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute w-[70vw] h-[70vh] bg-purple-100/50 rounded-full mix-blend-multiply filter blur-[120px] opacity-40 bottom-1/4 right-1/4"
-            animate={{ x: ["0%", "-8%", "0%"], y: ["0%", "-12%", "0%"] }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
+    <div className="min-h-screen bg-gradient-to-br from-stone-50/80 via-white to-emerald-50/20 font-[var(--font-poppins)] selection:bg-emerald-100 selection:text-emerald-900 border-t border-stone-200/50">
+      {/* Soft background decor */}
+      <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-stone-100/50 to-transparent pointer-events-none" />
+
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 relative">
+        {/* Header section with brand colors */}
+        <div className="mb-10 lg:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-stone-900 tracking-tight leading-tight">
+            Welcome back, <br className="sm:hidden" />
+            <span className="text-emerald-600 font-serif italic">
+              {user?.profile?.name?.split(" ")[0] || "User"}
+            </span>
+          </h1>
+          <p className="text-stone-500 mt-3 text-base sm:text-lg max-w-xl">
+            {getPageDescription()}
+          </p>
         </div>
 
-        <div className="container mx-auto px-4 py-8 md:py-12">
-          {/* REMOVED THE HEADER SECTION COMPLETELY */}
-
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* --- SIDEBAR NAVIGATION --- */}
-            <motion.aside
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-              className="lg:w-1/4"
-            >
-              <nav className="p-3 bg-white/60 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/80 space-y-1">
-                {/* User Profile Box at the top of sidebar */}
-                <div className="flex flex-col items-center p-4 mb-3 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl border border-pink-100">
-                  <img
-                    src={
-                      user?.profile?.avatar ||
-                      `https://ui-avatars.com/api/?name=${
-                        user?.profile?.name || "U"
-                      }&background=E2E8F0&color=4A5568`
-                    }
-                    alt="User Avatar"
-                    className="w-16 h-16 rounded-full border-2 border-white shadow-md mb-3"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = `https://ui-avatars.com/api/?name=${
-                        user?.profile?.name || "U"
-                      }&background=E2E8F0&color=4A5568`;
-                    }}
-                  />
-                  <h2 className="font-bold text-gray-800 text-center">
-                    {user?.profile?.name || "User"}
-                  </h2>
-                  <p className="text-xs text-gray-500 text-center mt-1">
-                    {user?.email || "user@example.com"}
-                  </p>
-                </div>
-
-                {[
-                  { id: "profile", label: "My Profile", icon: User },
-                  { id: "addresses", label: "My Addresses", icon: MapPin },
-                  { id: "orders", label: "My Orders", icon: Package },
-                  {
-                    id: "support",
-                    label: "Support Tickets",
-                    icon: MessageCircle,
-                  },
-                ].map((tab) => (
-                  <motion.button
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 items-start">
+          {/* --- SIDEBAR NAVIGATION --- */}
+          <aside className="w-full lg:w-64 shrink-0 transition-all">
+            <nav className="flex flex-col gap-y-1.5 lg:sticky lg:top-8 bg-white/60 backdrop-blur-md p-2.5 rounded-2xl border border-stone-200/50 shadow-sm">
+              {navItems.map((tab) => {
+                const isActive = activeTab === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500 cursor-pointer relative ${
-                      activeTab !== tab.id &&
-                      "hover:bg-gray-100/80 text-gray-600"
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`group relative flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
+                      isActive
+                        ? "text-white shadow-md shadow-emerald-500/20"
+                        : "text-stone-600 hover:text-emerald-700 hover:bg-emerald-50/50"
                     }`}
                   >
-                    {activeTab === tab.id && (
+                    {isActive && (
                       <motion.div
-                        layoutId="active-tab-indicator"
-                        className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 rounded-xl shadow-md"
+                        layoutId="active-sidebar-tab"
+                        className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-xl"
+                        initial={false}
                         transition={{
                           type: "spring",
-                          stiffness: 300,
+                          stiffness: 350,
                           damping: 30,
                         }}
                       />
                     )}
+
                     <div className="relative z-10 flex items-center gap-3">
-                      <tab.icon
-                        size={20}
-                        className={
-                          activeTab === tab.id ? "text-white" : "text-gray-500"
-                        }
+                      <Icon
+                        size={18}
+                        className={`transition-colors duration-200 ${
+                          isActive
+                            ? "text-emerald-50"
+                            : "text-stone-400 group-hover:text-emerald-500"
+                        }`}
+                        strokeWidth={isActive ? 2.5 : 2}
                       />
                       <span
-                        className={activeTab === tab.id ? "text-white" : ""}
+                        className={`text-[15px] tracking-wide ${isActive ? "font-semibold" : "font-medium"}`}
                       >
                         {tab.label}
                       </span>
                     </div>
-                  </motion.button>
-                ))}
-                <div className="pt-2 !mt-2 border-t border-gray-200">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-red-600 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    <LogOut size={20} />
-                    <span>Log Out</span>
-                  </motion.button>
+
+                    {!isActive && (
+                      <ChevronRight
+                        size={16}
+                        className="text-stone-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-10"
+                      />
+                    )}
+                  </button>
+                );
+              })}
+
+              <div className="my-2 border-t border-stone-200/50 mx-2" />
+
+              <button
+                onClick={handleLogout}
+                className="group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer text-red-600 hover:bg-red-50"
+              >
+                <div className="flex items-center gap-3">
+                  <LogOut
+                    size={18}
+                    className="text-red-400 group-hover:text-red-500"
+                  />
+                  <span className="text-[15px] font-medium tracking-wide">
+                    Log Out
+                  </span>
                 </div>
-              </nav>
-            </motion.aside>
+              </button>
+            </nav>
+          </aside>
 
-            {/* --- MAIN CONTENT AREA --- */}
-            <motion.main
-              className="flex-1"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-            >
-              <div className="min-h-[400px]">{renderContent()}</div>
-            </motion.main>
-          </div>
+          {/* --- MAIN CONTENT AREA --- */}
+          <main className="flex-1 w-full max-w-[840px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.99 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                {/* Section Title */}
+                <div className="mb-8 hidden lg:block">
+                  <h2 className="text-2xl font-bold text-stone-800 tracking-tight">
+                    {getPageTitle()}
+                  </h2>
+                </div>
+
+                {renderTabContent()}
+              </motion.div>
+            </AnimatePresence>
+          </main>
         </div>
-
-        <ConfirmationModal
-          isOpen={modalState.type === "delete"}
-          onClose={handleCloseModal}
-          onConfirm={handleDeleteAddress}
-          addressTitle={modalState.data?.title}
-        />
-      </main>
-    </>
+      </div>
+    </div>
   );
 };
 

@@ -282,12 +282,6 @@ const SupportTicketsTab = ({ supportTicketsData }) => {
     >
       {/* Header with Create Ticket Button */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <motion.h3
-          variants={itemVariants}
-          className="text-2xl font-bold text-gray-800"
-        >
-          Support Tickets
-        </motion.h3>
         <motion.button
           variants={itemVariants}
           whileHover={{ scale: 1.05 }}

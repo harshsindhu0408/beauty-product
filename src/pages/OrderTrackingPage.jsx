@@ -680,10 +680,10 @@ const OrderTrackingPage = ({ orderData, orderId, trackingData }) => {
                 animate="visible"
                 variants={staggerContainer}
                 className="text-center flex flex-col items-center"
-              >
+              >₹
                 <motion.button
                   variants={itemVariants}
-                  onClick={() => router.back()}
+                  onClick={() => router.push("/account?tab=orders")}
                   className="cursor-pointer mb-8 flex items-center space-x-3 bg-white/80 backdrop-blur-sm px-4 py-2.5 rounded-2xl shadow-soft border border-white/60 hover:shadow-medium hover:bg-white transition-all duration-300 text-gray-700 font-medium"
                 >
                   <ArrowPathIcon className="w-5 h-5" />
