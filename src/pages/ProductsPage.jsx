@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clientFetch } from "@/services/clientfetch";
 import { Filter, FilterIcon } from "lucide-react";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 export async function getServerSideProps() {
   return {
@@ -21,6 +22,7 @@ export default function ProductsPage({
   initialFilters = {}}) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { checkAuth } = useAuthCheck();
 
   // State management
   const [isLoading, setIsLoading] = useState(true);
@@ -198,6 +200,7 @@ export default function ProductsPage({
   };
 
   const addToCartHandler = async (product) => {
+    if (!checkAuth()) return;
     try {
       const defaultQuantity = 1;
       let payload = {

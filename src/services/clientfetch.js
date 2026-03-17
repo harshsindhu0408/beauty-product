@@ -35,15 +35,24 @@ export const clientFetch = async (url, options = {}) => {
     // ✅ CORRECTED: Handle non-OK responses
     if (!res.ok) {
       const errorData = data || {
-        message: res.statusText || "An error occurred"
+        message: res.statusText || "An error occurred",
       };
 
       // Create error with full response data
-      const error = new Error(errorData.message || 'API Error');
+      const error = new Error(errorData.message || "API Error");
       error.response = res;
       error.data = errorData;
       error.status = res.status;
-      
+
+      if (res.status === 401 && typeof window !== "undefined") {
+        const currentPath = window.location.pathname + window.location.search;
+        localStorage.removeItem("accessToken");
+        // Use window.location.href instead of router.push for a clean redirect if needed
+        window.location.href = `/auth?redirectTo=${encodeURIComponent(
+          currentPath
+        )}`;
+      }
+
       throw error;
     }
 

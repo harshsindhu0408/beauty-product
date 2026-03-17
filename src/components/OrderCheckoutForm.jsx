@@ -12,8 +12,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  ChevronDown,
 } from "lucide-react";
 import AddressTabForShipping from "./AddressTabForShipping";
+import { INDIA_STATES, STATE_DISTRICTS } from "@/utils/indiaData";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -301,44 +303,89 @@ const OrderCheckoutForm = ({
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="billingCity"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          City *
-                        </label>
-                        <input
-                          type="text"
-                          id="billingCity"
-                          name="city"
-                          value={formData.billingAddress.city}
-                          onChange={(e) =>
-                            handleInputChange(e, "billingAddress")
-                          }
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                          required={!formData.billingAddress.sameAsShipping}
-                        />
-                      </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 relative">
                         <label
                           htmlFor="billingState"
                           className="block text-sm font-medium text-gray-700"
                         >
                           State *
                         </label>
-                        <input
-                          type="text"
-                          id="billingState"
-                          name="state"
-                          value={formData.billingAddress.state}
-                          onChange={(e) =>
-                            handleInputChange(e, "billingAddress")
-                          }
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                          required={!formData.billingAddress.sameAsShipping}
-                        />
+                        <div className="relative">
+                          <select
+                            id="billingState"
+                            name="state"
+                            value={formData.billingAddress.state}
+                            onChange={(e) => {
+                              handleInputChange(e, "billingAddress");
+                              setFormData((prev) => ({
+                                ...prev,
+                                billingAddress: {
+                                  ...prev.billingAddress,
+                                  city: "",
+                                },
+                              }));
+                            }}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors appearance-none bg-white font-medium"
+                            required={!formData.billingAddress.sameAsShipping}
+                          >
+                            <option value="">Select State</option>
+                            {INDIA_STATES.map((s) => (
+                              <option key={s} value={s}>
+                                {s}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown
+                            size={18}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                          />
+                        </div>
                       </div>
+
+                      <div className="space-y-2 relative">
+                        <label
+                          htmlFor="billingCity"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          District/City *
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="billingCity"
+                            name="city"
+                            value={formData.billingAddress.city}
+                            onChange={(e) =>
+                              handleInputChange(e, "billingAddress")
+                            }
+                            disabled={!formData.billingAddress.state}
+                            className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors appearance-none bg-white font-medium ${
+                              !formData.billingAddress.state
+                                ? "bg-gray-50 opacity-50 cursor-not-allowed"
+                                : ""
+                            }`}
+                            required={!formData.billingAddress.sameAsShipping}
+                          >
+                            <option value="">
+                              {formData.billingAddress.state
+                                ? "Select District"
+                                : "Select State First"}
+                            </option>
+                            {(
+                              STATE_DISTRICTS[formData.billingAddress.state] ||
+                              []
+                            ).map((d) => (
+                              <option key={d} value={d}>
+                                {d}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown
+                            size={18}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
                         <label
                           htmlFor="billingPostalCode"
@@ -351,11 +398,21 @@ const OrderCheckoutForm = ({
                           id="billingPostalCode"
                           name="postalCode"
                           value={formData.billingAddress.postalCode}
-                          onChange={(e) =>
-                            handleInputChange(e, "billingAddress")
-                          }
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                          onChange={(e) => {
+                            const val = e.target.value
+                              .replace(/\D/g, "")
+                              .slice(0, 6);
+                            setFormData((prev) => ({
+                              ...prev,
+                              billingAddress: {
+                                ...prev.billingAddress,
+                                postalCode: val,
+                              },
+                            }));
+                          }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors font-medium"
                           required={!formData.billingAddress.sameAsShipping}
+                          placeholder="6-digit PIN"
                         />
                       </div>
                     </div>

@@ -9,6 +9,7 @@ import OrderPlacementOverlay from "@/components/OrderPlacementOverlay";
 import { clientFetch } from "@/services/clientfetch";
 import { setCookie } from "@/utils/cookies";
 import toast from "react-hot-toast";
+import { INDIA_STATES, STATE_DISTRICTS } from "@/utils/indiaData";
 
 const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
   const router = useRouter();
@@ -410,6 +411,22 @@ const CheckoutPage = ({ addresses, sessionData, sessionId, userData }) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         setError("Please enter a valid email address");
+        return false;
+      }
+
+      // PIN code validation
+      if (!/^\d{6}$/.test(postalCode)) {
+        setError("Please enter a valid 6-digit PIN code for billing address");
+        return false;
+      }
+
+      // State and District validation
+      if (!INDIA_STATES.includes(state)) {
+        setError("Please select a valid state for billing address");
+        return false;
+      }
+      if (!STATE_DISTRICTS[state]?.includes(city)) {
+        setError("Please select a valid district for billing address");
         return false;
       }
     }

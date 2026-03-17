@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import CartPage from "@/pages/CartPage";
 import { FetchData } from "@/services/useServerFetch";
-import userAuthCheckOnServer from "@/middleware/authMiddleware";
+import userAuthCheckOnServer from "@/guards/authMiddleware";
 
 export default async function Cart() {
   await userAuthCheckOnServer();

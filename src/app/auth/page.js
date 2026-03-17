@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { GoogleLogin } from "@react-oauth/google";
+import { useSearchParams } from "next/navigation";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -150,8 +151,8 @@ const OrDivider = () => (
   </div>
 );
 
-/* ─── Main Auth Component ──────────────── */
-const Auth = () => {
+/* ─── Main Auth Content Component ──────────────── */
+const AuthContent = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -164,6 +165,8 @@ const Auth = () => {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/";
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -198,7 +201,7 @@ const Auth = () => {
       }
 
       toast.success(data?.message || "Login successful");
-      router.push("/");
+      router.push(redirectTo);
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Something went wrong during login");
@@ -265,9 +268,9 @@ const Auth = () => {
 
       // If new user and phone is empty, redirect to profile completion
       if (data?.data?.isNewUser && !data?.data?.user?.profile?.phone) {
-        router.push("/account?tab=profile");
+        router.push(`/account?tab=profile&redirectTo=${encodeURIComponent(redirectTo)}`);
       } else {
-        router.push("/");
+        router.push(redirectTo);
       }
     } catch (error) {
       console.error("Google login error:", error);
@@ -715,5 +718,19 @@ const Auth = () => {
     </div>
   );
 };
+
+/* ─── Main Auth Wrapper Component ──────────────── */
+const Auth = () => (
+  <Suspense fallback={
+    <div className="min-h-screen flex items-center justify-center bg-stone-50">
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+        <p className="text-sm text-stone-400 font-medium font-serif">Loading...</p>
+      </div>
+    </div>
+  }>
+    <AuthContent />
+  </Suspense>
+);
 
 export default Auth;

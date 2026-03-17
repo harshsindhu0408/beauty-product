@@ -17,9 +17,11 @@ import {
   Map,
   Compass,
   Check,
+  ChevronDown,
 } from "lucide-react";
 import { clientFetch } from "@/services/clientfetch";
 import toast from "react-hot-toast";
+import { INDIA_STATES, STATE_DISTRICTS } from "@/utils/indiaData";
 
 // --- Custom Inputs & Components ---
 
@@ -68,6 +70,8 @@ const AddressInputField = ({
   icon: Icon,
   required,
   error,
+  type = "text",
+  options = [],
   ...props
 }) => (
   <div className="space-y-1.5 w-full">
@@ -75,17 +79,45 @@ const AddressInputField = ({
       {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div
-      className={`relative flex items-center bg-stone-50/50 rounded-xl border-2 transition-all duration-200 outline-none ${error ? "border-red-400 bg-white shadow-[0_0_0_4px_rgba(248,113,113,0.1)]" : "border-stone-200 focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.1)]"}`}
+      className={`relative flex items-center bg-stone-50/50 rounded-xl border-2 transition-all duration-200 outline-none ${
+        error
+          ? "border-red-400 bg-white shadow-[0_0_0_4px_rgba(248,113,113,0.1)]"
+          : "border-stone-200 focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(59,130,246,0.1)]"
+      }`}
     >
       {Icon && (
         <div className="absolute left-3.5 text-stone-400 pointer-events-none">
           <Icon size={18} />
         </div>
       )}
-      <input
-        {...props}
-        className={`w-full bg-transparent py-3.5 text-sm font-medium text-stone-900 outline-none placeholder:text-stone-400 rounded-xl ${Icon ? "pl-11 pr-4" : "px-4"}`}
-      />
+      {type === "select" ? (
+        <select
+          {...props}
+          className={`w-full bg-transparent py-3.5 text-sm font-medium text-stone-900 outline-none appearance-none rounded-xl ${
+            Icon ? "pl-11 pr-10" : "px-4"
+          }`}
+        >
+          <option value="">Select {label}</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type={type}
+          {...props}
+          className={`w-full bg-transparent py-3.5 text-sm font-medium text-stone-900 outline-none placeholder:text-stone-400 rounded-xl ${
+            Icon ? "pl-11 pr-4" : "px-4"
+          }`}
+        />
+      )}
+      {type === "select" && (
+        <div className="absolute right-3.5 text-stone-400 pointer-events-none">
+          <ChevronDown size={18} />
+        </div>
+      )}
     </div>
     {error && (
       <p className="text-xs font-medium text-red-500 mt-1 flex items-center gap-1">
@@ -428,10 +460,22 @@ const AddressModal = ({ isOpen, onClose, onSave, addressToEdit }) => {
     if (!formData.title.trim()) newErrors.title = "Name is required";
     if (!formData.addressLine1.trim())
       newErrors.addressLine1 = "Address is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
+    if (!formData.city.trim()) newErrors.city = "District is required";
     if (!formData.state.trim()) newErrors.state = "State is required";
-    if (!formData.postalCode.trim() || formData.postalCode.length !== 6)
+    if (!formData.postalCode.trim() || !/^\d{6}$/.test(formData.postalCode))
       newErrors.postalCode = "Valid 6-digit PIN required";
+
+    // Validate that city and state are within our lists
+    if (formData.state && !INDIA_STATES.includes(formData.state)) {
+      newErrors.state = "Please select a valid state from the list";
+    }
+    if (
+      formData.state &&
+      formData.city &&
+      !STATE_DISTRICTS[formData.state]?.includes(formData.city)
+    ) {
+      newErrors.city = "Please select a valid district from the list";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -575,22 +619,32 @@ const AddressModal = ({ isOpen, onClose, onSave, addressToEdit }) => {
             {/* ROW 6: City & State */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <AddressInputField
-                label="Town/City"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Enter city"
-                required
-                error={errors.city}
-              />
-              <AddressInputField
                 label="State"
                 name="state"
                 value={formData.state}
-                onChange={handleChange}
-                placeholder="Enter state"
+                onChange={(e) => {
+                  handleChange(e);
+                  // Reset city when state changes
+                  setFormData((prev) => ({ ...prev, city: "" }));
+                }}
+                type="select"
+                options={INDIA_STATES}
                 required
                 error={errors.state}
+              />
+              <AddressInputField
+                label="District/City"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                type="select"
+                options={STATE_DISTRICTS[formData.state] || []}
+                disabled={!formData.state}
+                placeholder={
+                  formData.state ? "Select district" : "Select state first"
+                }
+                required
+                error={errors.city}
               />
             </div>
 

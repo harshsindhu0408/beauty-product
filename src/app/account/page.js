@@ -2,7 +2,7 @@ import React from "react";
 import { redirect } from "next/navigation";
 import AccountPageClient from "@/pages/AccountPageClient";
 import { FetchData } from "@/services/useServerFetch";
-import userAuthCheckOnServer from "@/middleware/authMiddleware";
+import userAuthCheckOnServer from "@/guards/authMiddleware";
 
 export default async function AccountPage() {
   await userAuthCheckOnServer();

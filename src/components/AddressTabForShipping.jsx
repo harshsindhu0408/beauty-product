@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { clientFetch } from "@/services/clientfetch";
 import toast from "react-hot-toast";
+import { INDIA_STATES, STATE_DISTRICTS } from "@/utils/indiaData";
+import { ChevronDown } from "lucide-react";
 
 // --- Animation Variants (can be in a separate file) ---
 const staggerContainer = {
@@ -346,11 +348,24 @@ const AddressForm = ({ onSave, initialData, isModal = false }) => {
     if (!formData.title.trim()) newErrors.title = "Title is required";
     if (!formData.addressLine1.trim())
       newErrors.addressLine1 = "Address is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
+    if (!formData.city.trim()) newErrors.city = "District is required";
     if (!formData.state.trim()) newErrors.state = "State is required";
-    if (!/^[1-9][0-9]{5}$/.test(formData.postalCode.trim())) {
+    if (!/^\d{6}$/.test(formData.postalCode.trim())) {
       newErrors.postalCode = "Must be a valid 6-digit PIN code";
     }
+
+    // Validate that city and state are within our lists
+    if (formData.state && !INDIA_STATES.includes(formData.state)) {
+      newErrors.state = "Please select a valid state from the list";
+    }
+    if (
+      formData.state &&
+      formData.city &&
+      !STATE_DISTRICTS[formData.state]?.includes(formData.city)
+    ) {
+      newErrors.city = "Please select a valid district from the list";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -406,38 +421,68 @@ const AddressForm = ({ onSave, initialData, isModal = false }) => {
           )}
         </div>
         {/* ... Add all other fields here (AddressLine2, City, State, PostalCode, Landmark) ... */}
-        <div>
-          <label className="text-sm font-medium text-gray-600">
-            City <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className={`w-full mt-1 p-2 border rounded-md text-sm ${
-              errors.city ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.city && (
-            <p className="mt-1 text-xs text-red-500">{errors.city}</p>
-          )}
-        </div>
-        <div>
+        <div className="relative">
           <label className="text-sm font-medium text-gray-600">
             State <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            className={`w-full mt-1 p-2 border rounded-md text-sm ${
-              errors.state ? "border-red-500" : "border-gray-300"
-            }`}
-          />
+          <div className="relative">
+            <select
+              name="state"
+              value={formData.state}
+              onChange={(e) => {
+                handleChange(e);
+                setFormData((prev) => ({ ...prev, city: "" }));
+              }}
+              className={`w-full mt-1 p-2 border rounded-md text-sm appearance-none bg-white ${
+                errors.state ? "border-red-500" : "border-gray-300"
+              }`}
+            >
+              <option value="">Select State</option>
+              {INDIA_STATES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={16}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            />
+          </div>
           {errors.state && (
             <p className="mt-1 text-xs text-red-500">{errors.state}</p>
+          )}
+        </div>
+        <div className="relative">
+          <label className="text-sm font-medium text-gray-600">
+            District/City <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <select
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              disabled={!formData.state}
+              className={`w-full mt-1 p-2 border rounded-md text-sm appearance-none bg-white ${
+                errors.city ? "border-red-500" : "border-gray-300"
+              } ${!formData.state ? "bg-gray-50 opacity-50 cursor-not-allowed" : ""}`}
+            >
+              <option value="">
+                {formData.state ? "Select District" : "Select State First"}
+              </option>
+              {(STATE_DISTRICTS[formData.state] || []).map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={16}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            />
+          </div>
+          {errors.city && (
+            <p className="mt-1 text-xs text-red-500">{errors.city}</p>
           )}
         </div>
         <div>
@@ -448,7 +493,11 @@ const AddressForm = ({ onSave, initialData, isModal = false }) => {
             type="text"
             name="postalCode"
             value={formData.postalCode}
-            onChange={handleChange}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+              handleChange({ target: { name: "postalCode", value: val } });
+            }}
+            placeholder="6-digit PIN"
             className={`w-full mt-1 p-2 border rounded-md text-sm ${
               errors.postalCode ? "border-red-500" : "border-gray-300"
             }`}
@@ -464,7 +513,8 @@ const AddressForm = ({ onSave, initialData, isModal = false }) => {
             name="country"
             value={formData.country}
             readOnly
-            className="w-full mt-1 p-2 border rounded-md text-sm bg-gray-50 border-gray-300"
+            disabled
+            className="w-full mt-1 p-2 border rounded-md text-sm bg-gray-50 border-gray-300 cursor-not-allowed"
           />
         </div>
       </div>

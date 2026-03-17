@@ -1,4 +1,4 @@
-import userAuthCheckOnServer from "@/middleware/authMiddleware";
+import userAuthCheckOnServer from "@/guards/authMiddleware";
 import OrderTrackingPage from "@/pages/OrderTrackingPage";
 import { FetchData } from "@/services/useServerFetch";
 import { Info } from "lucide-react";

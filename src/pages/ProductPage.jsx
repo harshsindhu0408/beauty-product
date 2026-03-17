@@ -7,6 +7,7 @@ import ProductSection from "@/components/ProductSection";
 import ReviewsSlider from "@/components/ReviewSlider";
 import RelatedProducts from "@/components/RelatedProducts";
 import FeaturesSection from "@/components/FeaturesSection";
+import { useAuthCheck } from "@/hooks/useAuthCheck";
 
 const Sparkles = () => {
   // A utility to generate a random number in a range
@@ -39,6 +40,7 @@ const Sparkles = () => {
 
 const ProductPage = ({ productData, similarProducts }) => {
   const router = useRouter();
+  const { checkAuth } = useAuthCheck();
   const product = productData?.product;
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [status, setStatus] = useState("idle"); // 'idle', 'adding', 'added'
@@ -74,6 +76,7 @@ const ProductPage = ({ productData, similarProducts }) => {
   }
 
   const addToCartHandler = async (selectedVariant, quantity) => {
+    if (!checkAuth()) return;
     if (status !== "idle") return;
     try {
       setStatus("adding");
@@ -113,6 +116,7 @@ const ProductPage = ({ productData, similarProducts }) => {
 
   // Handle buy now
   const buyNowHandler = async (selectedVariant, quantity) => {
+    if (!checkAuth()) return;
     try {
       const payload = {
         items: [

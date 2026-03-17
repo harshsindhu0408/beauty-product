@@ -1,3 +1,4 @@
+import React from "react";
 // app/product/page.js
 import { FetchData } from "@/services/useServerFetch";
 import ProductsPage from "@/pages/ProductsPage";
@@ -305,25 +306,34 @@ export default async function Product({ searchParams }) {
           />
         ))}
 
-        <ProductsPage
-          apiResponse={productsData}
-          initialPage={page}
-          initialLimit={limit}
-          categories={categoriesData}
-          initialFilters={{
-            category,
-            minPrice,
-            maxPrice,
-            minRating,
-            brand,
-            isActive,
-            isFeatured,
-            isDigital,
-            tags,
-            topSelling,
-            search,
-          }}
-        />
+        <React.Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-gray-500 font-medium">Loading products...</p>
+            </div>
+          </div>
+        }>
+          <ProductsPage
+            apiResponse={productsData}
+            initialPage={page}
+            initialLimit={limit}
+            categories={categoriesData}
+            initialFilters={{
+              category,
+              minPrice,
+              maxPrice,
+              minRating,
+              brand,
+              isActive,
+              isFeatured,
+              isDigital,
+              tags,
+              topSelling,
+              search,
+            }}
+          />
+        </React.Suspense>
       </div>
     );
   } catch (error) {

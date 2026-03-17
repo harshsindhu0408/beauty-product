@@ -1,4 +1,4 @@
-import userAuthCheckOnServer from "@/middleware/authMiddleware";
+import userAuthCheckOnServer from "@/guards/authMiddleware";
 import CheckoutPage from "@/pages/CheckoutPage";
 import { FetchData } from "@/services/useServerFetch";
 import CheckoutError from "@/components/CheckoutError";
