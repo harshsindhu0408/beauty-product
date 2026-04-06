@@ -176,6 +176,48 @@ const ProductSection = ({
     }
   }, [activeImage, product?.images?.length]);
 
+  // Razorpay Affordability Widget Initialization
+  useEffect(() => {
+    const initWidget = () => {
+      if (window.RazorpayAffordabilitySuite) {
+        // Clear previous widget content if any
+        const container = document.getElementById("razorpay-affordability-widget");
+        if (container) container.innerHTML = "";
+
+        const key =
+          process.env.NEXT_PUBLIC_RAZORPAY_KEY || "rzp_test_XXXX00000XXXX";
+        const amount = Math.round(finalPrice * 100); // in paise
+
+        const widgetConfig = {
+          key: key,
+          amount: amount,
+        };
+
+        try {
+          const rzpAffordabilitySuite = new window.RazorpayAffordabilitySuite(
+            widgetConfig
+          );
+          rzpAffordabilitySuite.render();
+        } catch (error) {
+          console.error("Error rendering Razorpay widget:", error);
+        }
+      }
+    };
+
+    // Check if script is loaded, otherwise wait a bit
+    if (window.RazorpayAffordabilitySuite) {
+      initWidget();
+    } else {
+      const timer = setInterval(() => {
+        if (window.RazorpayAffordabilitySuite) {
+          initWidget();
+          clearInterval(timer);
+        }
+      }, 500);
+      return () => clearInterval(timer);
+    }
+  }, [finalPrice]);
+
   return (
     <section className="container mx-auto px-4 py-8 md:px-6 md:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -394,6 +436,9 @@ const ProductSection = ({
                 <>Inclusive of all taxes</>
               )}
             </p>
+
+            {/* Razorpay Affordability Widget */}
+            <div id="razorpay-affordability-widget" className="mt-2 min-h-[40px]"></div>
           </motion.div>
 
           {/* Short description */}

@@ -5,7 +5,7 @@ export const FetchData = async (url, options = {}) => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
   try {
-    // Get access token from cookies on server
+    // Get access token from cookies on server if needed
     let accessToken;
     if (!options.skipAuth) {
       const cookieStore = await cookies();
@@ -34,7 +34,14 @@ export const FetchData = async (url, options = {}) => {
       if (res.status === 500) {
         throw new Error(`Server error: Failed to fetch data from ${url}`);
       } else if (res.status === 401) {
-        cookieStore.delete("accessToken");
+        try {
+          const cookieStore = await cookies();
+          cookieStore.delete("accessToken");
+        } catch (error) {
+          // In Server Components, cookies.delete() might throw. 
+          // We fail silently here as we can't delete in RSC context anyway.
+          console.warn("Could not delete accessToken in this context:", error.message);
+        }
         return null;
       } else {
         console.warn(`Failed to fetch data from ${url}: ${res.statusText}`);
