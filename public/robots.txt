@@ -1,0 +1,242 @@
+# Saundrya Earth - Conscious Beauty Revolution
+# Robots.txt File - SEO Optimized
+# Generated with best practices for e-commerce skincare brand
+
+User-agent: *
+Allow: /
+
+# --- SITEMAP REFERENCES ---
+Sitemap: https://saundryaearth.com/sitemap.xml
+Sitemap: https://saundryaearth.com/sitemap-products.xml
+Sitemap: https://saundryaearth.com/sitemap-pages.xml
+Sitemap: https://saundryaearth.com/sitemap-blogs.xml
+
+# --- DISALLOWED PATHS FOR SECURITY & SEO ---
+
+# Admin and backend areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /backend/
+Disallow: /cms/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+
+# User account and private areas
+Disallow: /account/
+Disallow: /profile/
+Disallow: /user/
+Disallow: /users/
+Disallow: /member/
+Disallow: /members/
+Disallow: /my-account/
+Disallow: /my-profile/
+
+# Checkout and cart processes
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /payment/
+Disallow: /payments/
+Disallow: /order-confirmation/
+Disallow: /order-complete/
+
+# Search and filter results (to avoid duplicate content)
+Disallow: /search/
+Disallow: /filter/
+Disallow: /sort/
+Disallow: /?search=
+Disallow: /?filter=
+Disallow: /?sort=
+Disallow: /?q=
+
+# Session and temporary files
+Disallow: /session/
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /cache/
+
+# Development and testing files
+Disallow: /dev/
+Disallow: /development/
+Disallow: /test/
+Disallow: /testing/
+Disallow: /staging/
+Disallow: /build/
+
+# Configuration and system files
+Disallow: /config/
+Disallow: /includes/
+Disallow: /logs/
+Disallow: /error_log
+Disallow: /php.ini
+Disallow: /web.config
+Disallow: /htaccess
+Disallow: /.env
+Disallow: /.git/
+Disallow: /.svn/
+
+# Utility and script files
+Disallow: /scripts/
+Disallow: /assets/scripts/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /images/private/
+
+# --- SPECIFIC SEARCH ENGINE INSTRUCTIONS ---
+
+# Googlebot specific instructions
+User-agent: Googlebot
+Allow: /products/
+Allow: /blog/
+Allow: /about/
+Allow: /contact/
+Allow: /ingredients/
+Allow: /sustainability/
+Crawl-delay: 1
+
+# Googlebot-Image for image optimization
+User-agent: Googlebot-Image
+Allow: /images/products/
+Allow: /images/blog/
+Allow: /images/ingredients/
+Allow: /images/sustainability/
+Disallow: /images/private/
+Disallow: /images/temp/
+
+# Bingbot specific instructions
+User-agent: bingbot
+Allow: /products/
+Allow: /blog/
+Allow: /about/
+Allow: /contact/
+Crawl-delay: 2
+
+# Yandex specific instructions
+User-agent: Yandex
+Allow: /products/
+Allow: /blog/
+Allow: /about/
+Crawl-delay: 2
+
+# --- SOCIAL MEDIA CRAWLERS ---
+User-agent: Twitterbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 1
+
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Pinterest
+Allow: /
+Crawl-delay: 1
+
+# --- BAD BOTS & SCRAPERS BLOCKING ---
+User-agent: AhrefsBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: MauiBot
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# --- SEO & ANALYTICS BOTS (ALLOWED WITH LIMITS) ---
+User-agent: Applebot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 5
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# --- CRAWL DELAY FOR ALL BOTS ---
+Crawl-delay: 1
+
+# --- ADDITIONAL SEO OPTIMIZATIONS ---
+
+# Allow important pages for indexing
+Allow: /products/sitemap/
+Allow: /blog/sitemap/
+Allow: /categories/
+Allow: /collections/
+
+# Allow static resources for better page understanding
+Allow: /assets/images/
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /fonts/
+
+# --- E-COMMERCE SPECIFIC ALLOWANCES ---
+Allow: /products/
+Allow: /product/
+Allow: /category/
+Allow: /collection/
+Allow: /ingredients/
+Allow: /sustainability/
+Allow: /blog/
+Allow: /blog/post/
+Allow: /about/
+Allow: /contact/
+Allow: /privacy-policy/
+Allow: /terms-conditions/
+Allow: /return-refund-policy/
+Allow: /shipping-info/
+
+# --- URL PARAMETER HANDLING ---
+# Allow useful parameters, block tracking parameters
+Allow: /?page=
+Allow: /?category=
+Allow: /?collection=
+Disallow: /?utm_
+Disallow: /?gclid=
+Disallow: /?fbclid=
+Disallow: /?ref=
+Disallow: /?source=
+
+# --- MOBILE SITE INSTRUCTIONS ---
+User-agent: Googlebot-Mobile
+Allow: /
+Crawl-delay: 1
+
+# --- VOICE SEARCH OPTIMIZATION ---
+User-agent: Amazonbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: AlexaBot
+Allow: /
+Crawl-delay: 2
+
+# --- IMAGE & MEDIA OPTIMIZATION ---
+User-agent: Googlebot-Video
+Allow: /videos/
+Allow: /media/
+
+# --- NEW CRAWLER FRIENDLY APPROACH ---
+# Comment: This robots.txt is designed to be search engine friendly
+# while protecting sensitive areas and optimizing crawl budget
+
+# Last updated: [Current Date]
+# Contact: tech@saundryaearth.com for questions

@@ -1,7 +1,5 @@
 "use client";
-import { ReactLenis } from "@studio-freight/react-lenis";
 import TestimonialsGrid from "@/components/TestimonialsGrid";
-import Footer from "@/components/Footer";
 import { useRef, useState, useEffect } from "react";
 
 export default function TestimonialsPage() {
@@ -39,8 +37,8 @@ export default function TestimonialsPage() {
 
   return (
     <>
-      <ReactLenis root options={{ lerp: 0.1, smoothWheel: true }}>
-        <main className="min-h-screen py-20 bg-gradient-to-br from-gray-50 to-white relative z-0 overflow-hidden">
+      
+        <main className="min-h-screen pt-26  bg-gradient-to-br from-gray-50 to-white relative z-0 overflow-hidden">
           {/* Enhanced Gradient Background - Now covers full page */}
           <div className="fixed inset-0 -z-10 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white opacity-90"></div>
@@ -89,8 +87,7 @@ export default function TestimonialsPage() {
                           width={isVisible ? "1418" : "0"}
                           style={{
                             transition: "width 1s ease-out",
-                            transitionDelay: "0.5s",
-                          }}
+                            transitionDelay: "0.5s"}}
                         />
                       </clipPath>
                     </defs>
@@ -117,9 +114,8 @@ export default function TestimonialsPage() {
             <TestimonialsGrid />
           </div>
         </main>
-      </ReactLenis>
+      
 
-      <Footer />
     </>
   );
 }

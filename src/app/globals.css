@@ -1,11 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+@layer base {
+  /* Your custom base styles */
+}
 
 .playfair-display {
-  font-family: "Playfair Display", serif;
+  font-family: var(--font-playfair), serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
+@keyframes infinite-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll linear infinite;
+}
